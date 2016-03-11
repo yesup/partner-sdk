@@ -27,7 +27,7 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide7.png "step3")<br/><br/><br/>
 
 <div id="step4"></div>
-##### **Step 4** In **Android Studio**, open the app's** _"build.gradle"_** file in the editor.<br/><br/>
+##### **Step 4** In **Android Studio**, open the app's _"build.gradle"_ file in the editor.<br/><br/>
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide6.png "step4")<br/><br/><br/>
 
 <div id="step5"></div>
