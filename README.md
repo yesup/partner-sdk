@@ -19,17 +19,17 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 
 <div id="step2"></div>
 **Step 2** Copy yesuppartner.aar file to your **"libs"** directory of project.<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide1.png "step2")<br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide1.png "step2")<br/><br/><br/>
 
 <div id="step3"></div>
-3 Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.
+**Step 3** Copy _"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
 _Note: Do not modify this file name!!!_**<br/><br/><br/>
 
 <div id="step4"></div>
-4 In Android Studio, open the app's build.gradle file in the editor.
+**Step 4** In **Android Studio**, open the app's _"build.gradle"_** file in the editor.
 
 <div id="step5"></div>
-5 Add "repositories" section, as follows:
+**step 5** Add "repositories" section, as follows:
 ```python
 repositories {
     flatDir {
@@ -39,7 +39,7 @@ repositories {
 ```
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide2.png "step3")<br/><br/><br/>
 <div id="step6"></div>
-6 Add in the following line to the dependencies section.
+**Step 6** Add in the following line to the dependencies section.
 
 ```python
 compile (name: 'yesuppartner', ext: 'aar')
