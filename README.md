@@ -67,11 +67,11 @@ Now the classes and methods in the Yesup Partner Library can be used in your app
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step7")<br/><br/><br/>
 
 <div id="step9"></div>
-**Step 9** Now you can **startup Yesup OfferWall** using below code:
-9.1 import com.yesup.partner.OfferWall;
-9.2 In onCreate method, new a OfferWall instance
-9.3 In onResume method, call OfferWall's onResume method
-9.4 You use OfferWall's show method to startup OfferWall interface.
+**Step 9** Now you can **startup Yesup OfferWall** using below code:<br/>
+9.1 import com.yesup.partner.OfferWall;<br/>
+9.2 In onCreate method, new a OfferWall instance<br/>
+9.3 In onResume method, call OfferWall's onResume method<br/>
+9.4 You use OfferWall's show method to startup OfferWall interface.<br/>
 
 Example code:
 ```python
