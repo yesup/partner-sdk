@@ -11,9 +11,10 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 [step7: Modify your AndroidManifest.xml file](#step7)<br/>
 [step8: Add content in AndroidManifest.xml](#step8)<br/>
 [step9: Startup Yesup OfferWall](#step9)<br/>
+<hr/>
 
 <div id="step1"></div>
-**Step 1** Download yesup partner library file **_"yesuppartner.aar"_** and config file "adconfigure.xml".<hr/><br/><br/>
+**Step 1** Download yesup partner library file **_"yesuppartner.aar"_** and config file "adconfigure.xml".<br/><br/>
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide5.png "step1")<br/>
 
 <div id="step2"></div>
