@@ -36,7 +36,7 @@ repositories {
         dirs 'libs'
     }
 }
-```<br/>
+```
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide2.png "step3")<br/><br/><br/>
 <div id="step5"></div>
 6 Add in the following line to the dependencies section.
