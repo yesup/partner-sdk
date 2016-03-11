@@ -27,7 +27,7 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide7.png "step3")<br/><br/><br/>
 
 <div id="step4"></div>
-**Step 4** In **Android Studio**, open the app's** _"build.gradle"_** file in the editor.
+**Step 4** In **Android Studio**, open the app's** _"build.gradle"_** file in the editor.<br/>
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide6.png "step4")<br/><br/><br/>
 
 <div id="step5"></div>
@@ -46,8 +46,8 @@ repositories {
 ```python
 compile (name: 'yesuppartner', ext: 'aar')
 ```
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide8.jpg "step6")<br/><br/><br/>
-Now the classes and methods in the Yesup Partner Library can be used in your app.
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide8.jpg "step6")
+Now the classes and methods in the Yesup Partner Library can be used in your app.<br/><br/><br/>
 
 <div id="step7"></div>
 **Step 7** Modify your AndroidManifest.xml file, add in the following content:
