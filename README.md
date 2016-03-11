@@ -12,11 +12,11 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 [step8: Add content in AndroidManifest.xml](#step8)<br/>
 [step9: Startup Yesup OfferWall](#step9)<br/>
 
-[:id, step1]
+
 1 Download yesup partner library file "yesuppartner.aar" and config file "adconfigure.xml".<br/><br/>
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide5.png "step5")<br/>
 
-[:id, step2]
+
 2 Copy yesuppartner.aar file to your "libs" directory of project.
 
 3 Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.
@@ -38,7 +38,7 @@ compile (name: 'yesuppartner', ext: 'aar')
 
 Now the classes and methods in the Yesup Partner Library can be used in your app.
 
-[:id, step7]
+<polymer-element attributes="id step7">
 7 Modify your AndroidManifest.xml file, add in the following content:
 
     <uses-permission android:name="android.permission.INTERNET"/>
