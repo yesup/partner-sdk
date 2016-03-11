@@ -22,14 +22,16 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide1.png "step2")<br/><br/><br/>
 
 <div id="step3"></div>
-**Step 3** Copy _"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
-_Note: Do not modify this file name!!!_**<br/><br/><br/>
+**Step 3** Copy **_"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
+**_Note: Do not modify this file name!!!_**
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide6.png "step3")<br/><br/><br/>
 
 <div id="step4"></div>
-**Step 4** In **Android Studio**, open the app's _"build.gradle"_** file in the editor.
+**Step 4** In **Android Studio**, open the app's** _"build.gradle"_** file in the editor.
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide7.png "step4")<br/><br/><br/>
 
 <div id="step5"></div>
-**step 5** Add "repositories" section, as follows:
+**step 5** Add **"repositories" section**, as follows:
 ```python
 repositories {
     flatDir {
@@ -44,11 +46,11 @@ repositories {
 ```python
 compile (name: 'yesuppartner', ext: 'aar')
 ```
-
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide8.png "step6")<br/><br/><br/>
 Now the classes and methods in the Yesup Partner Library can be used in your app.
 
 <div id="step7"></div>
-7 Modify your AndroidManifest.xml file, add in the following content:
+**Step 7** Modify your AndroidManifest.xml file, add in the following content:
 
 ```python
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -56,16 +58,16 @@ Now the classes and methods in the Yesup Partner Library can be used in your app
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 ```
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step7")<br/><br/><br/>
+<br/><br/><br/>
 
 <div id="step8"></div>
-8 Add in the following line to your AndroidManifest.xml to declair the Activity:
+**Step 8** Add in the following line to your **_"AndroidManifest.xml"_** to declair the Activity:
 
 <activity android:name="com.yesup.partner.OfferWallActivity" android:label="OfferWall" />
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step7")<br/><br/><br/>
 
-
-<div id="step8"></div>
-9 Now you can startup Yesup OfferWall using below code:
+<div id="step9"></div>
+**Step 9** Now you can **startup Yesup OfferWall** using below code:
 9.1 import com.yesup.partner.OfferWall;
 9.2 In onCreate method, new a OfferWall instance
 9.3 In onResume method, call OfferWall's onResume method
