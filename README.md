@@ -2,15 +2,15 @@
 ###### Lastest SDK Version: 1.0.160309.01
 Yesup Partner SDK for Android is the easiest way to integrate your Android app with Yesup.
 ## Installation
-[Step1: Download "yesuppartner.aar"](#step1)<br/>
-[Step2: Copy yesuppartner.aar](#step2)<br/>
-[Step3: Copy adconfigure.xml](#step3)<br/>
-[Step4: Open the app's build.gradle file](#step4)<br/>
-[step5: Add content in repositories" section](#step5)<br/>
-[step6: Add content in dependencies section](#step6)<br/>
-[step7: Modify your AndroidManifest.xml file](#step7)<br/>
-[step8: Add content in AndroidManifest.xml](#step8)<br/>
-[step9: Startup Yesup OfferWall](#step9)<br/>
+&nbsp;&nbsp;[Step1: Download "yesuppartner.aar"](#step1)<br/>
+&nbsp;&nbsp;[Step2: Copy yesuppartner.aar](#step2)<br/>
+&nbsp;&nbsp;[Step3: Copy adconfigure.xml](#step3)<br/>
+&nbsp;&nbsp;[Step4: Open the app's build.gradle file](#step4)<br/>
+&nbsp;&nbsp;[step5: Add content in repositories" section](#step5)<br/>
+&nbsp;&nbsp;[step6: Add content in dependencies section](#step6)<br/>
+&nbsp;&nbsp;[step7: Modify your AndroidManifest.xml file](#step7)<br/>
+&nbsp;&nbsp;[step8: Add content in AndroidManifest.xml](#step8)<br/>
+&nbsp;&nbsp;[step9: Startup Yesup OfferWall](#step9)<br/>
 <hr/>
 
 <div id="step1"></div>
@@ -68,10 +68,10 @@ Now the classes and methods in the Yesup Partner Library can be used in your app
 
 <div id="step9"></div>
 ##### **Step 9** Now you can **startup Yesup OfferWall** using below code:<br/>
-9.1 import com.yesup.partner.OfferWall;<br/>
-9.2 In onCreate method, new a OfferWall instance<br/>
-9.3 In onResume method, call OfferWall's onResume method<br/>
-9.4 You use OfferWall's show method to startup OfferWall interface.<br/>
+&nbsp;&nbsp;9.1 import com.yesup.partner.OfferWall;<br/>
+&nbsp;&nbsp;9.2 In onCreate method, new a OfferWall instance<br/>
+&nbsp;&nbsp;9.3 In onResume method, call OfferWall's onResume method<br/>
+&nbsp;&nbsp;9.4 You use OfferWall's show method to startup OfferWall interface.<br/>
 
 Example code:
 ```python
