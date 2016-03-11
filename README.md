@@ -23,14 +23,14 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 
 <div id="step3"></div>
 3 Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.
-_Note: Do not modify this file name!!!_<br/><br/><br/>
+_Note: Do not modify this file name!!!_**<br/><br/><br/>
 
 <div id="step4"></div>
 4 In Android Studio, open the app's build.gradle file in the editor.
 
 <div id="step5"></div>
 5 Add "repositories" section, as follows:
-```javascript
+```python
 repositories {
     flatDir {
         dirs 'libs'
@@ -38,27 +38,33 @@ repositories {
 }
 ```
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide2.png "step3")<br/><br/><br/>
-<div id="step5"></div>
+<div id="step6"></div>
 6 Add in the following line to the dependencies section.
 
-```javascript
+```python
 compile (name: 'yesuppartner', ext: 'aar')
 ```
 
 Now the classes and methods in the Yesup Partner Library can be used in your app.
 
-<polymer-element attributes="id step7">
+<div id="step7"></div>
 7 Modify your AndroidManifest.xml file, add in the following content:
 
+```python
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+```
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step7")<br/><br/><br/>
 
+<div id="step8"></div>
 8 Add in the following line to your AndroidManifest.xml to declair the Activity:
 
 <activity android:name="com.yesup.partner.OfferWallActivity" android:label="OfferWall" />
 
+
+<div id="step8"></div>
 9 Now you can startup Yesup OfferWall using below code:
 9.1 import com.yesup.partner.OfferWall;
 9.2 In onCreate method, new a OfferWall instance
@@ -66,6 +72,7 @@ Now the classes and methods in the Yesup Partner Library can be used in your app
 9.4 You use OfferWall's show method to startup OfferWall interface.
 
 Example code:
+```python
 import com.yesup.partner.OfferWall;
 
 public class MainActivity extends AppCompatActivity {
@@ -100,4 +107,5 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
-
+```
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide2.png "step4")<br/><br/><br/>
