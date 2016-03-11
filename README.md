@@ -46,7 +46,7 @@ repositories {
 ```python
 compile (name: 'yesuppartner', ext: 'aar')
 ```
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide8.jpg "step6")<br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide8.png "step6")<br/>
 Now the classes and methods in the Yesup Partner Library can be used in your app.<br/><br/><br/>
 
 <div id="step7"></div>
