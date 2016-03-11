@@ -13,28 +13,35 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 [step9: Startup Yesup OfferWall](#step9)<br/>
 
 <div id="step1"></div>
-#### **Step 1** Download yesup partner library file **_"yesuppartner.aar"_** and config file "adconfigure.xml".<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide5.png "step5")<br/>
+**Step 1** Download yesup partner library file **_"yesuppartner.aar"_** and config file "adconfigure.xml".<br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide5.png "step1")<br/>
 
+<div id="step2"></div>
+**Step 2** Copy yesuppartner.aar file to your **"libs"** directory of project.<br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide1.png "step2")<br/>
 
-**Step 2** Copy yesuppartner.aar file to your **"libs"** directory of project.
+<div id="step3"></div>
+3 Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.<br/><br/>
+**Note: Do not modify this file name!!!**
 
-3 Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.
-Note: Do not modify this file name!!!
-
+<div id="step4"></div>
 4 In Android Studio, open the app's build.gradle file in the editor.
 
+<div id="step5"></div>
 5 Add "repositories" section, as follows:
-
+```javascript
 repositories {
     flatDir {
         dirs 'libs'
     }
 }
-
+```
+<div id="step5"></div>
 6 Add in the following line to the dependencies section.
 
+```javascript
 compile (name: 'yesuppartner', ext: 'aar')
+```
 
 Now the classes and methods in the Yesup Partner Library can be used in your app.
 
