@@ -108,4 +108,4 @@ public class MainActivity extends AppCompatActivity {
 }
 
 ```
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide2.png "step4")<br/><br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide4.png "step9")<br/><br/><br/>
