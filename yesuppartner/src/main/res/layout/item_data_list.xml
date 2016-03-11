@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/border">
+
+    <!-- Left Part: App Icon -->
+    <LinearLayout
+        android:id="@+id/LayoutLeft"
+        android:orientation="vertical"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:id="@+id/ItemImageLeft"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true" />
+
+    </LinearLayout>
+    
+    <!-- Right Part: Name, Status ... -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/LayoutLeft">
+        <!-- Top Part -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/ItemMainTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:textColor="#000000"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/ItemDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_below="@+id/ItemMainTitle"
+                android:textSize="10sp"
+                android:singleLine="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="3dp"
+                android:foreground="#cccccc"/>
+
+        </RelativeLayout>
+
+        <!-- Bottom Part -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/ItemRecommended"
+                android:text="Recommended"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ff0000"
+                android:textSize="10sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/ItemNewIcon"
+                android:text="NEW"
+                android:textSize="10sp"
+                android:textColor="#ff0000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:layout_toLeftOf="@+id/ItemPlatformIcon"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/ItemPlatformIcon"
+                android:text="SYSTEM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_marginRight="6dp"
+                android:layout_toLeftOf="@+id/ItemFreeIcon" />
+            <TextView
+                android:id="@+id/ItemFreeIcon"
+                android:text="FREE"
+                android:textSize="10sp"
+                android:textColor="#ff0000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp"></RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
