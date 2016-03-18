@@ -1,5 +1,5 @@
 # partner-sdk
-###### Lastest SDK Version: 1.0.160309.01
+###### The Lastest SDK Version: 1.0.160318.01
 Yesup Partner SDK for Android is the easiest way to integrate your Android app with Yesup.
 ## Installation
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step1: Download "yesuppartner.aar"](#step1)<br/>
