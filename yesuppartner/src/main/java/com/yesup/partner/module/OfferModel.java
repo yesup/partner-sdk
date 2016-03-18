@@ -367,4 +367,9 @@ public class OfferModel extends DBObject {
         return imageFileName;
     }
 
+    public String getLocalJumpUrlFileName() {
+        String jumpUrlFileName = nid + "-" + cid + "-" + cvid + "-api.json";
+        return jumpUrlFileName;
+    }
+
 }

@@ -3,6 +3,8 @@ package com.yesup.partner.tools;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import com.yesup.partner.module.OfferModel;
+
 import java.io.File;
 
 /**
@@ -41,7 +43,7 @@ public class AppTool {
         return context.getFilesDir() + "/offerWall.json";
     }
 
-    public static final String getIncentiveLocalDataPath(Context context) {
-        return context.getFilesDir() + "/incentiveApi.json";
+    public static final String getIncentiveLocalDataPath(Context context, OfferModel offer) {
+        return context.getFilesDir() + "/" + offer.getLocalJumpUrlFileName();
     }
 }

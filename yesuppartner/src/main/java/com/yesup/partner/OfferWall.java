@@ -7,7 +7,7 @@ import android.content.Intent;
 import com.yesup.partner.module.DataCenter;
 
 public class OfferWall {
-    private static final String version = "1.0.160309.02";
+    private static final String version = "1.0.160318.01";
     private static Context context;
 
     public OfferWall(Context context) {

@@ -161,7 +161,7 @@ public class DataCenter {
         request.setRequestHeaderParameter("Authorization", "key=" + config.getKey()); // "key=9dc3a4e269bf88b8e7d6983bcd95f2cd"
         request.setRequestHeaderParameter("ACCEPT", "application/json");
         request.setRequestHeaderParameter("User-Agent", makeUserAgent());
-        request.setRequestHeaderParameter("Content-Type", "application/json");
+        request.setRequestHeaderParameter("Content-Type", "application/x-www-form-urlencoded");
         request.setRequestDataParameter("nid", config.getNid()); // "1520"
         request.setRequestDataParameter("pid", config.getPid()); // "42800"
         request.setRequestDataParameter("sid", config.getSid()); // "45852"
@@ -178,11 +178,11 @@ public class DataCenter {
         request.setRequestMethod("POST");
         request.setRequestId(offer.getLocalReference());
         request.setDownloadUrl(Define.SERVER_HOST + Define.URL_IF_INCENTIVE_API);
-        request.setSaveFileName(AppTool.getIncentiveLocalDataPath(context));
+        request.setSaveFileName(AppTool.getIncentiveLocalDataPath(context, offer));
         request.setRequestHeaderParameter("Authorization", "key=" + config.getKey());
         request.setRequestHeaderParameter("ACCEPT", "application/json");
         request.setRequestHeaderParameter("User-Agent", makeUserAgent());
-        request.setRequestHeaderParameter("Content-Type", "application/json");
+        request.setRequestHeaderParameter("Content-Type", "application/x-www-form-urlencoded");
         request.setRequestDataParameter("nid", config.getNid()); // "1520"
         request.setRequestDataParameter("pid", config.getPid()); // "42800"
         request.setRequestDataParameter("sid", config.getSid()); // "45852"
@@ -278,9 +278,10 @@ public class DataCenter {
             return false;
         }
         // read data from file
+        String jumpUrlPath = AppTool.getIncentiveLocalDataPath(context, offer);
         String jsonData;
         try {
-            jsonData = StringTool.readStringFromFile(AppTool.getIncentiveLocalDataPath(context));
+            jsonData = StringTool.readStringFromFile(jumpUrlPath);
         } catch (IOException e) {
             e.printStackTrace();
             jsonData = "";
@@ -298,6 +299,9 @@ public class DataCenter {
         }else{
             success = false;
         }
+        // delete temp file for jumpurl api
+        File file = new File(jumpUrlPath);
+        file.delete();
         return success;
     }
 
