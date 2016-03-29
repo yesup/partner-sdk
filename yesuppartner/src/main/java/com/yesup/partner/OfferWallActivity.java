@@ -1,6 +1,7 @@
 package com.yesup.partner;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,6 +30,7 @@ public class OfferWallActivity extends AppCompatActivity
     private int offerIndex = 0;
     private Menu menuBar;
     private int curShowFragment = SHOW_FRAGMENT_OFFERWALL;
+    private int curJumpUrlRequestId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,63 +84,34 @@ public class OfferWallActivity extends AppCompatActivity
         if (android.R.id.home == id) {
             onBackPressed();
         } else if (R.id.action_detail_done == id) {
-            OfferModel offer = dataCenter.getOfferAt(offerIndex);
-            if (offer == null){
-                return super.onOptionsItemSelected(item);
-            }
-            String jumpResult = offer.getJumpResult();
-            String jumpUrl = offer.getJumpUrl();
-            // check if this app has been installed.
-            boolean installed = AppTool.isAppInstalled(this, offer.getAppStoreId());
-            String showInfo;
-            if (installed) {
-                showInfo = "This app has been installed in your device!";
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(showInfo);
-                builder.setNegativeButton("OK", null);
-                builder.show();
-            }else if (jumpResult == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Downloading data, try it later!");
-                builder.setNegativeButton("OK", null);
-                builder.show();
-            }else if (jumpResult.toLowerCase().equals("ready")) {
-                if (jumpUrl != null && jumpUrl.substring(0, 4).toLowerCase().equals("http")) {
-                    // check if this jump url has been clicked.
-                    if (offer.isHasClicked()) {
-                        showInfo = "Maybe you have installed this app, you will not earn points for more times!\r\nContinue?";
-                        // tips yes or no
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage(showInfo);
-                        builder.setNegativeButton("No", dialogClickListener);
-                        builder.setPositiveButton("Yes", dialogClickListener);
-                        builder.show();
-                    } else {
-                        showInfo = "Are you sure proceed this offer?";
-                        // tips yes or no
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage(showInfo);
-                        builder.setNegativeButton("No", dialogClickListener);
-                        builder.setPositiveButton("Yes", dialogClickListener);
-                        builder.show();
-                    }
-                }else{
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("Data Exception!");
-                    builder.setNegativeButton("OK", null);
-                    builder.show();
-                }
-            }else{
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("This app has not been sold!");
-                builder.setNegativeButton("OK", null);
-                builder.show();
-            }
-
+            doProceed();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private ProgressDialog progressDialog = null;
+    public void showProgressDialog(String name) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setProgressStyle(android.R.attr.progressBarStyleSmall);
+        }
+        progressDialog = ProgressDialog.show(this, "Prepare Offer", name+"\nis loading ...", true);
+    }
+    public void hideProgressDialog(int requestId) {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        if (requestId < 0) {
+            String showInfo = "Server is busy, please try again!";
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(showInfo);
+            builder.setNegativeButton("OK", null);
+            builder.show();
+        } else {
+            doProceed();
+        }
     }
 
     @Override
@@ -149,10 +122,16 @@ public class OfferWallActivity extends AppCompatActivity
         OfferModel offer = dataCenter.getOfferAt(offerIndex);
         if (offer != null) {
             if (offer.getJumpUrl() == null || offer.getJumpUrl().length() <= 0){
-                dataCenter.updateOfferJumpUrlFromWebsite(offer);
+                curJumpUrlRequestId = dataCenter.updateOfferJumpUrlFromWebsite(offer);
+                if (curJumpUrlRequestId >= 0) {
+                    showProgressDialog(offer.getTitle());
+                }
+            } else {
+                doProceed();
             }
         }
 
+        /** Do not display detail fragment
         DetailFragment detailFragment = new DetailFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("Index", opt);
@@ -164,6 +143,7 @@ public class OfferWallActivity extends AppCompatActivity
         transaction.replace(R.id.OfferWallFragmentContainer, detailFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+         */
     }
 
     @Override
@@ -176,17 +156,7 @@ public class OfferWallActivity extends AppCompatActivity
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    OfferModel offer = dataCenter.getOfferAt(offerIndex);
-                    if (offer != null) {
-                        // mark this offer has jumped
-                        dataCenter.saveOfferHasBeenClicked(offer);
-                        // jump to ad url
-                        String jumpUrl = offer.getJumpUrl();
-                        if (jumpUrl != null && jumpUrl.substring(0, 4).toLowerCase().equals("http")) {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(jumpUrl));
-                            startActivity(browserIntent);
-                        }
-                    }
+                    gotoInstall();
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     break;
@@ -226,6 +196,75 @@ public class OfferWallActivity extends AppCompatActivity
                 break;
             default:
                 break;
+        }
+    }
+
+    private void doProceed() {
+        OfferModel offer = dataCenter.getOfferAt(offerIndex);
+        String jumpResult = offer.getJumpResult();
+        String jumpUrl = offer.getJumpUrl();
+        // check if this app has been installed.
+        boolean installed = AppTool.isAppInstalled(this, offer.getAppStoreId());
+        String showInfo;
+        if (installed) {
+            showInfo = "This app has been installed in your device!";
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(showInfo);
+            builder.setNegativeButton("OK", null);
+            builder.show();
+        }else if (jumpResult == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Downloading data, try it later!");
+            builder.setNegativeButton("OK", null);
+            builder.show();
+        }else if (jumpResult.toLowerCase().equals("ready")) {
+            if (jumpUrl != null && jumpUrl.substring(0, 4).toLowerCase().equals("http")) {
+                // check if this jump url has been clicked.
+                if (offer.isHasClicked()) {
+                    showInfo = "Maybe you have installed this app, you will not earn points for more times!\r\nContinue?";
+                    // tips yes or no
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(showInfo);
+                    builder.setNegativeButton("No", dialogClickListener);
+                    builder.setPositiveButton("Yes", dialogClickListener);
+                    builder.show();
+                } else {
+                    /**
+                    showInfo = "Are you sure proceed this offer?";
+                    // tips yes or no
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(showInfo);
+                    builder.setNegativeButton("No", dialogClickListener);
+                    builder.setPositiveButton("Yes", dialogClickListener);
+                    builder.show();
+                     */
+                    gotoInstall();
+                }
+            }else{
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Data Exception!");
+                builder.setNegativeButton("OK", null);
+                builder.show();
+            }
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("This app has not been sold!");
+            builder.setNegativeButton("OK", null);
+            builder.show();
+        }
+    }
+
+    private void gotoInstall() {
+        OfferModel offer = dataCenter.getOfferAt(offerIndex);
+        if (offer != null) {
+            // mark this offer has jumped
+            dataCenter.saveOfferHasBeenClicked(offer);
+            // jump to ad url
+            String jumpUrl = offer.getJumpUrl();
+            if (jumpUrl != null && jumpUrl.substring(0, 4).toLowerCase().equals("http")) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(jumpUrl));
+                startActivity(browserIntent);
+            }
         }
     }
 }

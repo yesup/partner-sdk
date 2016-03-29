@@ -172,7 +172,7 @@ public class DataCenter {
         downloadManager.newDownload(request);
     }
 
-    public void updateOfferJumpUrlFromWebsite(OfferModel offer) {
+    public int updateOfferJumpUrlFromWebsite(OfferModel offer) {
         DownloadManagerLite.Request request = new DownloadManagerLite.Request();
         request.setType(Define.DOWNLOAD_TYPE_IF_INCENTIVEAPI);
         request.setRequestMethod("POST");
@@ -195,7 +195,7 @@ public class DataCenter {
         request.setRequestDataParameter("ad", Integer.toString(offer.getCvid()));
         request.setRequestDataParameter("fmt", "4");
         request.setRequestDataParameter("cuid", "123");
-        downloadManager.newDownload(request);
+        return downloadManager.newDownload(request);
     }
 
     public boolean saveOfferHasBeenClicked(OfferModel offer) {
@@ -372,8 +372,15 @@ public class DataCenter {
                             notice.arg1 = request.getRequestId();
                             msgHandler.sendMessage(notice);
                         }
+                        Log.v("DataCenter", "IncentiveAPI download success.");
+                    } else if (DownloadManagerLite.Request.STATUS_CONNECT_FAILED == msg.arg1) {
+                        if (msgHandler != null) {
+                            Message notice = msgHandler.obtainMessage(Define.MSG_DOWNLOAD_OFFERDETAIL_COMPLETED);
+                            notice.arg1 = -1;
+                            msgHandler.sendMessage(notice);
+                        }
+                        Log.v("DataCenter", "IncentiveAPI download failed.");
                     }
-                    Log.v("DataCenter", "IncentiveAPI download success.");
                 }
             }
             super.handleMessage(msg);

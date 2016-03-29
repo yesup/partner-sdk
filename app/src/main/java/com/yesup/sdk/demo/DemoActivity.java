@@ -27,7 +27,7 @@ public class DemoActivity extends AppCompatActivity {
         // new OfferWall instance
         offerWall = new OfferWall(this);
         Log.v(TAG, "OfferWall Version:"+offerWall.getVersion());
-        offerWall.setDebugMode(true);
+        //offerWall.setDebugMode(true);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

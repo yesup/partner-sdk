@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.yesup.partner.OfferWallActivity;
 import com.yesup.partner.R;
 import com.yesup.partner.module.DataCenter;
 import com.yesup.partner.module.Define;
@@ -212,6 +213,10 @@ public class OfferWallFragment extends Fragment {
                     } else {
                         // failed
                     }
+                    break;
+                case Define.MSG_DOWNLOAD_OFFERDETAIL_COMPLETED:
+                    OfferWallActivity oa = (OfferWallActivity)getActivity();
+                    oa.hideProgressDialog(msg.arg1);
                     break;
                 default:
                     break;
