@@ -34,7 +34,7 @@ public class DetailFragment extends Fragment {
     // container Activity must implement this interface
     OnUserOperationListener mCallback;
     public interface OnUserOperationListener {
-        public void onUserOperate(int opt);
+        void onUserOperate(int opt);
     }
 
     private DataCenter dataCenter = DataCenter.getInstance();
@@ -103,7 +103,7 @@ public class DetailFragment extends Fragment {
     }
 
     protected void showOfferDetail() {
-        OfferModel offer = dataCenter.getOfferAt(offerIndex);
+        OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(offerIndex);
         if (offer == null) {
             return;
         }
@@ -136,7 +136,7 @@ public class DetailFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case Define.MSG_DOWNLOAD_OFFERDETAIL_COMPLETED:
+                case Define.MSG_AD_REQUEST_SUCCESSED:
                     if (msg.arg1 == offerIndex) {
                         showOfferDetail();
                     }

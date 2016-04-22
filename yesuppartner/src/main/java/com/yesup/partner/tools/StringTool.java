@@ -57,4 +57,10 @@ public class StringTool {
         }
         return completedUrl;
     }
+
+    public static final String getFilenameExtension(String filename) {
+        String filenameArray[] = filename.split("\\.");
+        String extension = filenameArray[filenameArray.length-1];
+        return extension;
+    }
 }

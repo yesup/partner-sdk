@@ -1,4 +1,4 @@
-package com.yesup.partner.tools;
+package com.yesup.partner.module;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
@@ -10,13 +10,16 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by jeffye on 05/05/14.
- */
-public final class Config {
 
+public final class PartnerAdConfig {
     public static final String TAG = "ADCONFIGURE";
 
+    public final class Zone {
+        public int id;
+        public String formats;
+        public String display;
+        public String size;
+    }
     private String nid;
     private String pid;
     private String sid;
@@ -24,12 +27,7 @@ public final class Config {
     private String serving = "";
     private ArrayList<Zone> zones = new ArrayList<>();
 
-    public class Zone {
-        public int id;
-        public int formats;
-    }
-
-    public Config(Context context) {
+    public PartnerAdConfig(Context context) {
         int resId =  context.getResources().getIdentifier("adconfigure", "xml", context.getPackageName());
 
         if ( resId == 0 ) {
@@ -143,7 +141,13 @@ public final class Config {
                     zone.id = Integer.parseInt(str);
                 } else if ( tagName.equals("formats") ) {
                     str = flattenText(parser);
-                    zone.formats = Integer.parseInt(str);
+                    zone.formats = str;
+                } else if ( tagName.equals("display") ) {
+                    str = flattenText(parser);
+                    zone.display = str;
+                } else if ( tagName.equals("size") ) {
+                    str = flattenText(parser);
+                    zone.size = str;
                 }
             }
         }
@@ -195,14 +199,50 @@ public final class Config {
         return httpHost;
     }
 
-    public String getZoneId() {
+    public String getOfferWallZoneId() {
         int zoneId = 0;
         for (Zone z : zones) {
-            if (4 == z.formats){
+            if (z.formats.equals("4")){
                 zoneId = z.id;
                 break;
             }
         }
         return Integer.toString(zoneId);
+    }
+
+    public String getInterstitialZoneId(String formats, String display) {
+        int zoneId = 0;
+        for (Zone z : zones) {
+            if (z.formats.equals(formats) && z.display.equals(display)){
+                zoneId = z.id;
+                break;
+            }
+        }
+        return Integer.toString(zoneId);
+    }
+    public String getInterstitialZoneSize(String formats, String display) {
+        String zoneSize = "";
+        for (Zone z : zones) {
+            if (z.formats.equals(formats) && z.display.equals(display)){
+                zoneSize = z.size;
+                break;
+            }
+        }
+        return zoneSize;
+    }
+
+    public Zone getZoneById(int zoneId) {
+        Zone zone = null;
+        for (Zone z : zones) {
+            if (zoneId == z.id){
+                zone = z;
+                break;
+            }
+        }
+        return zone;
+    }
+
+    public ArrayList<Zone> getZoneList() {
+        return zones;
     }
 }

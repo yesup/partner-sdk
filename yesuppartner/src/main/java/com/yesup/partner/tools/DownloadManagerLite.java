@@ -1,10 +1,8 @@
 package com.yesup.partner.tools;
 
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import com.yesup.partner.module.Define;
+import com.yesup.partner.module.YesupHttpRequest;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,7 +10,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +23,7 @@ public class DownloadManagerLite {
     private boolean managerHasStarted = false;
     private int maxConcurrentSize;
     private Downloader[] workers;
-    private final List<Request> requestQueue = new LinkedList<>();
+    private final List<YesupHttpRequest> requestQueue = new LinkedList<>();
 
     public DownloadManagerLite(int maxConcurrentSize) {
         if (maxConcurrentSize > 0 && maxConcurrentSize <= MAX_CONCURRENT_LIMIT) {
@@ -42,19 +39,19 @@ public class DownloadManagerLite {
         return maxConcurrentSize;
     }
 
-    public int newDownload(Request request) {
+    public int newDownload(YesupHttpRequest request) {
         if (request.getDownloadUrl() == null || request.getSaveFileName() == null){
-            request.requestId = -1;
+            request.setRequestId(-1);
             return -1;
         }
         synchronized (requestQueue) {
-            request.status = Request.STATUS_NEW;
+            request.setStatus(YesupHttpRequest.STATUS_NEW);
             requestQueue.add(request);
             requestQueue.notifyAll();
         }
-        Log.v("DownloadManagerLite", "New Request["+request.requestId+"]:"
+        Log.v("DownloadManagerLite", "New Request["+request.getRequestId()+"]:"
                 +request.getDownloadUrl()+"->"+request.getSaveFileName());
-        return request.requestId;
+        return request.getRequestId();
     }
 
     public boolean start() {
@@ -116,91 +113,6 @@ public class DownloadManagerLite {
         }
     }
 
-
-    public static class Request {
-        public static final int STATUS_CONNECT_FAILED = -2;
-        public static final int STATUS_FAILED = -1;
-        public static final int STATUS_NEW = 0;
-        public static final int STATUS_PROGRESS = 1;
-        public static final int STATUS_COMPLETED = 2;
-
-        private int requestId;
-        private int type;
-        private String requestMethod = "GET"; // GET or POST
-        private String downloadUrl;
-        private String saveFileName;
-        private int status;
-        private int percent; // the progress of download file,0~100
-        private Map<String, String> reqHeaderParameter = new HashMap<>();
-        private Map<String, String> reqDataParameter = new HashMap<>();
-
-        public int getRequestId() {
-            return requestId;
-        }
-
-        public void setRequestId(int requestId) {
-            this.requestId = requestId;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public void setType(int type) {
-            this.type = type;
-        }
-
-        public void setRequestMethod(String requestMethod) {
-            this.requestMethod = requestMethod;
-        }
-
-        public String getDownloadUrl() {
-            return downloadUrl;
-        }
-
-        public void setDownloadUrl(String downloadUrl) {
-            this.downloadUrl = downloadUrl;
-        }
-
-        public String getSaveFileName() {
-            return saveFileName;
-        }
-
-        public void setSaveFileName(String saveFileName) {
-            this.saveFileName = saveFileName;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public int getPercent() {
-            return percent;
-        }
-
-        public void setRequestHeaderParameter(String key, String value) {
-            reqHeaderParameter.put(key, value);
-        }
-
-        public void setRequestDataParameter(String key, String value) {
-            reqDataParameter.put(key, value);
-        }
-    }
-
-    private Handler handler;
-    public void setMsgHandler(Handler handler) {
-        this.handler = handler;
-    }
-    public void sendMsgToHandler(int what, int status, Object object) {
-        if (handler == null){
-            return;
-        }
-        Message msg = handler.obtainMessage(what);
-        msg.arg1 = status;
-        msg.obj = object;
-        handler.sendMessage(msg);
-    }
-
     public class Downloader extends Thread {
 
         private boolean isRunning = false;
@@ -214,7 +126,7 @@ public class DownloadManagerLite {
         @Override
         public void run() {
             isRunning = true;
-            Request request = null;
+            YesupHttpRequest request = null;
             // execute teak
             while (isRunning) {
                 synchronized (requestQueue) {
@@ -235,30 +147,30 @@ public class DownloadManagerLite {
                     try {
                         URL url = new URL(request.getDownloadUrl());
                         connection = (HttpURLConnection)url.openConnection();
-                        if (request.requestMethod.length() <= 0){
-                            request.requestMethod = "GET";
+                        if (request.getRequestMethod().length() <= 0){
+                            request.setRequestMethod("GET");
                         }
                         // set connection parameters
-                        connection.setRequestMethod(request.requestMethod);
+                        connection.setRequestMethod(request.getRequestMethod());
                         connection.setConnectTimeout(3000);
                         connection.setReadTimeout(3000);
                         connection.setUseCaches(false);
                         connection.setDoInput(true);
-                        if (request.reqDataParameter.size() > 0) {
+                        if (request.getRequestDataParameter().size() > 0) {
                             connection.setDoOutput(true);
                         }
                         // set HTTP header parameters
-                        for (Map.Entry<String, String> entry : request.reqHeaderParameter.entrySet()){
+                        for (Map.Entry<String, String> entry : request.getRequestHeaderParameter().entrySet()){
                             connection.setRequestProperty(entry.getKey(), entry.getValue());
                         }
                         // begin connecting
                         connection.connect();
                         // send data body
-                        if (request.reqDataParameter.size() > 0) {
+                        if (request.getRequestDataParameter().size() > 0) {
                             OutputStream os = connection.getOutputStream();
                             int index = 0;
                             String parameter;
-                            for (Map.Entry<String, String> entry : request.reqDataParameter.entrySet()){
+                            for (Map.Entry<String, String> entry : request.getRequestDataParameter().entrySet()){
                                 if (0 == index) {
                                     parameter = entry.getKey() + "=" + entry.getValue();
                                 }else{
@@ -271,8 +183,8 @@ public class DownloadManagerLite {
                         }
                         // process response
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            request.status = Request.STATUS_PROGRESS;
-                            request.percent = 0;
+                            request.setStatus(YesupHttpRequest.STATUS_PROGRESSED);
+                            request.setPercent(0);
                             // this value might be -1 when server did not report the length
                             int fileLength = connection.getContentLength();
                             // download the file
@@ -286,23 +198,20 @@ public class DownloadManagerLite {
                                 // compute progress
                                 if (fileLength > 0) {
                                     int percent = (int) (total * 100 / fileLength);
-                                    request.percent = percent;
-                                    sendMsgToHandler(Define.MSG_DOWNLOAD_STATUS_CHANGED, Request.STATUS_PROGRESS, request);
+                                    request.onRequestProgressed(percent);
                                 }
                                 output.write(data, 0, count);
                             }
-                            request.status = Request.STATUS_COMPLETED;
-                            sendMsgToHandler(Define.MSG_DOWNLOAD_STATUS_CHANGED, Request.STATUS_COMPLETED, request);
+                            request.onRequestProgressed(100);
+                            request.onRequestCompleted(YesupHttpRequest.STATUS_SUCCESSED);
                             Log.v("DownloadManagerLite", "Download completed:"+request.getDownloadUrl());
                         }else{
-                            request.status = Request.STATUS_CONNECT_FAILED;
-                            sendMsgToHandler(Define.MSG_DOWNLOAD_STATUS_CHANGED, Request.STATUS_CONNECT_FAILED, request);
+                            request.onRequestCompleted(YesupHttpRequest.STATUS_CONNECT_FAILED);
                             Log.v("DownloadManagerLite", "Connect failed[HTTP-"+connection.getResponseCode()+"]:"+request.getDownloadUrl());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        request.status = Request.STATUS_FAILED;
-                        sendMsgToHandler(Define.MSG_DOWNLOAD_STATUS_CHANGED, Request.STATUS_FAILED, request);
+                        request.onRequestCompleted(YesupHttpRequest.STATUS_FAILED);
                         Log.v("DownloadManagerLite", "Download failed:"+request.getDownloadUrl());
                     } finally {
                         try{

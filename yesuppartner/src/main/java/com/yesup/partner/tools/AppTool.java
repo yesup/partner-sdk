@@ -2,15 +2,25 @@ package com.yesup.partner.tools;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
+import com.yesup.partner.module.Define;
 import com.yesup.partner.module.OfferModel;
 
 import java.io.File;
+
 
 /**
  * Created by derek on 3/1/16.
  */
 public class AppTool {
+
+    public static final String makeUserAgent() {
+        String ua = "CpxCenterSDK/" + Define.SDK_VERSION
+                + " (Linux; Android " + Build.VERSION.RELEASE + "; "
+                + Build.MODEL + " Build/" + Build.ID +")";
+        return ua;
+    }
 
     public static final boolean isAppInstalled(Context context, String packageName) {
         boolean installed;
@@ -46,4 +56,25 @@ public class AppTool {
     public static final String getIncentiveLocalDataPath(Context context, OfferModel offer) {
         return context.getFilesDir() + "/" + offer.getLocalJumpUrlFileName();
     }
+
+    public static final String getPageInterstitialLocalDataPath(Context context) {
+        return context.getFilesDir() + "/pageitrs.json";
+    }
+
+    public static final String getImageInterstitialLocalDataPath(Context context) {
+        return context.getFilesDir() + "/imageitrs.json";
+    }
+
+    public static final String getInterstitialImpressResponseLocalDataPath(Context context) {
+        return context.getFilesDir() + "/itrsimpressed.json";
+    }
+
+    public static final String getImageInterstitialResourceLocalDataPath(Context context, String extension) {
+        if (extension == null || extension.isEmpty()) {
+            return context.getFilesDir() + "/adimage";
+        } else {
+            return context.getFilesDir() + "/adimage." + extension;
+        }
+    }
+
 }

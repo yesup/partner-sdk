@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="110dp"
+    android:gravity="center_horizontal" >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/loading"/>
+
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/progressBar"
+        android:layout_alignStart="@+id/progressBar"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="12sp"
+        android:textColor="#0000F0"
+        android:singleLine="true"
+        android:text="Connecting to server ..." />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="160dp"
+        android:layout_height="6dp"
+        android:layout_below="@+id/text_status"
+        android:id="@+id/progressBar"
+        android:layout_toRightOf="@+id/imageView"
+        android:layout_marginLeft="10dp"
+        android:progressDrawable="@drawable/colorgrogress"
+        android:max="100" />
+
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="25dp"
+        android:text="stop"
+        android:id="@+id/button"
+        android:layout_toRightOf="@+id/progressBar"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="10dp"
+        android:background="#fcc070"
+        android:textColor="#2275fb" />
+
+</RelativeLayout>

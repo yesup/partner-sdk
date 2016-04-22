@@ -39,7 +39,7 @@ public class OfferWallActivity extends AppCompatActivity
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        setTitle("Offer Wall");
+        //setTitle("Offer Wall");
 
         if (findViewById(R.id.OfferWallFragmentContainer) != null) {
             if (savedInstanceState != null) {
@@ -119,10 +119,10 @@ public class OfferWallActivity extends AppCompatActivity
         Log.v("Meshbean", "Callback onUserSelected:" + opt);
         offerIndex = opt;
 
-        OfferModel offer = dataCenter.getOfferAt(offerIndex);
+        OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(offerIndex);
         if (offer != null) {
             if (offer.getJumpUrl() == null || offer.getJumpUrl().length() <= 0){
-                curJumpUrlRequestId = dataCenter.updateOfferJumpUrlFromWebsite(offer);
+                curJumpUrlRequestId = dataCenter.requestOfferJumpUrlFromWebsite(offer);
                 if (curJumpUrlRequestId >= 0) {
                     showProgressDialog(offer.getTitle());
                 }
@@ -200,7 +200,7 @@ public class OfferWallActivity extends AppCompatActivity
     }
 
     private void doProceed() {
-        OfferModel offer = dataCenter.getOfferAt(offerIndex);
+        OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(offerIndex);
         String jumpResult = offer.getJumpResult();
         String jumpUrl = offer.getJumpUrl();
         // check if this app has been installed.
@@ -255,7 +255,7 @@ public class OfferWallActivity extends AppCompatActivity
     }
 
     private void gotoInstall() {
-        OfferModel offer = dataCenter.getOfferAt(offerIndex);
+        OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(offerIndex);
         if (offer != null) {
             // mark this offer has jumped
             dataCenter.saveOfferHasBeenClicked(offer);

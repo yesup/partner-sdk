@@ -7,16 +7,12 @@ package com.yesup.partner.module;
 public class Define {
     public static final String SDK_VERSION = "1.0";
 
-    public static final int MSG_DOWNLOAD_STATUS_CHANGED = 100;
-    public static final int MSG_DOWNLOAD_FILE_COMPLETED = 200;
-    public static final int MSG_DOWNLOAD_OFFERWALL_COMPLETED = 201;
-    public static final int MSG_DOWNLOAD_OFFERDETAIL_COMPLETED = 202;
+    public static final int MSG_AD_REQUEST_PROGRESSED = 2001;
+    public static final int MSG_AD_REQUEST_SUCCESSED = 2002;
+    public static final int MSG_AD_REQUEST_FAILED = 2003;
+    public static final int MSG_AD_REQUEST_IMPRESSED = 2004;
 
     public static final long VALUE_EXPIRE_TIME = 60; // 60 minites
-
-    public static final int DOWNLOAD_TYPE_FILE_NORMAL = 0;
-    public static final int DOWNLOAD_TYPE_IF_OFFERWALL = 1;
-    public static final int DOWNLOAD_TYPE_IF_INCENTIVEAPI = 2;
 
     public static final String LOCAL_IMAGE_DIR = "/appicon";
 
@@ -25,5 +21,13 @@ public class Define {
     public static final String URL_IF_OFFER_WALL = "/cpxcenter/offerWall.php";
     public static final String URL_IF_INCENTIVE_API = "/cpxcenter/incentiveApi.php";
     public static final String URL_IF_AD_REPORT = "/cpxcenter/track.php";
+    public static final String URL_IF_INTERSTITIAL = "/cpxcenter/interstitialApi.php";
+
+    // AD type
+    public static final int AD_TYPE_OFFER_WALL = 0;
+    public static final int AD_TYPE_INTERSTITIAL_WEBPAGE = 1;
+    public static final int AD_TYPE_INTERSTITIAL_IMAGE = 2;
+
+    public static final int IMPRESS_AFTER_SHOW_WAIT = 5;
 
 }

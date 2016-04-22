@@ -1,6 +1,5 @@
 package com.yesup.partner.activities;
 
-import android.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -23,6 +22,7 @@ import com.yesup.partner.R;
 import com.yesup.partner.module.DataCenter;
 import com.yesup.partner.module.Define;
 import com.yesup.partner.module.OfferModel;
+import com.yesup.partner.module.YesupAdBase;
 
 import java.io.File;
 
@@ -30,8 +30,10 @@ import java.io.File;
  * Created by derek on 3/4/16.
  */
 public class OfferWallFragment extends Fragment {
+    private static final String TAG = "OfferWallFragment";
 
     private DataCenter dataCenter = DataCenter.getInstance();
+    private int zoneId;
     private int listCount = 0;
     private ListView dataListView;
     private MessageHandler msgHandler = new MessageHandler();
@@ -39,7 +41,7 @@ public class OfferWallFragment extends Fragment {
     // container Activity must implement this interface
     OnUserSelectedListener mCallback;
     public interface OnUserSelectedListener {
-        public void onUserSelected(int opt);
+        void onUserSelected(int opt);
     }
 
     @Override
@@ -49,9 +51,9 @@ public class OfferWallFragment extends Fragment {
         // init data center
         dataCenter.init(getActivity());
         if (dataCenter.offerPageHasLoaded()) {
-            listCount = dataCenter.getOfferCount();
+            listCount = dataCenter.getOfferWallAd().getOfferCount();
         }else{
-            listCount = dataCenter.loadOfferListFromLocalDatabase();
+            listCount = dataCenter.getOfferWallAd().loadOfferListFromLocalDatabase();
         }
 
         dataListView = (ListView) view.findViewById(R.id.dataListView);
@@ -79,6 +81,11 @@ public class OfferWallFragment extends Fragment {
             throw new ClassCastException(getActivity().toString()
                     +" must implement OnUserOperationListener");
         }
+
+        Bundle extras = getArguments();
+        if (extras != null) {
+            zoneId = extras.getInt("ZONE_ID");
+        }
     }
 
     @Override
@@ -86,9 +93,9 @@ public class OfferWallFragment extends Fragment {
         super.onResume();
         dataCenter.setMsgHandler(msgHandler);
         // if it's expired
-        if (listCount <= 0 || dataCenter.offerPageHasExpired()){
+        if (listCount <= 0 || dataCenter.getOfferWallAd().offerPageHasExpired()){
             // reload data from website
-            dataCenter.updateOfferListFromWebsite();
+            dataCenter.requestOfferWallFromWebsite(zoneId);
         }
     }
 
@@ -139,7 +146,7 @@ public class OfferWallFragment extends Fragment {
                 holder = (ViewHolder)convertView.getTag();
             }
             // get display data
-            OfferModel offer = dataCenter.getOfferAt(position);
+            OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(position);
             // set display content
             File imageFile = new File(offer.getLocalIconPath());
             if (imageFile.exists()){
@@ -185,38 +192,50 @@ public class OfferWallFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case Define.MSG_DOWNLOAD_FILE_COMPLETED:
-                    int itemIndex = msg.arg1;
-                    int first = dataListView.getFirstVisiblePosition();
-                    int last = dataListView.getLastVisiblePosition();
-                    if (itemIndex >= first && itemIndex <= last) {
-                        View v = dataListView.getChildAt(itemIndex - first);
-                        ViewHolder holder = (ViewHolder)v.getTag();
-                        if (holder != null) {
-                            // get display data
-                            OfferModel offer = dataCenter.getOfferAt(itemIndex);
-                            // set display content
-                            File imageFile = new File(offer.getLocalIconPath());
-                            if (imageFile.exists()) {
-                                Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                                holder.image.setImageBitmap(bmp);
-                            }
-                            Log.v("Meshbean", "Download Completed, update " + itemIndex + " item of view.");
-                        }
-                    }
-                    break;
-                case Define.MSG_DOWNLOAD_OFFERWALL_COMPLETED:
-                    if (0 == msg.arg1) {
+                case Define.MSG_AD_REQUEST_SUCCESSED:
+                    if (YesupAdBase.REQ_TYPE_OFFER_WALL == msg.arg1) {
                         // update OfferWall success
-                        listCount = dataCenter.getOfferCount();
+                        listCount = dataCenter.getOfferWallAd().getOfferCount();
                         dataListView.invalidateViews();
-                    } else {
-                        // failed
+                        Log.i(TAG, "Offer Wall Download Completed.");
+                    } else if (YesupAdBase.REQ_TYPE_OFFER_ICON == msg.arg1) {
+                        int itemIndex = msg.arg2;
+                        int first = dataListView.getFirstVisiblePosition();
+                        int last = dataListView.getLastVisiblePosition();
+                        if (itemIndex >= first && itemIndex <= last) {
+                            View v = dataListView.getChildAt(itemIndex - first);
+                            ViewHolder holder = (ViewHolder)v.getTag();
+                            if (holder != null) {
+                                // get display data
+                                OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(itemIndex);
+                                // set display content
+                                File imageFile = new File(offer.getLocalIconPath());
+                                if (imageFile.exists()) {
+                                    Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                                    holder.image.setImageBitmap(bmp);
+                                }
+                                Log.i(TAG, "Download Completed, update " + itemIndex + " item of view.");
+                            }
+                        }
+                        Log.i(TAG, "Offer Icon Download Completed.");
+                    } else if (YesupAdBase.REQ_TYPE_OFFER_JUMPURL == msg.arg1) {
+                        // get offer jump ok
+                        OfferWallActivity oa = (OfferWallActivity)getActivity();
+                        oa.hideProgressDialog(0);
+                        Log.i(TAG, "Offer Jump Download Completed.");
                     }
                     break;
-                case Define.MSG_DOWNLOAD_OFFERDETAIL_COMPLETED:
-                    OfferWallActivity oa = (OfferWallActivity)getActivity();
-                    oa.hideProgressDialog(msg.arg1);
+                case Define.MSG_AD_REQUEST_FAILED:
+                    if (YesupAdBase.REQ_TYPE_OFFER_WALL == msg.arg1) {
+                        // update OfferWall failed
+                        Log.i(TAG, "Offer Wall Download Failed.");
+                    } else if (YesupAdBase.REQ_TYPE_OFFER_ICON == msg.arg1) {
+                        Log.i(TAG, "Offer Icon Download Failed.");
+                    } else if (YesupAdBase.REQ_TYPE_OFFER_JUMPURL == msg.arg1) {
+                        OfferWallActivity oa = (OfferWallActivity)getActivity();
+                        oa.hideProgressDialog(msg.arg2);
+                        Log.i(TAG, "Offer Jump Download Failed.");
+                    }
                     break;
                 default:
                     break;

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="color1">#016b18</drawable>
+    <drawable name="color2">#01e933</drawable>
+    <drawable name="color3">#33f95f</drawable>
+    <drawable name="color4">#6afa89</drawable>
+    <drawable name="color5">#38fddf</drawable>
+    <drawable name="color6">#01c1a1</drawable>
+    <drawable name="color7">#0292be</drawable>
+    <drawable name="color8">#013f96</drawable>
+    <drawable name="color9">#327af7</drawable>
+    <drawable name="color10">#51d4f9</drawable>
+</resources>
