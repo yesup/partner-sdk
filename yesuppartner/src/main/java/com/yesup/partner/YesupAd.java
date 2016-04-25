@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.yesup.partner.interstitial.Interstitial;
 import com.yesup.partner.interstitial.PartnerBaseView;
+import com.yesup.partner.interstitial.YesupBaseView;
 import com.yesup.partner.module.DataCenter;
 import com.yesup.partner.module.Define;
 import com.yesup.partner.module.PartnerAdConfig;
@@ -78,6 +79,12 @@ public class YesupAd {
     public void showInterstitial(String subId, int zoneId, boolean fullScreen,
                                  boolean allowUserCloseAfterImpressed,
                                  PartnerBaseView partnerView) {
+        PartnerBaseView partnerBaseView = null;
+        if (partnerView == null) {
+            partnerBaseView = new YesupBaseView(parentActivity);
+        } else {
+            partnerBaseView = partnerView;
+        }
         int adType = getAdTypeByZoneId(zoneId);
         switch (adType) {
             case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
@@ -87,7 +94,7 @@ public class YesupAd {
                 center.initInterstitialAd(zoneId);
                 // interstitial
                 interstitial.setParentActivity(parentActivity);
-                interstitial.setPartnerView(partnerView);
+                interstitial.setPartnerView(partnerBaseView);
                 interstitial.show(zoneId, fullScreen, allowUserCloseAfterImpressed);
                 break;
             default:

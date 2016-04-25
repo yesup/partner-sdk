@@ -84,10 +84,12 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
                         yesupAd.showOfferWall(subId, zoneId);
                         break;
                     case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
-                        yesupAd.showInterstitial(subId, zoneId, true, true, statusView);
+                        //yesupAd.showInterstitial(subId, zoneId, true, true, statusView);
+                        yesupAd.showInterstitial(subId, zoneId, true, true, null);
                         break;
                     case Define.AD_TYPE_INTERSTITIAL_IMAGE:
                         yesupAd.showInterstitial(subId, zoneId, false, true, statusView);
+                        //yesupAd.showInterstitial(subId, zoneId, false, true, null);
                         break;
                     default:
                         Snackbar.make(view, "Unknown AD type", Snackbar.LENGTH_LONG)
@@ -204,7 +206,6 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
 
         @Override
         public View getView(View convertView, ViewGroup parent) {
-            //ViewHolder holder;
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.ad_status_view, null);
                 holder = new ViewHolder();

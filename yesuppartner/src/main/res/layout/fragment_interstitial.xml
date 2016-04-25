@@ -38,16 +38,17 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ad_bmw" />
+                android:scaleType="fitCenter" />
         </FrameLayout>
         <Button
             android:id="@+id/btn_close"
-            android:layout_width="35dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
-            android:layout_alignTop="@+id/layout_ad_view"
+            android:layout_alignBottom="@+id/layout_ad_view"
             android:layout_alignRight="@+id/layout_ad_view"
-            android:background="@drawable/close" />
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/yesup_skip_button" />
     </RelativeLayout>
 
     <FrameLayout

@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -20,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +47,7 @@ import com.yesup.partner.interstitial.PartnerBaseView;
 import com.yesup.partner.module.DataCenter;
 import com.yesup.partner.module.Define;
 import com.yesup.partner.module.ImageInterstitialAd;
+import com.yesup.partner.module.ImageInterstitialModel;
 import com.yesup.partner.module.PageInterstitialAd;
 import com.yesup.partner.module.YesupAdBase;
 
@@ -68,6 +72,7 @@ public class InterstitialFragment extends DialogFragment {
     private IInterstitialListener iListener;
     private MyWebViewClient viewClient = new MyWebViewClient();
     private Animation operatingAnim;
+    private int curOrientation;
     private boolean isShowed = false;
 
     public boolean isShowed() {
@@ -77,13 +82,15 @@ public class InterstitialFragment extends DialogFragment {
     /**
      * dialog config parameters
      */
-    private static final int VIEW_STATE_INIT = 0;
-    private static final int VIEW_STATE_GOT_AD = 1;
-    private static final int VIEW_STATE_LOADED_AD = 2;
-    private static final int VIEW_STATE_IMPRESSED = 3;
-    private static final int VIEW_STATE_NO_AD = 4;
+    public static final int VIEW_STATE_INIT = 0;
+    public static final int VIEW_STATE_GOT_AD = 1;
+    public static final int VIEW_STATE_LOADED_AD = 2;
+    public static final int VIEW_STATE_IMPRESSED = 3;
+    public static final int VIEW_STATE_NO_AD = 4;
 
     public static class DialogConfig {
+        public Activity parentActivity;
+        public int oldOrientation;
         public PartnerBaseView partnerView = null;
         public boolean closeAfterImpressed = false;
         public boolean allowUserCloseAfterImpressed = true;
@@ -194,9 +201,46 @@ public class InterstitialFragment extends DialogFragment {
         return view;
     }
 
+    public boolean disableRotateScreen() {
+        DialogConfig config = getDialogConfig();
+        if (config.parentActivity != null) {
+            Activity activity = config.parentActivity;
+            // get current display orientation
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point point = new Point();
+            display.getSize(point);
+            // disable rotate screen
+            if (point.x <= point.y) {
+                curOrientation = Configuration.ORIENTATION_PORTRAIT;
+                config.oldOrientation = config.parentActivity.getRequestedOrientation();
+                config.parentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            } else {
+                curOrientation = Configuration.ORIENTATION_LANDSCAPE;
+                config.oldOrientation = config.parentActivity.getRequestedOrientation();
+                config.parentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean restoreRotateScreen() {
+        DialogConfig config = getDialogConfig();
+        // restore old orientation
+        if (config.parentActivity != null) {
+            config.parentActivity.setRequestedOrientation(config.oldOrientation);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        getDialogConfig().parentActivity = activity;
+
         try {
             iListener = (IInterstitialListener)activity;
         } catch (ClassCastException e) {
@@ -233,6 +277,8 @@ public class InterstitialFragment extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         iListener.onInterstitialClosed();
+        // restore old orientation
+        restoreRotateScreen();
     }
 
     private void startLoadingAnimation() {
@@ -329,30 +375,80 @@ public class InterstitialFragment extends DialogFragment {
                 webViewAd.setVisibility(View.GONE);
                 imageLoading.setVisibility(View.VISIBLE);
                 stopLoadingAnimation();
+                // show close button
+                btnClose.setVisibility(View.VISIBLE);
                 break;
         }
     }
 
+    public static final int partnerViewHeight = 110;
     private void resizeView() {
         DialogConfig config = getDialogConfig();
         WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
         Point p = new Point();
         wm.getDefaultDisplay().getSize(p);
 
-        int totalWidth, totalHeight;
+        Point pTotal = new Point();
         if (config.showFullScreen) {
-            totalWidth = p.x - 2;
-            totalHeight = p.y - 80;
+            resizeFullscreenView(p.x, p.y, pTotal);
         } else {
-            totalWidth = p.x * 4 / 5;
-            totalHeight = p.y * 4 / 5;
+            resizePopView(p.x, p.y, pTotal);
         }
-        layoutContainer.setLayoutParams(new FrameLayout.LayoutParams(totalWidth, totalHeight));
-        Log.i(TAG, "Resize view with width["+totalWidth+"] height["+totalHeight+"]");
 
-        int adWidth = totalWidth;
-        int adHeight = totalHeight - 110;
+        int adWidth = pTotal.x;
+        int adHeight = pTotal.y - partnerViewHeight;
         layoutAdContainer.setLayoutParams(new RelativeLayout.LayoutParams(adWidth, adHeight));
+
+        layoutContainer.setLayoutParams(new FrameLayout.LayoutParams(pTotal.x, pTotal.y));
+    }
+    private void resizeFullscreenView(int screenWidth, int screenHeight, Point p) {
+        p.x = screenWidth - 2;
+        p.y = screenHeight - 80;
+    }
+    private void resizePopView(int screenWidth, int screenHeight, Point p) {
+        DialogConfig config = getDialogConfig();
+        double targetScale = 300.0 / 250.0;
+        double screenScale = (double)screenWidth / (double)screenHeight;
+        if (config.yesupAd == null) {
+            if (screenScale > targetScale) {
+                p.y = screenHeight * 4 / 5;
+                p.x = (int) (((double)p.y - partnerViewHeight) * targetScale);
+            } else {
+                p.x = screenWidth * 4 / 5;
+                p.y = (int) ((double)p.x / targetScale + partnerViewHeight);
+            }
+            Log.d(TAG, "ResizePopView 1:["+p.x+"]-["+p.y+"]");
+            return;
+        }
+
+        if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == config.yesupAd.getAdType()) {
+            // web page
+            p.x = screenWidth * 4 / 5;
+            p.y = screenHeight * 4 / 5;
+        } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == config.yesupAd.getAdType()) {
+            // image
+            ImageInterstitialAd pageAd = (ImageInterstitialAd)config.yesupAd;
+            ImageInterstitialModel.PageAd imageAd = pageAd.getPageAd();
+            if (imageAd != null) {
+                targetScale = (double)imageAd.width / (double)imageAd.height;
+            }
+            if (screenScale > targetScale) {
+                p.y = screenHeight * 4 / 5;
+                p.x = (int) (((double)p.y - partnerViewHeight) * targetScale);
+            } else {
+                p.x = screenWidth * 4 / 5;
+                p.y = (int) ((double)p.x / targetScale + partnerViewHeight);
+            }
+        } else {
+            if (screenScale > targetScale) {
+                p.y = screenHeight * 4 / 5;
+                p.x = (int) (((double)p.y - partnerViewHeight) * targetScale);
+            } else {
+                p.x = screenWidth * 4 / 5;
+                p.y = (int) ((double)p.x / targetScale + partnerViewHeight);
+            }
+        }
+        Log.d(TAG, "ResizePopView 2:["+p.x+"]-["+p.y+"]");
     }
 
     private void onImpressed(int credit) {

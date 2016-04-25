@@ -28,6 +28,7 @@ public class Interstitial {
     private FragmentActivity parentActivity;
     public void setParentActivity(FragmentActivity activity) {
         parentActivity = activity;
+        getDialogConfig().parentActivity = activity;
     }
 
     private InterstitialFragment.DialogConfig dialogConfig;
@@ -49,7 +50,10 @@ public class Interstitial {
         config.allowUserCloseAfterImpressed = allowUserCloseAfterImpressed;
         config.adClicked = false;
         config.adZoneId = adZoneId;
+        config.viewState = InterstitialFragment.VIEW_STATE_INIT;
+        config.yesupAd = null;
 
+        interstitialDialog.disableRotateScreen();
         interstitialDialog.setCancelable(false);
         interstitialDialog.show(fragmentManager, TAG);
     }
