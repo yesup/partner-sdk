@@ -43,7 +43,7 @@
         <Button
             android:id="@+id/btn_close"
             android:layout_width="100dp"
-            android:layout_height="35dp"
+            android:layout_height="30dp"
             android:layout_alignBottom="@+id/layout_ad_view"
             android:layout_alignRight="@+id/layout_ad_view"
             android:layout_marginRight="2dp"

@@ -1,5 +1,8 @@
 package com.yesup.partner.activities;
 
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.yesup.partner.OfferWallActivity;
@@ -22,6 +27,8 @@ import com.yesup.partner.R;
 import com.yesup.partner.module.DataCenter;
 import com.yesup.partner.module.Define;
 import com.yesup.partner.module.OfferModel;
+import com.yesup.partner.module.OfferPageModel;
+import com.yesup.partner.module.OfferWallAd;
 import com.yesup.partner.module.YesupAdBase;
 
 import java.io.File;
@@ -108,13 +115,28 @@ public class OfferWallFragment extends Fragment {
 
     private class MyAdapter extends BaseAdapter {
         private LayoutInflater mInflater;
+        private OfferWallPartnerHelper defaultPartnerHelper;
+        private int incentRate = 100;
 
         public MyAdapter(Context context) {
             this.mInflater = LayoutInflater.from(context);
+
+            defaultPartnerHelper = dataCenter.getOfferWallPartnerHelper();
+            if (defaultPartnerHelper == null) {
+                defaultPartnerHelper = new OfferWallPartnerHelper(getContext());
+            }
         }
 
         @Override
         public int getCount() {
+            OfferWallAd offerWallAd = dataCenter.getOfferWallAd();
+            if (offerWallAd != null) {
+                OfferPageModel offerPage = offerWallAd.getOfferPage();
+                if (offerPage != null) {
+                    incentRate = offerPage.getIncentRate();
+                }
+            }
+            Log.i(TAG, "UpdateList getCount " + listCount);
             return listCount;
         }
 
@@ -137,42 +159,80 @@ public class OfferWallFragment extends Fragment {
                 holder.image = (ImageView)convertView.findViewById(R.id.ItemImageLeft);
                 holder.title = (TextView)convertView.findViewById(R.id.ItemMainTitle);
                 holder.description = (TextView)convertView.findViewById(R.id.ItemDescription);
-                holder.recommended = (TextView)convertView.findViewById(R.id.ItemRecommended);
-                holder.newApp = (TextView)convertView.findViewById(R.id.ItemNewIcon);
-                holder.platform = (TextView)convertView.findViewById(R.id.ItemPlatformIcon);
-                holder.cost = (TextView)convertView.findViewById(R.id.ItemFreeIcon);
+                holder.ratingBar = (RatingBar)convertView.findViewById(R.id.ratingBar);
+                holder.reward = (Button)convertView.findViewById(R.id.BtnReward);
+                holder.reward.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mCallback.onUserSelected(position);
+                    }
+                });
+                holder.imageCoins = (ImageView)convertView.findViewById(R.id.ImageCoins);
                 convertView.setTag(holder);
+                float z = 0;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    z = holder.reward.getElevation() + 100.0f;
+                    holder.imageCoins.setZ(z);
+                }
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
             // get display data
             OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(position);
-            // set display content
-            File imageFile = new File(offer.getLocalIconPath());
-            if (imageFile.exists()){
-                Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                holder.image.setImageBitmap(bmp);
-            }else {
-                holder.image.setImageResource(R.drawable.appicon);
+            if (offer == null) {
+                Log.i(TAG, "UpdateItemView " + position + " Offer:NULL");
+                return convertView;
+            } else  {
+                Log.i(TAG, "UpdateItemView " + position + " Image:" + offer.getLocalIconPath());
             }
+            // set display content
+            String iconPath = offer.getLocalIconPath();
+            if (iconPath != null && !iconPath.isEmpty()) {
+                File imageFile = new File(iconPath);
+                if (imageFile.exists()) {
+                    Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                    Drawable drawable = new BitmapDrawable(getResources(), bmp);
+                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        holder.image.setBackgroundDrawable(drawable);
+                    } else {
+                        holder.image.setBackground(drawable);
+                    }
+                } else {
+                    holder.image.setBackgroundResource(R.drawable.yesup_placeholder);
+                }
+            } else {
+                holder.image.setBackgroundResource(R.drawable.yesup_placeholder);
+            }
+            holder.image.setImageResource(R.drawable.yesup_appicon_shadow);
             holder.title.setText(offer.getTitle());
             holder.description.setText( offer.getShortDesc() );
+            float rate = offer.getRate() / 20.0f;
+            holder.ratingBar.setRating(rate);
             if (offer.isRecommend()) {
-                holder.recommended.setText("Recommended");
+                holder.reward.setBackgroundResource(R.drawable.yesup_reward_btn2);
             } else {
-                holder.recommended.setText("");
+                if (position == 1) {
+                    holder.reward.setBackgroundResource(R.drawable.yesup_reward_btn2);
+                }else{
+                    holder.reward.setBackgroundResource(R.drawable.yesup_reward_btn);
+                }
             }
-            if (offer.isNew()) {
-                holder.newApp.setText("NEW");
+            // reward
+            String str;
+            str = defaultPartnerHelper.calculateReward(offer.getPayout(), incentRate);
+            Drawable drawable = defaultPartnerHelper.getRewardIcon();
+            if (str == null || str.isEmpty()) {
+                str = "Install  ";
+                holder.imageCoins.setVisibility(View.GONE);
             } else {
-                holder.newApp.setText("");
+                holder.imageCoins.setVisibility(View.VISIBLE);
+                if (drawable == null) {
+                    holder.imageCoins.setImageResource(R.drawable.yesup_coins);
+                } else {
+                    holder.imageCoins.setImageDrawable(drawable);
+                }
             }
-            holder.platform.setText(offer.getAppType());
-            if (offer.getAppStorePrice() == 0) {
-                holder.cost.setText("FREE");
-            } else {
-                holder.cost.setText("$"+(float)offer.getAppStorePrice()/100.0);
-            }
+            holder.reward.setText(str);
 
             return convertView;
         }
@@ -182,10 +242,9 @@ public class OfferWallFragment extends Fragment {
         public ImageView image;
         public TextView title;
         public TextView description;
-        public TextView recommended;
-        public TextView newApp;
-        public TextView platform;
-        public TextView cost;
+        public RatingBar ratingBar;
+        public Button reward;
+        public ImageView imageCoins;
     }
 
     public class MessageHandler extends Handler {
@@ -211,8 +270,15 @@ public class OfferWallFragment extends Fragment {
                                 // set display content
                                 File imageFile = new File(offer.getLocalIconPath());
                                 if (imageFile.exists()) {
+                                    Log.i(TAG, "ICON:" + offer.getLocalIconPath());
                                     Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                                    holder.image.setImageBitmap(bmp);
+                                    Drawable drawable = new BitmapDrawable(getResources(), bmp);
+                                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                        holder.image.setBackgroundDrawable(drawable);
+                                    } else {
+                                        holder.image.setBackground(drawable);
+                                    }
+                                    holder.image.setImageResource(R.drawable.yesup_appicon_shadow);
                                 }
                                 Log.i(TAG, "Download Completed, update " + itemIndex + " item of view.");
                             }

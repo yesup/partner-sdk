@@ -11,6 +11,7 @@ import java.util.List;
  * Created by derek on 2/24/16.
  */
 public class OfferPageModel extends DBObject {
+    private static final String TAG="OfferPageModel";
     public static final int PAGE_TYPE_OFFER = 0;
 
     private int pageType;
@@ -18,6 +19,7 @@ public class OfferPageModel extends DBObject {
     private int refresh;
     private int total;
     private String cr_host;
+    private int incentRate;
     private List<OfferModel> list;
 
     public void clean() {
@@ -69,6 +71,14 @@ public class OfferPageModel extends DBObject {
         this.cr_host = cr_host;
     }
 
+    public int getIncentRate() {
+        return incentRate;
+    }
+
+    public void setIncentRate(int incentRate) {
+        this.incentRate = incentRate;
+    }
+
     public List<OfferModel> getList() {
         return list;
     }
@@ -89,16 +99,16 @@ public class OfferPageModel extends DBObject {
                 if (name.equals("total")) {
                     int iv = reader.nextInt();
                     offerPage.setTotal(iv);
-                    //Log.v("Meshbean", Total+":"+iv);
                 } else if (name.equals("cr_host")) {
                     String sv = reader.nextString();
                     offerPage.setCr_host(sv);
-                    //Log.v("Meshbean", CR_Host+":"+sv);
+                } else if (name.equals("incent_rate")) {
+                    offerPage.setIncentRate( reader.nextInt() );
                 } else if (name.equals("list")) {
                     List<OfferModel> list = OfferModel.getMeshbeanOfferListFromJson(reader);
                     offerPage.setList(list);
                     count = list.size();
-                    Log.v("Meshbean", "List Size:" + count);
+                    Log.i(TAG, "List Size:" + count);
                 } else {
                     reader.skipValue();
                 }

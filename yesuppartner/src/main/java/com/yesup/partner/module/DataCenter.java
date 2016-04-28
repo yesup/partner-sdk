@@ -6,6 +6,7 @@ import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.yesup.partner.activities.OfferWallPartnerHelper;
 import com.yesup.partner.tools.AppTool;
 import com.yesup.partner.tools.DownloadManagerLite;
 
@@ -16,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 
 /**
  * Created by derek on 2/24/16.
@@ -37,9 +37,13 @@ public class DataCenter {
     private static DBHelper dbHelper;
     private static DataCenter dataCenter = new DataCenter();
     private static String subId;
+    private static String option1 = "";
+    private static String option2 = "";
 
     private OfferWallAd offerWallAd;
     private YesupAdBase interstitialAd;
+
+    private OfferWallPartnerHelper offerWallPartnerHelper = null;
 
     public void init(Context context) {
         if (this.context != null){
@@ -72,6 +76,31 @@ public class DataCenter {
         if (id != null && id.length() > 0) {
             subId = id;
         }
+    }
+
+    public void setOption(String opt1, String opt2) {
+        if (opt1 == null || opt1.isEmpty()) {
+            option1 = "";
+        } else if (opt1.length() > 80) {
+            option1 = opt1.substring(0, 80);
+        } else {
+            option1 = opt1;
+        }
+        if (opt2 == null || opt2.isEmpty()) {
+            option2 = "";
+        } else if (opt2.length() > 80) {
+            option2 = opt2.substring(0, 80);
+        } else {
+            option2 = opt2;
+        }
+    }
+
+    public OfferWallPartnerHelper getOfferWallPartnerHelper() {
+        return offerWallPartnerHelper;
+    }
+
+    public void setOfferWallPartnerHelper(OfferWallPartnerHelper offerWallPartnerHelper) {
+        this.offerWallPartnerHelper = offerWallPartnerHelper;
     }
 
     public void onResume() {
@@ -114,7 +143,7 @@ public class DataCenter {
     public void initOfferWallAd(int adZoneId) {
         PartnerAdConfig.Zone zone = config.getZoneById(adZoneId);
         if (zone != null) {
-            YesupAdBase ad = YesupAdFactory.createYesupAd(context, zone, config, subId, msgTransfer);
+            YesupAdBase ad = YesupAdFactory.createYesupAd(context, zone, config, subId, msgTransfer, option1, option2);
             if (ad != null) {
                 offerWallAd = (OfferWallAd)ad;
                 ad.setDbHelper(dbHelper);
@@ -151,7 +180,7 @@ public class DataCenter {
         jumpUrlAd.setRequestId(offer.getLocalReference());
         jumpUrlAd.setOffer(offer);
         jumpUrlAd.setDbHelper(dbHelper);
-        jumpUrlAd.initAdConfig(context, config, null, subId, msgTransfer);
+        jumpUrlAd.initAdConfig(context, config, null, subId, msgTransfer, option1, option2);
         jumpUrlAd.initAdData();
         jumpUrlAd.sendRequest(DataCenter.getInstance().getDownloadManager());
         return 0;
@@ -267,7 +296,7 @@ public class DataCenter {
     public void initInterstitialAd(int adZoneId) {
         PartnerAdConfig.Zone zone = config.getZoneById(adZoneId);
         if (zone != null) {
-            interstitialAd = YesupAdFactory.createYesupAd(context, zone, config, subId, msgTransfer);
+            interstitialAd = YesupAdFactory.createYesupAd(context, zone, config, subId, msgTransfer, option1, option2);
         }
     }
 

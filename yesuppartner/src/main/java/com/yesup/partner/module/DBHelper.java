@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 9;
+    public static final int DATABASE_VERSION = 10;
     public static final String DATABASE_NAME = "meshbean.db";
 
     private static final String SQL_CREATE_TABLE_OFFERPAGES =
@@ -22,6 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + OfferPages.COLUMN_NAME_EXPIRE + " INTEGER,"
             + OfferPages.COLUMN_NAME_REFRESH + " INTEGER,"
             + OfferPages.COLUMN_NAME_TOTAL + " INTEGER,"
+            + OfferPages.COLUMN_NAME_INCENT_RATE + " INTEGER,"
             + OfferPages.COLUMN_NAME_CR_HOST + " TEXT)";
     private static final String SQL_CREATE_TABLE_OFFERS =
             "CREATE TABLE "+Offers.TABLE_NAME+" ("+Offers._ID+" INTEGER PRIMARY KEY,"
@@ -49,7 +50,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     + Offers.COLUMN_NAME_DETAIL + " TEXT,"
                     + Offers.COLUMN_NAME_TC + " TEXT,"
                     + Offers.COLUMN_NAME_CONVERT_COND + " TEXT,"
-                    + Offers.COLUMN_NAME_CLICKED + " INTEGER)";
+                    + Offers.COLUMN_NAME_CLICKED + " INTEGER,"
+                    + Offers.COLUMN_NAME_PAYOUT + " INTEGER,"
+                    + Offers.COLUMN_NAME_RATE + " INTEGER)";
     private static final String SQL_CREATE_TABLE_OFFERS_CLICKED =
             "CREATE TABLE "+OffersClicked.TABLE_NAME+" ("+Offers._ID+" INTEGER PRIMARY KEY,"
                     + OffersClicked.COLUMN_NAME_BELONG_PAGETYPE + " INTEGER,"
@@ -104,6 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(OfferPages.COLUMN_NAME_EXPIRE, offerPage.getExpire());
         values.put(OfferPages.COLUMN_NAME_REFRESH, offerPage.getRefresh());
         values.put(OfferPages.COLUMN_NAME_TOTAL, offerPage.getTotal());
+        values.put(OfferPages.COLUMN_NAME_INCENT_RATE, offerPage.getIncentRate());
         values.put(OfferPages.COLUMN_NAME_CR_HOST, offerPage.getCr_host());
 
         long newRowId;
@@ -122,6 +126,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] projection = {OfferPages.COLUMN_NAME_EXPIRE,
                 OfferPages.COLUMN_NAME_REFRESH,
                 OfferPages.COLUMN_NAME_TOTAL,
+                OfferPages.COLUMN_NAME_INCENT_RATE,
                 OfferPages.COLUMN_NAME_CR_HOST};
         String selection = OfferPages.COLUMN_NAME_PAGETYPE + " = ?";
         String[] selectionArgs = {String.valueOf(pageType)};
@@ -136,6 +141,7 @@ public class DBHelper extends SQLiteOpenHelper {
             offerPage.setExpire(cursor.getLong(cursor.getColumnIndex(OfferPages.COLUMN_NAME_EXPIRE)));
             offerPage.setRefresh(cursor.getInt(cursor.getColumnIndex(OfferPages.COLUMN_NAME_REFRESH)));
             offerPage.setTotal(cursor.getInt(cursor.getColumnIndex(OfferPages.COLUMN_NAME_TOTAL)));
+            offerPage.setIncentRate(cursor.getInt(cursor.getColumnIndex(OfferPages.COLUMN_NAME_INCENT_RATE)));
             offerPage.setCr_host(cursor.getString(cursor.getColumnIndex(OfferPages.COLUMN_NAME_CR_HOST)));
             break;
         }
@@ -179,6 +185,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(Offers.COLUMN_NAME_TC, offer.getTc());
         values.put(Offers.COLUMN_NAME_CLICKED, offer.isHasClicked());
         values.put(Offers.COLUMN_NAME_CONVERT_COND, offer.getConvertCondition());
+        values.put(Offers.COLUMN_NAME_PAYOUT, offer.getPayout());
+        values.put(Offers.COLUMN_NAME_RATE, offer.getRate());
 
         long newRowId;
         newRowId = db.insert(Offers.TABLE_NAME, null, values);
@@ -187,6 +195,21 @@ public class DBHelper extends SQLiteOpenHelper {
         }else {
             offer.setDbId(newRowId);
             return true;
+        }
+    }
+
+    public boolean updateOfferLocalIconPath(OfferModel offer) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Offers.COLUMN_NAME_LOCALPATH_ICON, offer.getLocalIconPath());
+        String where = Offers._ID + " = ?";
+        String[] whereArgs = {String.valueOf(offer.getDbId())};
+
+        int rows = db.update(Offers.TABLE_NAME, values, where, whereArgs);
+        if (rows > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -299,6 +322,8 @@ public class DBHelper extends SQLiteOpenHelper {
             }else{
                 offer.setHasClicked(true);
             }
+            offer.setPayout(cursor.getInt(cursor.getColumnIndex(Offers.COLUMN_NAME_PAYOUT)));
+            offer.setRate(cursor.getInt(cursor.getColumnIndex(Offers.COLUMN_NAME_RATE)));
 
             cursor.moveToNext();
             list.add(count, offer);
@@ -490,6 +515,7 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_EXPIRE = "expire";
         public static final String COLUMN_NAME_REFRESH = "refresh";
         public static final String COLUMN_NAME_TOTAL = "total";
+        public static final String COLUMN_NAME_INCENT_RATE = "incent_rate";
         public static final String COLUMN_NAME_CR_HOST = "cr_host";
     }
     public static abstract class Offers implements BaseColumns {
@@ -519,6 +545,8 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_TC = "tc";
         public static final String COLUMN_NAME_CONVERT_COND = "convert_cond";
         public static final String COLUMN_NAME_CLICKED = "clicked";
+        public static final String COLUMN_NAME_PAYOUT = "payout";
+        public static final String COLUMN_NAME_RATE = "rate";
     }
     public static abstract class OffersClicked implements BaseColumns {
         public static final String TABLE_NAME = "offers_clicked";

@@ -44,9 +44,9 @@ public class PageInterstitialAd extends YesupAdBase {
         setRequestDataParameter("sid", adConfig.getSid());
         setRequestDataParameter("zone", adConfig.getInterstitialZoneId("3","105"));
         setRequestDataParameter("subid", subId);
-        setRequestDataParameter("opt1", "1");
-        setRequestDataParameter("opt2", "2");
-        setRequestDataParameter("opt3", "3");
+        setRequestDataParameter("opt1", opt1);
+        setRequestDataParameter("opt2", opt2);
+        setRequestDataParameter("opt3", opt3);
         setRequestDataParameter("uuid", new Uuid(context).getUUID());
         setRequestDataParameter("adtype", adConfig.getInterstitialZoneSize("3","105"));
     }
@@ -95,7 +95,7 @@ public class PageInterstitialAd extends YesupAdBase {
                         String impressUrl = pageInterstitialModel.adList.get(0).impressionUrl;
                         AdImpress impress = new AdImpress();
                         impress.setImpressUrl(impressUrl);
-                        impress.initAdConfig(context, adConfig, null, subId, handler);
+                        impress.initAdConfig(context, adConfig, null, subId, handler, opt1, opt2);
                         impress.initAdData();
                         impress.sendRequest(DataCenter.getInstance().getDownloadManager());
                         Log.d(TAG, "Send request impression.");

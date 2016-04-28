@@ -39,6 +39,7 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
     private YesupAd yesupAd;
     private ArrayList<PartnerAdConfig.Zone> zoneList;
 
+    private OfferWallHelper offerWallHelper = new OfferWallHelper(this);
     private MyStatusView statusView;
     private String statusMsg = "  Message";
     private int progressPos = 0;
@@ -56,6 +57,7 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
         yesupAd = new YesupAd(this);
         Log.v(TAG, "YesupAD Version:"+yesupAd.getVersion());
         yesupAd.setDebugMode(true);
+        yesupAd.setOfferWallPartnerHelper(offerWallHelper);
         statusView = new MyStatusView(this);
 
         zoneList = yesupAd.getAllZoneList();
@@ -81,14 +83,14 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
                 int adType = yesupAd.getAdTypeByZoneId(zoneId);
                 switch (adType) {
                     case Define.AD_TYPE_OFFER_WALL:
-                        yesupAd.showOfferWall(subId, zoneId);
+                        yesupAd.showOfferWall(subId, zoneId, "option1", null);
                         break;
                     case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
                         //yesupAd.showInterstitial(subId, zoneId, true, true, statusView);
-                        yesupAd.showInterstitial(subId, zoneId, true, true, null);
+                        yesupAd.showInterstitial(subId, zoneId, true, true, null, "option1", null);
                         break;
                     case Define.AD_TYPE_INTERSTITIAL_IMAGE:
-                        yesupAd.showInterstitial(subId, zoneId, false, true, statusView);
+                        yesupAd.showInterstitial(subId, zoneId, false, true, statusView, "option1", "option2");
                         //yesupAd.showInterstitial(subId, zoneId, false, true, null);
                         break;
                     default:

@@ -28,11 +28,18 @@ public abstract class YesupAdBase extends YesupHttpRequest {
     protected PartnerAdConfig adConfig;
     protected AdZone adZone = new AdZone();
     protected String subId = "";
+    protected String opt1 = "";
+    protected String opt2 = "";
+    protected String opt3 = "";
 
-    public final void initAdConfig(Context context, PartnerAdConfig adConfig, PartnerAdConfig.Zone zone, String subId, Handler handler) {
+    public final void initAdConfig(Context context, PartnerAdConfig adConfig, PartnerAdConfig.Zone zone,
+                                   String subId, Handler handler, String opt1, String opt2) {
         this.context = context;
         this.adConfig = adConfig;
         this.subId = subId;
+        this.opt1 = opt1;
+        this.opt2 = opt2;
+        this.opt3 = "";
         this.msgHandler = handler;
         if (zone != null) {
             adZone.setZoneId(zone.id);

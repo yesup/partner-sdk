@@ -40,8 +40,8 @@ public class OfferWallAd extends YesupAdBase {
         setRequestDataParameter("sid", adConfig.getSid()); // "45852"
         setRequestDataParameter("zone", adConfig.getOfferWallZoneId()); // "61899"
         setRequestDataParameter("subid", subId);
-        setRequestDataParameter("opt1", "123");
-        setRequestDataParameter("opt2", "123");
+        setRequestDataParameter("opt1", opt1);
+        setRequestDataParameter("opt2", opt2);
     }
 
     @Override
@@ -54,10 +54,11 @@ public class OfferWallAd extends YesupAdBase {
             e.printStackTrace();
             jsonData = "";
         }
+        //Log.v(TAG, "Read resource data: " + jsonData);
         int count = 0;
         if (jsonData.length() <= 100) {
             count = -1;
-            Log.v("Meshbean", "Read resource data: " + jsonData);
+            Log.v(TAG, "Read resource data: " + jsonData);
         }
         // make sure that download path exist.
         File downloadPath = new File(context.getFilesDir()+Define.LOCAL_IMAGE_DIR);
@@ -93,12 +94,10 @@ public class OfferWallAd extends YesupAdBase {
         for (int i=0; i<count; i++) {
             // download pictures
             OfferModel offer = offerPage.getList().get(i);
-
-            File imageFile = new File(context.getFilesDir()+Define.LOCAL_IMAGE_DIR
-                    +offer.getLocalImageFileName());
-            offer.setLocalIconPath(imageFile.getAbsolutePath());
             dbHelper.addOffer(offer);
 
+            File imageFile = new File(context.getFilesDir()+Define.LOCAL_IMAGE_DIR+"/"
+                    +offer.getLocalImageFileName());
             if (!imageFile.exists()) {
                 requestIconFile(offer, downloadHost);
             }
@@ -108,14 +107,16 @@ public class OfferWallAd extends YesupAdBase {
 
     private void requestIconFile(OfferModel offer, String downloadHost) {
         String downloadUrl = "http://" + downloadHost + offer.getIconUrl();
-        Log.v("Meshbean", "Begin download "+downloadUrl);
-        File saveFile = new File(offer.getLocalIconPath());
+        Log.v(TAG, "Begin download "+downloadUrl);
+        //File saveFile = new File(offer.getLocalIconPath());
+        File saveFile = new File(context.getFilesDir()+Define.LOCAL_IMAGE_DIR+"/"
+                +offer.getLocalImageFileName());
 
         AdResourceFile resFile = new AdResourceFile();
         resFile.setRequestId(offer.getLocalReference());
         resFile.setResourceUrl(downloadUrl);
         resFile.setLocalPath(saveFile.getAbsolutePath());
-        resFile.initAdConfig(context, adConfig, null, subId, handler);
+        resFile.initAdConfig(context, adConfig, null, subId, handler, opt1, opt2);
         resFile.initAdData();
         resFile.setRequestType(YesupAdBase.REQ_TYPE_OFFER_ICON);
         resFile.sendRequest(DataCenter.getInstance().getDownloadManager());
@@ -183,8 +184,18 @@ public class OfferWallAd extends YesupAdBase {
         public void handleMessage(Message msg) {
             YesupAdBase adBase = (YesupAdBase)msg.obj;
             if (YesupAdBase.REQ_TYPE_OFFER_ICON == adBase.getRequestType()) {
+                AdResourceFile adResourceFile = (AdResourceFile)adBase;
                 // icon download completed
                 if (Define.MSG_AD_REQUEST_SUCCESSED == msg.what) {
+                    if (offerPage != null && offerPage.getList() != null) {
+                        List<OfferModel> offerList = offerPage.getList();
+                        int index = adBase.getRequestId();
+                        OfferModel offer = offerList.get(index);
+                        if (offer != null) {
+                            offer.setLocalIconPath(adResourceFile.getLocalPath());
+                            dbHelper.updateOfferLocalIconPath(offer);
+                        }
+                    }
                     transferMsg(Define.MSG_AD_REQUEST_SUCCESSED, YesupAdBase.REQ_TYPE_OFFER_ICON, adBase.getRequestId());
                 } else if (Define.MSG_AD_REQUEST_FAILED == msg.what) {
                     transferMsg(Define.MSG_AD_REQUEST_FAILED, YesupAdBase.REQ_TYPE_OFFER_ICON, adBase.getRequestId());

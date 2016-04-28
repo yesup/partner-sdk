@@ -26,7 +26,7 @@
         </activity>
         <activity
             android:name="com.yesup.partner.OfferWallActivity"
-            android:label="OfferWall" />
+            android:label="Free Games" />
         <activity android:name=".SecondActivity"></activity>
     </application>
 

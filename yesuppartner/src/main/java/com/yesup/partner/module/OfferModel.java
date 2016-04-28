@@ -12,6 +12,7 @@ import java.util.List;
  * Created by derek on 2/24/16.
  */
 public class OfferModel extends DBObject {
+    private static final String TAG = "OfferModel";
     private int localReference; // download id
     private String localIconPath; // /data/data/com.yesup.meshbeansdk/files/appicon/...ico
     private boolean hasClicked;
@@ -37,6 +38,9 @@ public class OfferModel extends DBObject {
     private String detail;
     private String tc;
     private String convertCondition;
+
+    private int rate;
+    private int payout;
 
     private String jumpResult;
     private String jumpUrl;
@@ -242,6 +246,22 @@ public class OfferModel extends DBObject {
         this.convertCondition = convertCondition;
     }
 
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    public int getPayout() {
+        return payout;
+    }
+
+    public void setPayout(int payout) {
+        this.payout = payout;
+    }
+
     public String getJumpResult() {
         return jumpResult;
     }
@@ -275,10 +295,14 @@ public class OfferModel extends DBObject {
                         offer.setAdsid(reader.nextInt());
                     } else if (name.equals("CID")) {
                         offer.setCid(reader.nextInt());
+                    } else if (name.equals("PO")) {
+                        offer.setPayout(reader.nextInt());
                     } else if (name.equals("CVID")) {
                         offer.setCvid(reader.nextInt());
                     } else if (name.equals("is_recommend")) {
                         offer.setIsRecommend(reader.nextBoolean());
+                    } else if (name.equals("rate")) {
+                        offer.setRate(reader.nextInt());
                     } else if (name.equals("icon_url")) {
                         offer.setIconUrl(reader.nextString());
                     } else if (name.equals("app_store_name")) {
@@ -312,7 +336,7 @@ public class OfferModel extends DBObject {
                 list.add(count, offer);
                 reader.endObject();
                 count++;
-                Log.v("Meshbean", "=========== The " + count + "th object ===========");
+                Log.v(TAG, "=========== The " + count + "th object ===========");
             }
             reader.endArray();
         } catch (Exception e) {

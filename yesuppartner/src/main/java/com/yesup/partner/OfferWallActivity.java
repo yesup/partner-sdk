@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +25,7 @@ import com.yesup.partner.tools.AppTool;
 public class OfferWallActivity extends AppCompatActivity
     implements OfferWallFragment.OnUserSelectedListener, DetailFragment.OnUserOperationListener {
 
+    private static final String TAG = "OfferWallActivity";
     private static final int SHOW_FRAGMENT_OFFERWALL = 0;
     private static final int SHOW_FRAGMENT_DETAIL = 1;
 
@@ -40,6 +43,10 @@ public class OfferWallActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         //setTitle("Offer Wall");
+        ActionBar bar = this.getSupportActionBar();
+        if (bar != null) {
+            bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#459135")));
+        }
 
         if (findViewById(R.id.OfferWallFragmentContainer) != null) {
             if (savedInstanceState != null) {
@@ -116,7 +123,7 @@ public class OfferWallActivity extends AppCompatActivity
 
     @Override
     public void onUserSelected(int opt) {
-        Log.v("Meshbean", "Callback onUserSelected:" + opt);
+        Log.v(TAG, "Callback onUserSelected:" + opt);
         offerIndex = opt;
 
         OfferModel offer = dataCenter.getOfferWallAd().getOfferAt(offerIndex);

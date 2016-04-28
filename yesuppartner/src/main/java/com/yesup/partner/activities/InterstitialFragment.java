@@ -161,6 +161,7 @@ public class InterstitialFragment extends DialogFragment {
         }
 
         btnClose = (Button) view.findViewById(R.id.btn_close);
+        btnClose.setAlpha(0.5f);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

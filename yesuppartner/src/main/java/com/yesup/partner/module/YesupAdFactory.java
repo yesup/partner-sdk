@@ -8,7 +8,8 @@ import android.os.Handler;
  */
 public final class YesupAdFactory {
 
-    public static YesupAdBase createYesupAd(Context context, PartnerAdConfig.Zone zone, PartnerAdConfig adConfig, String subId, Handler handler) {
+    public static YesupAdBase createYesupAd(Context context, PartnerAdConfig.Zone zone, PartnerAdConfig adConfig,
+                                            String subId, Handler handler, String opt1, String opt2) {
         YesupAdBase ad = null;
 
         if (zone.formats.equals("4")) {
@@ -20,7 +21,7 @@ public final class YesupAdFactory {
         }
 
         if (ad != null) {
-            ad.initAdConfig(context, adConfig, zone, subId, handler);
+            ad.initAdConfig(context, adConfig, zone, subId, handler, opt1, opt2);
             ad.initAdData();
         }
         return ad;

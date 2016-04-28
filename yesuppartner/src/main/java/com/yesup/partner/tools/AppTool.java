@@ -51,6 +51,8 @@ public class AppTool {
 
     public static final String getOfferWallLocalDataPath(Context context) {
         return context.getFilesDir() + "/offerWall.json";
+        // just for debug in real device
+        //return "/sdcard/offerWall.json";
     }
 
     public static final String getIncentiveLocalDataPath(Context context, OfferModel offer) {
