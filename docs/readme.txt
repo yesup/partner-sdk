@@ -1,7 +1,7 @@
 How to upload library to JCenter
 
 1. in project root, run:
-   gradle build
+   ./gradlew build
 
-2. gradle bintrayUpload
+2. ./gradlew bintrayUpload
 
