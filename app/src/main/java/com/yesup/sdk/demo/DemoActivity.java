@@ -37,7 +37,8 @@ import java.util.ArrayList;
 public class DemoActivity extends AppCompatActivity implements IInterstitialListener {
     private final String TAG = "DemoActivity";
     private YesupAd yesupAd;
-    private ArrayList<PartnerAdConfig.Zone> zoneList;
+    private ArrayList<PartnerAdConfig.Zone> offerwallZoneList = new ArrayList<>();
+    private ArrayList<PartnerAdConfig.Zone> interstitialZoneList = new ArrayList<>();
 
     private OfferWallHelper offerWallHelper = new OfferWallHelper(this);
     private MyStatusView statusView;
@@ -60,7 +61,20 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
         yesupAd.setOfferWallPartnerHelper(offerWallHelper);
         statusView = new MyStatusView(this);
 
-        zoneList = yesupAd.getAllZoneList();
+        ArrayList<PartnerAdConfig.Zone> zoneList = yesupAd.getAllZoneList();
+        if (zoneList != null) {
+            for (int i=0; i<zoneList.size(); i++) {
+                PartnerAdConfig.Zone zone = zoneList.get(i);
+                int adType = yesupAd.getAdTypeByZoneId(zone.id);
+                if (Define.AD_TYPE_OFFER_WALL == adType) {
+                    offerwallZoneList.add(zone);
+                } else if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == adType) {
+                    interstitialZoneList.add(zone);
+                } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == adType) {
+                    interstitialZoneList.add(zone);
+                }
+            }
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -72,34 +86,46 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
             }
         });
 
-        ListView listZone = (ListView)findViewById(R.id.list_zone);
-        ZoneListAdapter adapter = new ZoneListAdapter(this);
-        listZone.setAdapter(adapter);
-        listZone.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView offerwalllistZone = (ListView)findViewById(R.id.list_offerwall_zone);
+        OfferwallZoneListAdapter adapter1 = new OfferwallZoneListAdapter(this);
+        offerwalllistZone.setAdapter(adapter1);
+        offerwalllistZone.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String subId = "123123";
-                int zoneId = zoneList.get(position).id;
-                int adType = yesupAd.getAdTypeByZoneId(zoneId);
-                switch (adType) {
-                    case Define.AD_TYPE_OFFER_WALL:
-                        yesupAd.showOfferWall(subId, zoneId, "option1", null);
-                        break;
-                    case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
-                        //yesupAd.showInterstitial(subId, zoneId, true, true, statusView);
-                        yesupAd.showInterstitial(subId, zoneId, true, true, null, "option1", null);
-                        break;
-                    case Define.AD_TYPE_INTERSTITIAL_IMAGE:
-                        yesupAd.showInterstitial(subId, zoneId, false, true, statusView, "option1", "option2");
-                        //yesupAd.showInterstitial(subId, zoneId, false, true, null);
-                        break;
-                    default:
-                        Snackbar.make(view, "Unknown AD type", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                        break;
-                }
+                int zoneId = offerwallZoneList.get(position).id;
+                showYesupAd(zoneId);
             }
         });
+        ListView interstitiallistZone = (ListView)findViewById(R.id.list_interstitial_zone);
+        InterstitialZoneListAdapter adapter2 = new InterstitialZoneListAdapter(this);
+        interstitiallistZone.setAdapter(adapter2);
+        interstitiallistZone.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int zoneId = interstitialZoneList.get(position).id;
+                showYesupAd(zoneId);
+            }
+        });
+    }
+
+    private void showYesupAd(int zoneId) {
+        String subId = "123123";
+        int adType = yesupAd.getAdTypeByZoneId(zoneId);
+        switch (adType) {
+            case Define.AD_TYPE_OFFER_WALL:
+                yesupAd.showOfferWall(subId, zoneId, "option1", null);
+                break;
+            case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
+                yesupAd.showInterstitial(subId, zoneId, true, true, null, "option1", null);
+                break;
+            case Define.AD_TYPE_INTERSTITIAL_IMAGE:
+                yesupAd.showInterstitial(subId, zoneId, false, true, statusView, "option1", "option2");
+                break;
+            default:
+                Snackbar.make(null, "Unknown AD type", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                break;
+        }
     }
 
     @Override
@@ -249,16 +275,16 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
         public TextView show;
     }
 
-    private class ZoneListAdapter extends BaseAdapter {
+    private class OfferwallZoneListAdapter extends BaseAdapter {
         private LayoutInflater mInflater;
 
-        public ZoneListAdapter(Context context) {
+        public OfferwallZoneListAdapter(Context context) {
             this.mInflater = LayoutInflater.from(context);
         }
 
         @Override
         public int getCount() {
-            return zoneList.size();
+            return offerwallZoneList.size();
         }
 
         @Override
@@ -285,23 +311,81 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
                 holder = (ZoneViewHolder)convertView.getTag();
             }
             // set display content
-            int zoneId = zoneList.get(position).id;
+            int zoneId = offerwallZoneList.get(position).id;
             int adType = yesupAd.getAdTypeByZoneId(zoneId);
             switch (adType) {
                 case Define.AD_TYPE_OFFER_WALL:
                     holder.adType.setText("OFFER WALL");
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
-                    holder.adType.setText("PAGE INTERSTITIAL");
+                    holder.adType.setText("Type:PAGE");
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_IMAGE:
-                    holder.adType.setText("IMAGE INTERSTITIAL");
+                    holder.adType.setText("Type:IMAGE");
                     break;
                 default:
                     holder.adType.setText("UNKNOWN");
                     break;
             }
-            holder.zoneId.setText( Integer.toString(zoneId) );
+            holder.zoneId.setText( "Zone Id:"+Integer.toString(zoneId) );
+            holder.show.setText("SHOW");
+
+            return convertView;
+        }
+    }
+    private class InterstitialZoneListAdapter extends BaseAdapter {
+        private LayoutInflater mInflater;
+
+        public InterstitialZoneListAdapter(Context context) {
+            this.mInflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return interstitialZoneList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ZoneViewHolder holder;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.item_zone_list, null);
+                holder = new ZoneViewHolder();
+                holder.adType = (TextView)convertView.findViewById(R.id.text_adtype);
+                holder.zoneId = (TextView)convertView.findViewById(R.id.text_zoneid);
+                holder.show = (TextView)convertView.findViewById(R.id.text_show);
+                convertView.setTag(holder);
+            } else {
+                holder = (ZoneViewHolder)convertView.getTag();
+            }
+            // set display content
+            int zoneId = interstitialZoneList.get(position).id;
+            int adType = yesupAd.getAdTypeByZoneId(zoneId);
+            switch (adType) {
+                case Define.AD_TYPE_OFFER_WALL:
+                    holder.adType.setText("OFFER WALL");
+                    break;
+                case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
+                    holder.adType.setText("Type:PAGE");
+                    break;
+                case Define.AD_TYPE_INTERSTITIAL_IMAGE:
+                    holder.adType.setText("Type:IMAGE");
+                    break;
+                default:
+                    holder.adType.setText("UNKNOWN");
+                    break;
+            }
+            holder.zoneId.setText( "Zone Id:"+Integer.toString(zoneId) );
             holder.show.setText("SHOW");
 
             return convertView;
