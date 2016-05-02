@@ -27,8 +27,11 @@
             android:textStyle="bold" />
         <ListView
             android:id="@+id/list_offerwall_zone"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
             android:divider="@android:color/transparent"
-            android:dividerHeight="20dp"
+            android:dividerHeight="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></ListView>
     </LinearLayout>
@@ -49,6 +52,9 @@
         <ListView
             android:id="@+id/list_interstitial_zone"
             android:divider="@android:color/transparent"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
             android:dividerHeight="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></ListView>

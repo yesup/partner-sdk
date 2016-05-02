@@ -100,7 +100,9 @@ public class OfferWallFragment extends Fragment {
         super.onResume();
         dataCenter.setMsgHandler(msgHandler);
         // if it's expired
-        if (listCount <= 0 || dataCenter.getOfferWallAd().offerPageHasExpired()){
+        if (listCount <= 0 || dataCenter.getOfferWallAd().offerPageHasExpired()) {
+            // set 0 to avoid access null data
+            listCount = 0;
             // reload data from website
             dataCenter.requestOfferWallFromWebsite(zoneId);
         }

@@ -109,17 +109,19 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
     }
 
     private void showYesupAd(int zoneId) {
-        String subId = "123123";
+        String subId = "123123";  // optional, you app user id
+        String optValue1 = "";    // optional, additional event value you want to keep track
+        String optValue2 = "";    // optional, additional event value you want to keep track
         int adType = yesupAd.getAdTypeByZoneId(zoneId);
         switch (adType) {
             case Define.AD_TYPE_OFFER_WALL:
-                yesupAd.showOfferWall(subId, zoneId, "option1", null);
+                yesupAd.showOfferWall(subId, zoneId, optValue1, optValue2);
                 break;
             case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
-                yesupAd.showInterstitial(subId, zoneId, true, true, null, "option1", null);
+                yesupAd.showInterstitial(subId, zoneId, true, true, null, optValue1, optValue2);
                 break;
             case Define.AD_TYPE_INTERSTITIAL_IMAGE:
-                yesupAd.showInterstitial(subId, zoneId, false, true, statusView, "option1", "option2");
+                yesupAd.showInterstitial(subId, zoneId, false, true, statusView, optValue1, optValue2);
                 break;
             default:
                 Snackbar.make(null, "Unknown AD type", Snackbar.LENGTH_LONG)
@@ -318,16 +320,16 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
                     holder.adType.setText("OFFER WALL");
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
-                    holder.adType.setText("Type:PAGE");
+                    holder.adType.setText("TYPE:PAGE");
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_IMAGE:
-                    holder.adType.setText("Type:IMAGE");
+                    holder.adType.setText("TYPE:IMAGE");
                     break;
                 default:
                     holder.adType.setText("UNKNOWN");
                     break;
             }
-            holder.zoneId.setText( "Zone Id:"+Integer.toString(zoneId) );
+            holder.zoneId.setText( "ZONE ID:"+Integer.toString(zoneId) );
             holder.show.setText("SHOW");
 
             return convertView;
@@ -376,16 +378,16 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
                     holder.adType.setText("OFFER WALL");
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
-                    holder.adType.setText("Type:PAGE");
+                    holder.adType.setText("TYPE:PAGE");
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_IMAGE:
-                    holder.adType.setText("Type:IMAGE");
+                    holder.adType.setText("TYPE:IMAGE");
                     break;
                 default:
                     holder.adType.setText("UNKNOWN");
                     break;
             }
-            holder.zoneId.setText( "Zone Id:"+Integer.toString(zoneId) );
+            holder.zoneId.setText( "ZONE ID:"+Integer.toString(zoneId) );
             holder.show.setText("SHOW");
 
             return convertView;
