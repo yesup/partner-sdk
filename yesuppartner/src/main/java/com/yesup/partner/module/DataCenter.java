@@ -148,7 +148,19 @@ public class DataCenter {
                 offerWallAd = (OfferWallAd)ad;
                 ad.setDbHelper(dbHelper);
             }
+        } else {
+            throw new RuntimeException("[YESUP SDK]Can not find the zone which zoneid="+adZoneId);
         }
+    }
+
+    public int initOfferWallAdWithDefaultZone() {
+        String sZoneId = config.getOfferWallDefaultZoneId();
+        int zoneId = 0;
+        if (!sZoneId.isEmpty()) {
+            zoneId = Integer.parseInt(sZoneId);
+            initOfferWallAd(zoneId);
+        }
+        return zoneId;
     }
 
     public OfferWallAd getOfferWallAd() {
@@ -331,6 +343,9 @@ public class DataCenter {
     private class MessageTransfer extends Handler {
         @Override
         public void handleMessage(Message msg) {
+            if (YesupAdBase.REQ_TYPE_OFFER_WALL == msg.arg1) {
+                offerWallIsUpdating = false;
+            }
             Message newMsg = new Message();
             newMsg.what = msg.what;
             newMsg.arg1 = msg.arg1;

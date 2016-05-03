@@ -317,7 +317,11 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
             int adType = yesupAd.getAdTypeByZoneId(zoneId);
             switch (adType) {
                 case Define.AD_TYPE_OFFER_WALL:
-                    holder.adType.setText("OFFER WALL");
+                    if (105825 == zoneId) {
+                        holder.adType.setText("REGULAR OFFER WALL");
+                    } else {
+                        holder.adType.setText("INCENTIVE OFFER WALL");
+                    }
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
                     holder.adType.setText("TYPE:PAGE");
@@ -375,7 +379,11 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
             int adType = yesupAd.getAdTypeByZoneId(zoneId);
             switch (adType) {
                 case Define.AD_TYPE_OFFER_WALL:
-                    holder.adType.setText("OFFER WALL");
+                    if (105825 == zoneId) {
+                        holder.adType.setText("REGULAR OFFER WALL");
+                    } else {
+                        holder.adType.setText("INCENTIVE OFFER WALL");
+                    }
                     break;
                 case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
                     holder.adType.setText("TYPE:PAGE");

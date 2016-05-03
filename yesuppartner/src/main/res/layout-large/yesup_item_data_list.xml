@@ -94,7 +94,7 @@
                     android:layout_marginRight="10dp"
                     android:text="39.05"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textAlignment="gravity"
                     android:background="@drawable/yesup_reward_btn"
                     android:gravity="center_vertical|center_horizontal" />

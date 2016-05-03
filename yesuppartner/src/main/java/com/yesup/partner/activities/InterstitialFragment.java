@@ -149,7 +149,7 @@ public class InterstitialFragment extends DialogFragment {
         //return super.onCreateView(inflater, container, savedInstanceState);
         DialogConfig config = getDialogConfig();
 
-        View view = inflater.inflate(R.layout.fragment_interstitial, container, false);
+        View view = inflater.inflate(R.layout.yesup_fragment_interstitial, container, false);
         layoutContainer = (RelativeLayout)view.findViewById(R.id.layout_container);
         layoutAdContainer = (RelativeLayout)view.findViewById(R.id.layout_ad_container);
         layoutPartner = (FrameLayout)view.findViewById(R.id.layout_partner);

@@ -15,6 +15,7 @@ public class OfferPageModel extends DBObject {
     public static final int PAGE_TYPE_OFFER = 0;
 
     private int pageType;
+    private int zoneId;
     private long expire;
     private int refresh;
     private int total;
@@ -37,6 +38,14 @@ public class OfferPageModel extends DBObject {
 
     public void setPageType(int pageType) {
         this.pageType = pageType;
+    }
+
+    public int getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(int zoneId) {
+        this.zoneId = zoneId;
     }
 
     public long getExpire() {

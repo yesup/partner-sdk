@@ -53,14 +53,19 @@ public class OfferWallFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_offer_wall, container, false);
+        View view = inflater.inflate(R.layout.yesup_fragment_offer_wall, container, false);
 
         // init data center
         dataCenter.init(getActivity());
+        OfferWallAd offerWallAd = dataCenter.getOfferWallAd();
         if (dataCenter.offerPageHasLoaded()) {
-            listCount = dataCenter.getOfferWallAd().getOfferCount();
-        }else{
-            listCount = dataCenter.getOfferWallAd().loadOfferListFromLocalDatabase();
+            listCount = offerWallAd.getOfferCount();
+        } else {
+            if (offerWallAd == null) {
+                listCount = 0;
+            } else {
+                listCount = offerWallAd.loadOfferListFromLocalDatabase();
+            }
         }
 
         dataListView = (ListView) view.findViewById(R.id.dataListView);
@@ -100,7 +105,7 @@ public class OfferWallFragment extends Fragment {
         super.onResume();
         dataCenter.setMsgHandler(msgHandler);
         // if it's expired
-        if (listCount <= 0 || dataCenter.getOfferWallAd().offerPageHasExpired()) {
+        if (listCount <= 0 || dataCenter.getOfferWallAd().offerPageHasExpired(zoneId)) {
             // set 0 to avoid access null data
             listCount = 0;
             // reload data from website
@@ -156,7 +161,7 @@ public class OfferWallFragment extends Fragment {
         public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.item_data_list, null);
+                convertView = mInflater.inflate(R.layout.yesup_item_data_list, null);
                 holder = new ViewHolder();
                 holder.image = (ImageView)convertView.findViewById(R.id.ItemImageLeft);
                 holder.title = (TextView)convertView.findViewById(R.id.ItemMainTitle);
@@ -213,11 +218,7 @@ public class OfferWallFragment extends Fragment {
             if (offer.isRecommend()) {
                 holder.reward.setBackgroundResource(R.drawable.yesup_reward_btn2);
             } else {
-                if (position == 1) {
-                    holder.reward.setBackgroundResource(R.drawable.yesup_reward_btn2);
-                }else{
-                    holder.reward.setBackgroundResource(R.drawable.yesup_reward_btn);
-                }
+                holder.reward.setBackgroundResource(R.drawable.yesup_reward_btn);
             }
             // reward
             String str;

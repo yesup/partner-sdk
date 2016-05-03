@@ -68,6 +68,18 @@ public class YesupAd {
         return center.getAdTypeByZoneId(zoneId);
     }
 
+    public void showDefaultOfferWall(String subId, String opt1, String opt2) {
+        DataCenter center = DataCenter.getInstance();
+        setSubId(subId);
+        setOption(opt1, opt2);
+        int zoneId = center.initOfferWallAdWithDefaultZone();
+        // show offer wall activity
+        Intent intent = new Intent(context, OfferWallActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("ZONE_ID", zoneId);
+        context.startActivity(intent);
+    }
+
     public void showOfferWall(String subId, int zoneId, String opt1, String opt2) {
         int adType = getAdTypeByZoneId(zoneId);
         switch (adType) {

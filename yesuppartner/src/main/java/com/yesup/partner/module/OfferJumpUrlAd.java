@@ -36,7 +36,7 @@ public class OfferJumpUrlAd extends YesupAdBase {
         setRequestDataParameter("nid", adConfig.getNid()); // "1520"
         setRequestDataParameter("pid", adConfig.getPid()); // "42800"
         setRequestDataParameter("sid", adConfig.getSid()); // "45852"
-        setRequestDataParameter("zone", adConfig.getOfferWallZoneId()); // "61899"
+        setRequestDataParameter("zone", String.valueOf(adZone.getZoneId()));
         setRequestDataParameter("subid", subId);
         setRequestDataParameter("opt1", "123");
         setRequestDataParameter("opt2", "123");

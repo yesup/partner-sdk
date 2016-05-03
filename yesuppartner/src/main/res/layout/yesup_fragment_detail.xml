@@ -80,7 +80,7 @@
                         android:layout_height="80dp"
                         android:layout_marginLeft="0dp"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/appicon" />
+                        android:src="@drawable/yesup_placeholder" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -88,7 +88,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border"
+                android:background="@drawable/yesup_border"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -102,7 +102,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="30dp"
-                        android:src="@drawable/detail_icon"/>
+                        android:src="@drawable/yesup_detail_icon"/>
                     <TextView
                         android:text="Detail"
                         android:textColor="#000000"
@@ -129,14 +129,14 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:src="@drawable/line2" />
+                    android:src="@drawable/yesup_line2" />
             </LinearLayout>
 
             <!-- bottom information -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border"
+                android:background="@drawable/yesup_border"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -151,7 +151,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="30dp"
-                        android:src="@drawable/terms_icon"/>
+                        android:src="@drawable/yesup_terms_icon"/>
                     <TextView
                         android:text="Terms and Conditions"
                         android:textColor="#000000"

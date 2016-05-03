@@ -38,7 +38,7 @@ public class OfferWallAd extends YesupAdBase {
         setRequestDataParameter("nid", adConfig.getNid()); // "1520"
         setRequestDataParameter("pid", adConfig.getPid()); // "42800"
         setRequestDataParameter("sid", adConfig.getSid()); // "45852"
-        setRequestDataParameter("zone", adConfig.getOfferWallZoneId()); // "61899"
+        setRequestDataParameter("zone", String.valueOf(adZone.getZoneId()));
         setRequestDataParameter("subid", subId);
         setRequestDataParameter("opt1", opt1);
         setRequestDataParameter("opt2", opt2);
@@ -72,6 +72,7 @@ public class OfferWallAd extends YesupAdBase {
                 offerPage.clean();
             }
             offerPage = tmpOfferPage;
+            offerPage.setZoneId(adZone.getZoneId());
         } else {
             if (offerPage == null) {
                 return false;
@@ -135,16 +136,20 @@ public class OfferWallAd extends YesupAdBase {
         return offerPage.getList().get(index);
     }
 
-    public boolean offerPageHasExpired() {
+    public boolean offerPageHasExpired(int curZoneId) {
         //return true;
         ///*
         boolean expired = false;
         if (offerPage == null) {
             expired = true;
         }else {
-            long curTime = getCurTimeByExpireFormat(); // change to minites
-            long expireTime = offerPage.getExpire();
-            if (curTime > expireTime){
+            if (curZoneId == offerPage.getZoneId()) {
+                long curTime = getCurTimeByExpireFormat(); // change to minites
+                long expireTime = offerPage.getExpire();
+                if (curTime > expireTime) {
+                    expired = true;
+                }
+            } else {
                 expired = true;
             }
         }

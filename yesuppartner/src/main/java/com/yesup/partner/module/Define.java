@@ -5,8 +5,15 @@ package com.yesup.partner.module;
  * Created by derek on 3/2/16.
  */
 public class Define {
-    public static final String SDK_VERSION = "1.1.2";
+    public static final String SDK_VERSION = "1.1.3";
 
+    /**
+     * Message Parameters Define
+     * what: message value below
+     * arg1: request type
+     * arg2: option
+     * obj:  object who requested
+     */
     public static final int MSG_AD_REQUEST_PROGRESSED = 2001;
     public static final int MSG_AD_REQUEST_SUCCESSED = 2002;
     public static final int MSG_AD_REQUEST_FAILED = 2003;

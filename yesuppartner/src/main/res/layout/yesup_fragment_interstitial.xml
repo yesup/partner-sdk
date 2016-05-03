@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="300dp"
     android:layout_height="400dp"
-    android:background="@drawable/border_interstitial">
+    android:background="@drawable/yesup_border_interstitial">
 
     <RelativeLayout
         android:id="@+id/layout_ad_container"

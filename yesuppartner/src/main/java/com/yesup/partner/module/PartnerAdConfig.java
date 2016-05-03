@@ -10,7 +10,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
 public final class PartnerAdConfig {
     public static final String TAG = "ADCONFIGURE";
 
@@ -199,7 +198,7 @@ public final class PartnerAdConfig {
         return httpHost;
     }
 
-    public String getOfferWallZoneId() {
+    public String getOfferWallDefaultZoneId() {
         int zoneId = 0;
         for (Zone z : zones) {
             if (z.formats.equals("4")){
@@ -207,28 +206,11 @@ public final class PartnerAdConfig {
                 break;
             }
         }
-        return Integer.toString(zoneId);
-    }
-
-    public String getInterstitialZoneId(String formats, String display) {
-        int zoneId = 0;
-        for (Zone z : zones) {
-            if (z.formats.equals(formats) && z.display.equals(display)){
-                zoneId = z.id;
-                break;
-            }
+        if (0 == zoneId) {
+            return "";
+        } else {
+            return Integer.toString(zoneId);
         }
-        return Integer.toString(zoneId);
-    }
-    public String getInterstitialZoneSize(String formats, String display) {
-        String zoneSize = "";
-        for (Zone z : zones) {
-            if (z.formats.equals(formats) && z.display.equals(display)){
-                zoneSize = z.size;
-                break;
-            }
-        }
-        return zoneSize;
     }
 
     public Zone getZoneById(int zoneId) {

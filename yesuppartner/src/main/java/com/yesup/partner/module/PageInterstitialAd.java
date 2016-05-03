@@ -42,13 +42,13 @@ public class PageInterstitialAd extends YesupAdBase {
         setRequestDataParameter("nid", adConfig.getNid());
         setRequestDataParameter("pid", adConfig.getPid());
         setRequestDataParameter("sid", adConfig.getSid());
-        setRequestDataParameter("zone", adConfig.getInterstitialZoneId("3","105"));
+        setRequestDataParameter("zone", String.valueOf(adZone.getZoneId()));
         setRequestDataParameter("subid", subId);
         setRequestDataParameter("opt1", opt1);
         setRequestDataParameter("opt2", opt2);
         setRequestDataParameter("opt3", opt3);
         setRequestDataParameter("uuid", new Uuid(context).getUUID());
-        setRequestDataParameter("adtype", adConfig.getInterstitialZoneSize("3","105"));
+        setRequestDataParameter("adtype", adZone.getSize());
     }
 
     public boolean parseResponseDataWithJson() {

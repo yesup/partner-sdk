@@ -50,7 +50,7 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
         Log.v("Meshbean", "DetailFragment OnCreateView");
-        View view = inflater.inflate(R.layout.fragment_detail, container, false);
+        View view = inflater.inflate(R.layout.yesup_fragment_detail, container, false);
         ScrollView sv = (ScrollView)view.findViewById(R.id.DetailScrollView);
         sv.smoothScrollTo(0, 0);
 

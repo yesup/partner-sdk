@@ -18,6 +18,8 @@ public final class YesupAdFactory {
             ad = new PageInterstitialAd();
         } else if (zone.display.equals("105") && zone.formats.equals("2")) {
             ad = new ImageInterstitialAd();
+        } else {
+            throw new RuntimeException("[YESUP SDK]Not support AD type["+zone.formats+","+zone.display+"]");
         }
 
         if (ad != null) {

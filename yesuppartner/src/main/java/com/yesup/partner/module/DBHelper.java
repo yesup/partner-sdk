@@ -13,12 +13,13 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 10;
+    public static final int DATABASE_VERSION = 11;
     public static final String DATABASE_NAME = "meshbean.db";
 
     private static final String SQL_CREATE_TABLE_OFFERPAGES =
             "CREATE TABLE "+OfferPages.TABLE_NAME+" ("+OfferPages._ID+" INTEGER PRIMARY KEY,"
             + OfferPages.COLUMN_NAME_PAGETYPE + " INTEGER,"
+            + OfferPages.COLUMN_NAME_ZONEID + " INTEGER,"
             + OfferPages.COLUMN_NAME_EXPIRE + " INTEGER,"
             + OfferPages.COLUMN_NAME_REFRESH + " INTEGER,"
             + OfferPages.COLUMN_NAME_TOTAL + " INTEGER,"
@@ -104,6 +105,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(OfferPages.COLUMN_NAME_PAGETYPE, OfferPageModel.PAGE_TYPE_OFFER);
+        values.put(OfferPages.COLUMN_NAME_ZONEID, offerPage.getZoneId());
         values.put(OfferPages.COLUMN_NAME_EXPIRE, offerPage.getExpire());
         values.put(OfferPages.COLUMN_NAME_REFRESH, offerPage.getRefresh());
         values.put(OfferPages.COLUMN_NAME_TOTAL, offerPage.getTotal());
@@ -123,7 +125,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public OfferPageModel readOfferPageByType(int pageType) {
         OfferPageModel offerPage = null;
         SQLiteDatabase db = getWritableDatabase();
-        String[] projection = {OfferPages.COLUMN_NAME_EXPIRE,
+        String[] projection = {OfferPages.COLUMN_NAME_ZONEID,
+                OfferPages.COLUMN_NAME_EXPIRE,
                 OfferPages.COLUMN_NAME_REFRESH,
                 OfferPages.COLUMN_NAME_TOTAL,
                 OfferPages.COLUMN_NAME_INCENT_RATE,
@@ -138,6 +141,7 @@ public class DBHelper extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             offerPage = new OfferPageModel();
             offerPage.setPageType(pageType);
+            offerPage.setZoneId(cursor.getInt(cursor.getColumnIndex(OfferPages.COLUMN_NAME_ZONEID)));
             offerPage.setExpire(cursor.getLong(cursor.getColumnIndex(OfferPages.COLUMN_NAME_EXPIRE)));
             offerPage.setRefresh(cursor.getInt(cursor.getColumnIndex(OfferPages.COLUMN_NAME_REFRESH)));
             offerPage.setTotal(cursor.getInt(cursor.getColumnIndex(OfferPages.COLUMN_NAME_TOTAL)));
@@ -512,6 +516,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static abstract class OfferPages implements BaseColumns {
         public static final String TABLE_NAME = "offerpages";
         public static final String COLUMN_NAME_PAGETYPE = "pagetype";
+        public static final String COLUMN_NAME_ZONEID = "zone_id";
         public static final String COLUMN_NAME_EXPIRE = "expire";
         public static final String COLUMN_NAME_REFRESH = "refresh";
         public static final String COLUMN_NAME_TOTAL = "total";
