@@ -109,9 +109,9 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
     }
 
     private void showYesupAd(int zoneId) {
-        String subId = "123123";  // optional, you app user id
-        String optValue1 = "";    // optional, additional event value you want to keep track
-        String optValue2 = "";    // optional, additional event value you want to keep track
+        String subId = "derek";  // optional, you app user id
+        String optValue1 = "ipadress";    // optional, additional event value you want to keep track
+        String optValue2 = "deviceid";    // optional, additional event value you want to keep track
         int adType = yesupAd.getAdTypeByZoneId(zoneId);
         switch (adType) {
             case Define.AD_TYPE_OFFER_WALL:

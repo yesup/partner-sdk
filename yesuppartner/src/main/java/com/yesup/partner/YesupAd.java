@@ -48,6 +48,11 @@ public class YesupAd {
         center.setSubId(subId);
     }
 
+    public void setCuid(String cuid) {
+        DataCenter center = DataCenter.getInstance();
+        center.setCuid(cuid);
+    }
+
     public void setOption(String opt1, String opt2) {
         DataCenter center = DataCenter.getInstance();
         center.setOption(opt1, opt2);

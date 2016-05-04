@@ -5,7 +5,7 @@ package com.yesup.partner.module;
  * Created by derek on 3/2/16.
  */
 public class Define {
-    public static final String SDK_VERSION = "1.1.3";
+    public static final String SDK_VERSION = "1.1.4";
 
     /**
      * Message Parameters Define

@@ -15,9 +15,18 @@ public class OfferJumpUrlAd extends YesupAdBase {
     private static final String TAG = "OfferJumpUrlAd";
 
     private OfferModel offer;
+    private String cuid = "";
 
     public void setOffer(OfferModel offer) {
         this.offer = offer;
+    }
+
+    public void setCuid(String cuid) {
+        if (cuid != null && !cuid.isEmpty()) {
+            this.cuid = cuid;
+        } else {
+            this.cuid = "";
+        }
     }
 
     @Override
@@ -38,13 +47,13 @@ public class OfferJumpUrlAd extends YesupAdBase {
         setRequestDataParameter("sid", adConfig.getSid()); // "45852"
         setRequestDataParameter("zone", String.valueOf(adZone.getZoneId()));
         setRequestDataParameter("subid", subId);
-        setRequestDataParameter("opt1", "123");
-        setRequestDataParameter("opt2", "123");
+        setRequestDataParameter("opt1", opt1);
+        setRequestDataParameter("opt2", opt2);
         setRequestDataParameter("adnid", Integer.toString(offer.getNid()));
         setRequestDataParameter("cid", Integer.toString(offer.getCid()));
         setRequestDataParameter("ad", Integer.toString(offer.getCvid()));
         setRequestDataParameter("fmt", "4");
-        setRequestDataParameter("cuid", "123");
+        setRequestDataParameter("cuid", cuid);
     }
 
     @Override

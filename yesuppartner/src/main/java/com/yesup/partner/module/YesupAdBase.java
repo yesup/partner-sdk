@@ -75,6 +75,14 @@ public abstract class YesupAdBase extends YesupHttpRequest {
         }
     }
 
+    public final int getAdZoneId() {
+        if (adZone == null) {
+            return 0;
+        } else {
+            return adZone.getZoneId();
+        }
+    }
+
     public void sendMsgToHandler(int what, int arg1, int arg2, Object object) {
         if (msgHandler == null){
             return;

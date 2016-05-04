@@ -39,6 +39,7 @@ public class DataCenter {
     private static String subId;
     private static String option1 = "";
     private static String option2 = "";
+    private static String cuid = "";
 
     private OfferWallAd offerWallAd;
     private YesupAdBase interstitialAd;
@@ -46,7 +47,7 @@ public class DataCenter {
     private OfferWallPartnerHelper offerWallPartnerHelper = null;
 
     public void init(Context context) {
-        if (this.context != null){
+        if (this.context != null) {
             return;
         }
         this.context = context;
@@ -92,6 +93,14 @@ public class DataCenter {
             option2 = opt2.substring(0, 80);
         } else {
             option2 = opt2;
+        }
+    }
+
+    public void setCuid(String cuid) {
+        if (cuid != null && !cuid.isEmpty()) {
+            this.cuid = cuid;
+        } else {
+            this.cuid = "";
         }
     }
 
@@ -191,8 +200,14 @@ public class DataCenter {
         OfferJumpUrlAd jumpUrlAd = new OfferJumpUrlAd();
         jumpUrlAd.setRequestId(offer.getLocalReference());
         jumpUrlAd.setOffer(offer);
+        jumpUrlAd.setCuid(cuid);
         jumpUrlAd.setDbHelper(dbHelper);
-        jumpUrlAd.initAdConfig(context, config, null, subId, msgTransfer, option1, option2);
+        PartnerAdConfig.Zone zone = null;
+        if (offerWallAd != null) {
+            int zoneId = offerWallAd.getAdZoneId();
+            zone = config.getZoneById(zoneId);
+        }
+        jumpUrlAd.initAdConfig(context, config, zone, subId, msgTransfer, option1, option2);
         jumpUrlAd.initAdData();
         jumpUrlAd.sendRequest(DataCenter.getInstance().getDownloadManager());
         return 0;
@@ -251,7 +266,7 @@ public class DataCenter {
                     + "&cid=" + offer.getCid()
                     + "&tz=" + config.getNid() + "-" + config.getSid()
                     + "&cluid=" + offer.getJumpUid();
-            Log.v("Meshbean", "Report Url:"+reportUrl);
+            Log.i(TAG, "Report Url:"+reportUrl);
             try {
                 URL url = new URL(reportUrl);
                 connection = (HttpURLConnection)url.openConnection();
@@ -279,10 +294,10 @@ public class DataCenter {
                         response = response + s;
                     }
                     success = true;
-                    Log.v("Meshbean", "Report Success, Response:"+response);
+                    Log.v(TAG, "Report Success, Response:"+response);
                 }else{
                     success = false;
-                    Log.v("Meshbean", "Connect failed[HTTP-"+connection.getResponseCode()+"]:"+Define.SERVER_HOST);
+                    Log.v(TAG, "Connect failed[HTTP-"+connection.getResponseCode()+"]:"+Define.SERVER_HOST);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

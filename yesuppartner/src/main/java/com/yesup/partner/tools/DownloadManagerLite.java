@@ -18,6 +18,7 @@ import java.util.Map;
  * Created by derek on 2/26/16.
  */
 public class DownloadManagerLite {
+    public static final String TAG = "DownloadManagerLite";
     public static final int MAX_CONCURRENT_LIMIT = 20;
 
     private boolean managerHasStarted = false;
@@ -32,7 +33,7 @@ public class DownloadManagerLite {
             this.maxConcurrentSize = 1;
         }
         initThreadPool();
-        Log.v("DownloadManagerLite", "New DownloadManagerLite, Pool Size:"+this.maxConcurrentSize);
+        Log.v(TAG, "New DownloadManagerLite, Pool Size:"+this.maxConcurrentSize);
     }
 
     public int getMaxConcurrentSize() {
@@ -49,7 +50,7 @@ public class DownloadManagerLite {
             requestQueue.add(request);
             requestQueue.notifyAll();
         }
-        Log.v("DownloadManagerLite", "New Request["+request.getRequestId()+"]:"
+        Log.v(TAG, "New Request["+request.getRequestId()+"]:"
                 +request.getDownloadUrl()+"->"+request.getSaveFileName());
         return request.getRequestId();
     }
@@ -60,14 +61,14 @@ public class DownloadManagerLite {
         }
         if (maxConcurrentSize <= 0 || maxConcurrentSize > MAX_CONCURRENT_LIMIT
                 && workers == null){
-            Log.v("DownloadManagerLite", "Start Failed");
+            Log.v(TAG, "Start Failed");
             return false;
         }
         for (int i=0; i<maxConcurrentSize; i++){
             workers[i].start();
         }
         managerHasStarted = true;
-        Log.v("DownloadManagerLite", "Start Success");
+        Log.v(TAG, "Start Success");
         return true;
     }
 
@@ -139,7 +140,7 @@ public class DownloadManagerLite {
                     }
                 }
                 if (request != null) {
-                    Log.v("DownloadManagerLite", "Begin download:"+request.getDownloadUrl());
+                    Log.v(TAG, "Begin download:"+request.getDownloadUrl());
                     // download file
                     HttpURLConnection connection = null;
                     InputStream input = null;
@@ -162,6 +163,7 @@ public class DownloadManagerLite {
                         // set HTTP header parameters
                         for (Map.Entry<String, String> entry : request.getRequestHeaderParameter().entrySet()){
                             connection.setRequestProperty(entry.getKey(), entry.getValue());
+                            Log.d(TAG, "SetRequestProperty:"+entry.getKey()+"="+entry.getValue());
                         }
                         // begin connecting
                         connection.connect();
@@ -178,6 +180,7 @@ public class DownloadManagerLite {
                                 }
                                 index++;
                                 os.write(parameter.getBytes());
+                                Log.d(TAG, "SendDataBody:"+parameter);
                             }
                             //os.write( ("\r\n").getBytes() );
                         }
