@@ -1,85 +1,76 @@
 # partner-sdk
-###### The Lastest SDK Version: 1.0.160318.01
+###### The Lastest SDK Version: 1.1.4
 Yesup Partner SDK for Android is the easiest way to integrate your Android app with Yesup.
 ## Installation
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step1: Download "yesuppartner.aar"](#step1)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step2: Copy yesuppartner.aar](#step2)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step3: Copy adconfigure.xml](#step3)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step4: Open the app's build.gradle file](#step4)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step5: Add content in repositories" section](#step5)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step6: Add content in dependencies section](#step6)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step7: Modify your AndroidManifest.xml file](#step7)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step8: Add content in AndroidManifest.xml](#step8)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step9: Startup Yesup OfferWall](#step9)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step1: Download SDK adconfigure.xml](#step1)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step2: Copy adconfigure.xml](#step3)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step3: Open the app's build.gradle file](#step3)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step4: Make sure that you have used the JCenter" section](#step4)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step5: Add content in dependencies section](#step5)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step6: Add content in AndroidManifest.xml](#step6)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step7: Startup Yesup OfferWall](#step7)<br/>
 <hr/>
 
 <div id="step1"></div>
-##### **Step 1** Download yesup partner library file **_"yesuppartner.aar"_** and config file "adconfigure.xml".<br/><br/>
+##### **Step 1** Download yesup partner config file "adconfigure.xml".<br/><br/>
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide5.png "step1")<br/><br/><br/>
 
 <div id="step2"></div>
-##### **Step 2** Copy yesuppartner.aar file to your **"libs"** directory of project.<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide1.png "step2")<br/><br/><br/>
+#####**Step 2** Copy **_"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
+**_Note: Do not modify this file name!!!_**<br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide7.png "step2")<br/><br/><br/>
 
 <div id="step3"></div>
-#####**Step 3** Copy **_"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
-**_Note: Do not modify this file name!!!_**<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide7.png "step3")<br/><br/><br/>
+##### **Step 3** In **Android Studio**, open the app's _"build.gradle"_ file in the editor.<br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide6.png "step3")<br/><br/><br/>
 
 <div id="step4"></div>
-##### **Step 4** In **Android Studio**, open the app's _"build.gradle"_ file in the editor.<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide6.png "step4")<br/><br/><br/>
-
-<div id="step5"></div>
-##### **step 5** Add **"repositories" section**, as follows:
+##### **step 4** Make sure that you have used the JCenter, as follows:
 ```python
-repositories {
-    flatDir {
-        dirs 'libs'
+allprojects {
+    repositories {
+        jcenter()
     }
 }
 ```
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide2.png "step3")<br/><br/><br/>
-<div id="step6"></div>
-##### **Step 6** Add in the following line to the dependencies section.
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide2.png "step4")<br/><br/><br/>
+<div id="step5"></div>
+##### **Step 5** Add in the following line to the dependencies section.
 
 ```python
-compile (name: 'yesuppartner', ext: 'aar')
+dependencies {
+    compile 'com.yesup.partner:yesuppartner:1.1.4'
+}
 ```
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide8.png "step6")<br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide8.png "step5")<br/>
 Now the classes and methods in the Yesup Partner Library can be used in your app.<br/><br/><br/>
 
-<div id="step7"></div>
-##### **Step 7** Modify your AndroidManifest.xml file, add in the following content:
-
-```python
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-```
-<br/><br/><br/>
-
-<div id="step8"></div>
-#####**Step 8** Add in the following line to your **_"AndroidManifest.xml"_** to declair the Activity:
+<div id="step6"></div>
+#####**Step 6** Add in the following line to your **_"AndroidManifest.xml"_** to declair the Activity:
 
 <activity android:name="com.yesup.partner.OfferWallActivity" android:label="OfferWall" />
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step7")<br/><br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step6")<br/><br/><br/>
 
-<div id="step9"></div>
-##### **Step 9** Now you can **startup Yesup OfferWall** using below code:<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.1 import com.yesup.partner.OfferWall;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.2 In onCreate method, new a OfferWall instance<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.3 In onResume method, call OfferWall's onResume method<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.4 You use OfferWall's show method to startup OfferWall interface.<br/>
+<div id="step7"></div>
+##### **Step 7** Now you can **startup Yesup OfferWall** using below code:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.1 import com.yesup.partner.YesupAd;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.2 In onCreate method, new a YesupAd instance.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.3 In onResume method, call YesupAd's onResume method.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.4 Call YesupAd.getAllZoneList() to get all ad zones which you can show, there are ad's type and id in the zone.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.5 new and set a OfferWallHelper object, you can control the view of rewards button(rewards and icon).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7.6 Select one zone which type is Define.AD_TYPE_OFFER_WALL and call YesupAd.showOfferWall() method to startup OfferWall interface.<br/>
 
-Example code:
+Example code:(Entire code in the DemoActivity.java)
 ```python
-import com.yesup.partner.OfferWall;
+import com.yesup.partner.YesupAd;
+import com.yesup.partner.module.Define;
+import com.yesup.partner.module.PartnerAdConfig;
 
 public class MainActivity extends AppCompatActivity {
 
-    private OfferWall offerWall;
+    private YesupAd yesupAd;
+    private ArrayList<PartnerAdConfig.Zone> zoneList;
+    private OfferWallHelper offerWallHelper = new OfferWallHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,26 +79,64 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // new OfferWall instance
-        offerWall = new OfferWall(this);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String subId = "123123";
-                offerWall.show(subId);
-            }
-        });
+        // new yesup ad instance
+        yesupAd = new YesupAd(this);
+        yesupAd.setOfferWallPartnerHelper(offerWallHelper);
+        zoneList = yesupAd.getAllZoneList();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        offerWall.onResume();
+        yesupAd.onResume();
+    }
+
+    protected void showOfferWall() {
+
+        String subId = "123123";  // optional, you app user id
+        String optValue1 = "";    // optional, additional event value you want to keep track
+        String optValue2 = "";    // optional, additional event value you want to keep track
+
+        for (int i=0; i<zoneList.size(); i++) {
+            int zoneId = zoneList.get(i).id;
+            int adType = yesupAd.getAdTypeByZoneId(zoneId);
+            switch (adType) {
+                case Define.AD_TYPE_OFFER_WALL:
+                    yesupAd.showOfferWall(subId, zoneId, optValue1, optValue2);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+public class OfferWallHelper extends OfferWallPartnerHelper {
+
+    public OfferWallHelper(Context context) {
+        super(context);
+    }
+
+    @Override
+    public String calculateReward(int payout, int incentRate) {
+        String result = "0";
+        double reward = (double)payout * (double)incentRate / 100000.0D;
+        if(0.0D == reward) {
+            result = "";
+        } else {
+            result = (new DecimalFormat("#.##")).format(reward);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Drawable getRewardIcon() {
+        Drawable drawable = context.getResources().getDrawable(R.drawable.coins);
+        return drawable;
     }
 
 }
 
 ```
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide4.png "step9")<br/><br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide4.png "step7")<br/><br/><br/>
