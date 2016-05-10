@@ -3,7 +3,7 @@
 Yesup Partner SDK for Android is the easiest way to integrate your Android app with Yesup.
 ## Installation
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step1: Download SDK adconfigure.xml](#step1)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step2: Copy adconfigure.xml](#step3)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step2: Copy adconfigure.xml](#step2)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step3: Open the app's build.gradle file](#step3)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step4: Make sure that you have used the JCenter" section](#step4)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step5: Add content in dependencies section](#step5)<br/>
@@ -47,6 +47,7 @@ Now the classes and methods in the Yesup Partner Library can be used in your app
 
 <div id="step6"></div>
 #####**Step 6** Add in the following line to your **_"AndroidManifest.xml"_** to declair the Activity:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You can modify the android:label,this property will display on the title of activity.<br/>
 
 <activity android:name="com.yesup.partner.OfferWallActivity" android:label="OfferWall" />
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step6")<br/><br/><br/>
