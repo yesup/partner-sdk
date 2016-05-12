@@ -50,7 +50,7 @@ Now the classes and methods in the Yesup Partner Library can be used in your app
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You can modify the android:label,this property will display on the title of activity.<br/>
 
 <activity android:name="com.yesup.partner.OfferWallActivity" android:label="OfferWall" />
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step6")<br/><br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide4.png "step6")<br/><br/><br/>
 
 <div id="step7"></div>
 ##### **Step 7** Now you can **startup Yesup OfferWall** using below code:<br/>
