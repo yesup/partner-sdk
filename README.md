@@ -46,7 +46,7 @@ dependencies {
 Now the classes and methods in the Yesup Partner Library can be used in your app.<br/><br/><br/>
 
 <div id="step6"></div>
-#####**Step 6** Add in the following line to your **_"AndroidManifest.xml"_** to declair the Activity:
+#####**Step 6** Add in the following line to your **_"AndroidManifest.xml"_** to declare the Activity:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You can modify the android:label,this property will display on the title of activity.<br/>
 
 <activity android:name="com.yesup.partner.OfferWallActivity" android:label="OfferWall" />
