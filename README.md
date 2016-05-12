@@ -4,7 +4,7 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 ## Installation
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step1: Download SDK adconfigure.xml](#step1)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step2: Copy adconfigure.xml](#step2)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step3: Open the app's build.gradle file](#step3)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step3: Open the project's build.gradle file](#step3)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step4: Make sure that you have used the JCenter" section](#step4)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step5: Add content in dependencies section](#step5)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step6: Add content in AndroidManifest.xml](#step6)<br/>
@@ -21,8 +21,8 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 ![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide7.png "step2")<br/><br/><br/>
 
 <div id="step3"></div>
-##### **Step 3** In **Android Studio**, open the app's _"build.gradle"_ file in the editor.<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide6.png "step3")<br/><br/><br/>
+##### **Step 3** In **Android Studio**, open the project's _"build.gradle"_ file in the editor.<br/><br/>
+![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step3")<br/><br/><br/>
 
 <div id="step4"></div>
 ##### **step 4** Make sure that you have used the JCenter, as follows:
