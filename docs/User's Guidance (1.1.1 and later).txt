@@ -1,0 +1,189 @@
+Yesup Partner SDK User's Guidance
+The lastest SDK version: 1.1.4
+
+1 Download yesup partner config file "adconfigure.xml".
+
+2 Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.
+Note: Do not modify this file name!!!
+
+3 In Android Studio, open the build.gradle file which is in your project's root directory,
+  make sure that you have used the JCenter like below:
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+
+4 In Android Studio, open the app's build.gradle file in the editor.
+  Add a "dependencies" source, as follows:
+
+dependencies {
+    compile 'com.yesup.partner:yesuppartner:1.1.4'
+}
+
+Now the classes and methods in the Yesup Partner Library can be used in your app.
+
+5 Add in the following line to your AndroidManifest.xml to declare the Activity:
+
+<activity android:name="com.yesup.partner.OfferWallActivity" android:label="Offer Wall" />
+
+You can modify the android:label,this property will display on the title of activity.
+
+6 Now you can startup Yesup OfferWall using below code:
+6.1 import com.yesup.partner.YesupAd;
+6.2 In onCreate method, new a YesupAd instance
+6.3 In onResume method, call YesupAd's onResume method
+6.4 Call YesupAd.getAllZoneList() to get all ad zones which you can show, there are ad's type and id in the zone.
+6.5 new and set a OfferWallHelper object, you can control the view of rewards button(rewards and icon).
+6.6 Select one zone which type is Define.AD_TYPE_OFFER_WALL and call YesupAd.showOfferWall() method to startup OfferWall interface.
+
+Example code:(Entire code in the DemoActivity.java)
+import com.yesup.partner.YesupAd;
+import com.yesup.partner.module.Define;
+import com.yesup.partner.module.PartnerAdConfig;
+
+public class MainActivity extends AppCompatActivity {
+
+    private YesupAd yesupAd;
+    private ArrayList<PartnerAdConfig.Zone> zoneList;
+    private OfferWallHelper offerWallHelper = new OfferWallHelper(this);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // new yesup ad instance
+        yesupAd = new YesupAd(this);
+        yesupAd.setOfferWallPartnerHelper(offerWallHelper);
+        zoneList = yesupAd.getAllZoneList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        yesupAd.onResume();
+    }
+
+    protected void showOfferWall() {
+
+        String subId = "123123";  // optional, you app user id
+        String optValue1 = "";    // optional, additional event value you want to keep track
+        String optValue2 = "";    // optional, additional event value you want to keep track
+
+        for (int i=0; i<zoneList.size(); i++) {
+            int zoneId = zoneList.get(i).id;
+            int adType = yesupAd.getAdTypeByZoneId(zoneId);
+            switch (adType) {
+                case Define.AD_TYPE_OFFER_WALL:
+                    yesupAd.showOfferWall(subId, zoneId, optValue1, optValue2);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+public class OfferWallHelper extends OfferWallPartnerHelper {
+
+    public OfferWallHelper(Context context) {
+        super(context);
+    }
+
+    @Override
+    public String calculateReward(int payout, int incentRate) {
+        String result = "0";
+        double reward = (double)payout * (double)incentRate / 100000.0D;
+        if(0.0D == reward) {
+            result = "";
+        } else {
+            result = (new DecimalFormat("#.##")).format(reward);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Drawable getRewardIcon() {
+        Drawable drawable = context.getResources().getDrawable(R.drawable.coins);
+        return drawable;
+    }
+
+}
+
+
+
+7 Also you can startup Yesup Interstitial AD using below code:
+7.1 Import package needed.
+7.2 In order to use Interstitial AD, you must implement IInterstitialListener interface.
+7.3 In onCreate method, new an YesupAd and MyStatusView instance, MyStatusView object can control the view that below the intersitial ad.
+7.4 In onResume method, call YesupAd's onResume method
+7.5 Call YesupAd.getAllZoneList() to get all ad zones which you can show, there are ad's type and id in the zone.
+7.6 new and set a OfferWallHelper object, you can control the view of rewards button(rewards and icon).
+7.7 Select one zone which type is Define.AD_TYPE_INTERSTITIAL_WEBPAGE or Define.AD_TYPE_INTERSTITIAL_IMAGE and call YesupAd.showInterstitial() method to startup Interstitial interface.
+
+Example code:(Entire code in the DemoActivity.java)
+import com.yesup.partner.YesupAd;
+import com.yesup.partner.interstitial.IInterstitialListener;
+import com.yesup.partner.interstitial.PartnerBaseView;
+import com.yesup.partner.module.Define;
+import com.yesup.partner.module.PartnerAdConfig;
+
+public class MainActivity extends AppCompatActivity implements IInterstitialListener {
+
+    private YesupAd yesupAd;
+    private ArrayList<PartnerAdConfig.Zone> zoneList;
+    private OfferWallHelper offerWallHelper = new OfferWallHelper(this);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // new yesup ad instance
+        yesupAd = new YesupAd(this);
+        yesupAd.setOfferWallPartnerHelper(offerWallHelper);
+        zoneList = yesupAd.getAllZoneList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        yesupAd.onResume();
+    }
+
+    protected void showInterstitial() {
+
+        String subId = "123123";  // optional, you app user id
+        String optValue1 = "";    // optional, additional event value you want to keep track
+        String optValue2 = "";    // optional, additional event value you want to keep track
+
+        for (int i=0; i<zoneList.size(); i++) {
+            int zoneId = zoneList.get(i).id;
+            int adType = yesupAd.getAdTypeByZoneId(zoneId);
+            switch (adType) {
+                case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
+                    yesupAd.showInterstitial(subId, zoneId, true, true, null, optValue1, optValue2);
+                    break;
+                case Define.AD_TYPE_INTERSTITIAL_IMAGE:
+                    yesupAd.showInterstitial(subId, zoneId, false, true, statusView, optValue1, optValue2);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+}
+
+
+
+
