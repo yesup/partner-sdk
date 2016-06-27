@@ -21,7 +21,7 @@
         android:supportsRtl="true">
         <!-- note: activity can declare in sdk inner
         <activity
-            android:name="com.yesup.partner.OfferWallActivity"
+            android:name="com.yesup.ad.offerwall.OfferWallActivity"
             android:label="Offer Wall" />
         -->
     </application>
