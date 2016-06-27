@@ -3,7 +3,7 @@ package com.yesup.sdk.demo;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import com.yesup.partner.activities.OfferWallPartnerHelper;
+import com.yesup.ad.offerwall.OfferWallPartnerHelper;
 
 import java.text.DecimalFormat;
 

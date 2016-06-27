@@ -20,7 +20,7 @@
         </activity>
         <!-- option: offer wall activity can declare in sdk inner -->
         <activity
-            android:name="com.yesup.partner.OfferWallActivity"
+            android:name="com.yesup.ad.offerwall.OfferWallActivity"
             android:label="Free Games" />
 
         <activity android:name=".SecondActivity"></activity>

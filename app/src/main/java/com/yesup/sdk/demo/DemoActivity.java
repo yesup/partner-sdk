@@ -25,20 +25,24 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.yesup.ad.framework.AdZone;
 import com.yesup.partner.YesupAd;
-import com.yesup.partner.interstitial.IInterstitialListener;
-import com.yesup.partner.interstitial.PartnerBaseView;
-import com.yesup.partner.module.Define;
-import com.yesup.partner.module.PartnerAdConfig;
+import com.yesup.ad.interstitial.IInterstitialListener;
+import com.yesup.ad.interstitial.PartnerBaseView;
+import com.yesup.ad.framework.Define;
+import com.yesup.partner.YesupInterstitial;
+import com.yesup.partner.YesupOfferWall;
 
 import java.util.ArrayList;
 
 
 public class DemoActivity extends AppCompatActivity implements IInterstitialListener {
     private final String TAG = "DemoActivity";
-    private YesupAd yesupAd;
-    private ArrayList<PartnerAdConfig.Zone> offerwallZoneList = new ArrayList<>();
-    private ArrayList<PartnerAdConfig.Zone> interstitialZoneList = new ArrayList<>();
+    private YesupOfferWall yesupOfferWall;
+    private YesupInterstitial yesupInterstitial;
+    private ArrayList<AdZone> offerwallZoneList = new ArrayList<>();
+    private ArrayList<AdZone> interstitialZoneList = new ArrayList<>();
+    private ArrayList<AdZone> bannerZoneList = new ArrayList<>();
 
     private OfferWallHelper offerWallHelper = new OfferWallHelper(this);
     private MyStatusView statusView;
@@ -54,24 +58,31 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // new yesup ad instance
-        yesupAd = new YesupAd(this);
-        Log.v(TAG, "YesupAD Version:"+yesupAd.getVersion());
-        yesupAd.setDebugMode(true);
-        yesupAd.setOfferWallPartnerHelper(offerWallHelper);
+        // new YesupOfferWall
+        yesupOfferWall = new YesupOfferWall(this);
+        Log.v(TAG, "YesupAD Version:"+yesupOfferWall.getVersion());
+        yesupOfferWall.setDebugMode(true);
+        yesupOfferWall.setOfferWallPartnerHelper(offerWallHelper);
+
+        // new YesupInterstitial
+        yesupInterstitial = new YesupInterstitial(this);
+        yesupInterstitial.setDebugMode(true);
+
         statusView = new MyStatusView(this);
 
-        ArrayList<PartnerAdConfig.Zone> zoneList = yesupAd.getAllZoneList();
+        ArrayList<AdZone> zoneList = yesupOfferWall.getAllZoneList();
         if (zoneList != null) {
             for (int i=0; i<zoneList.size(); i++) {
-                PartnerAdConfig.Zone zone = zoneList.get(i);
-                int adType = yesupAd.getAdTypeByZoneId(zone.id);
+                AdZone zone = zoneList.get(i);
+                int adType = YesupAd.getAdTypeByZoneId(zone.id);
                 if (Define.AD_TYPE_OFFER_WALL == adType) {
                     offerwallZoneList.add(zone);
                 } else if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == adType) {
                     interstitialZoneList.add(zone);
                 } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == adType) {
                     interstitialZoneList.add(zone);
+                } else if (Define.AD_TYPE_BANNER_IMAGE == adType) {
+                    bannerZoneList.add(zone);
                 }
             }
         }
@@ -86,6 +97,7 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
             }
         });
 
+        // offerwall zone list
         ListView offerwalllistZone = (ListView)findViewById(R.id.list_offerwall_zone);
         OfferwallZoneListAdapter adapter1 = new OfferwallZoneListAdapter(this);
         offerwalllistZone.setAdapter(adapter1);
@@ -96,6 +108,7 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
                 showYesupAd(zoneId);
             }
         });
+        // interstitial zone list
         ListView interstitiallistZone = (ListView)findViewById(R.id.list_interstitial_zone);
         InterstitialZoneListAdapter adapter2 = new InterstitialZoneListAdapter(this);
         interstitiallistZone.setAdapter(adapter2);
@@ -106,22 +119,37 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
                 showYesupAd(zoneId);
             }
         });
+        // banner zone list
+        ListView bannerlistZone = (ListView)findViewById(R.id.list_banner_zone);
+        BannerZoneListAdapter adapter3 = new BannerZoneListAdapter(this);
+        bannerlistZone.setAdapter(adapter3);
+        bannerlistZone.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int zoneId = bannerZoneList.get(position).id;
+                showYesupAd(zoneId);
+            }
+        });
     }
 
     private void showYesupAd(int zoneId) {
         String subId = "derek";  // optional, you app user id
         String optValue1 = "ipadress";    // optional, additional event value you want to keep track
         String optValue2 = "deviceid";    // optional, additional event value you want to keep track
-        int adType = yesupAd.getAdTypeByZoneId(zoneId);
+        int adType = YesupAd.getAdTypeByZoneId(zoneId);
         switch (adType) {
             case Define.AD_TYPE_OFFER_WALL:
-                yesupAd.showOfferWall(subId, zoneId, optValue1, optValue2);
+                yesupOfferWall.showOfferWall(zoneId);
                 break;
             case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
-                yesupAd.showInterstitial(subId, zoneId, true, true, null, optValue1, optValue2);
+                yesupInterstitial.showInterstitial(zoneId, true, true, null);
                 break;
             case Define.AD_TYPE_INTERSTITIAL_IMAGE:
-                yesupAd.showInterstitial(subId, zoneId, false, true, statusView, optValue1, optValue2);
+                yesupInterstitial.showInterstitial(zoneId, false, true, statusView);
+                break;
+            case Define.AD_TYPE_BANNER_IMAGE:
+                Intent intent = new Intent(this, SecondActivity.class);
+                startActivity(intent);
                 break;
             default:
                 Snackbar.make(null, "Unknown AD type", Snackbar.LENGTH_LONG)
@@ -133,7 +161,7 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
     @Override
     protected void onResume() {
         super.onResume();
-        yesupAd.onResume();
+        yesupOfferWall.onResume();
     }
 
     @Override
@@ -151,7 +179,9 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_banner) {
+            Intent intent = new Intent(this, SecondActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -314,7 +344,7 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
             }
             // set display content
             int zoneId = offerwallZoneList.get(position).id;
-            int adType = yesupAd.getAdTypeByZoneId(zoneId);
+            int adType = YesupAd.getAdTypeByZoneId(zoneId);
             switch (adType) {
                 case Define.AD_TYPE_OFFER_WALL:
                     if (105825 == zoneId) {
@@ -376,8 +406,73 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
             }
             // set display content
             int zoneId = interstitialZoneList.get(position).id;
-            int adType = yesupAd.getAdTypeByZoneId(zoneId);
+            int adType = YesupAd.getAdTypeByZoneId(zoneId);
             switch (adType) {
+                case Define.AD_TYPE_OFFER_WALL:
+                    if (105825 == zoneId) {
+                        holder.adType.setText("REGULAR OFFER WALL");
+                    } else {
+                        holder.adType.setText("INCENTIVE OFFER WALL");
+                    }
+                    break;
+                case Define.AD_TYPE_INTERSTITIAL_WEBPAGE:
+                    holder.adType.setText("TYPE:PAGE");
+                    break;
+                case Define.AD_TYPE_INTERSTITIAL_IMAGE:
+                    holder.adType.setText("TYPE:IMAGE");
+                    break;
+                default:
+                    holder.adType.setText("UNKNOWN");
+                    break;
+            }
+            holder.zoneId.setText( "ZONE ID:"+Integer.toString(zoneId) );
+            holder.show.setText("SHOW");
+
+            return convertView;
+        }
+    }
+    private class BannerZoneListAdapter extends BaseAdapter {
+        private LayoutInflater mInflater;
+
+        public BannerZoneListAdapter(Context context) {
+            this.mInflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return bannerZoneList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ZoneViewHolder holder;
+            if (convertView == null) {
+                convertView = mInflater.inflate(R.layout.item_zone_list, null);
+                holder = new ZoneViewHolder();
+                holder.adType = (TextView)convertView.findViewById(R.id.text_adtype);
+                holder.zoneId = (TextView)convertView.findViewById(R.id.text_zoneid);
+                holder.show = (TextView)convertView.findViewById(R.id.text_show);
+                convertView.setTag(holder);
+            } else {
+                holder = (ZoneViewHolder)convertView.getTag();
+            }
+            // set display content
+            int zoneId = bannerZoneList.get(position).id;
+            int adType = YesupAd.getAdTypeByZoneId(zoneId);
+            switch (adType) {
+                case Define.AD_TYPE_BANNER_IMAGE:
+                    holder.adType.setText("BANNER");
+                    break;
                 case Define.AD_TYPE_OFFER_WALL:
                     if (105825 == zoneId) {
                         holder.adType.setText("REGULAR OFFER WALL");

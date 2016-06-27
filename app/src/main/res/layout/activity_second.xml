@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:yesupad="http://schemas.android.com/apk/res-auto/com.yesup.partner"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.yesup.sdk.demo.SecondActivity">
 
-    <TextView
+    <com.yesup.ad.banner.BannerView
+        android:layout_alignParentTop="true"
+        android:layout_width="320dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        yesupad:yesup_banner_zone_id="72585"
+        android:id="@+id/yesupBannerAdTop" />
+
+    <!--TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/yesupBannerAdTop"
         android:text="This is the second activity."
         android:textColor="#ff0000"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textSize="30sp" /-->
+
+    <com.yesup.ad.banner.BannerView
+        android:layout_alignParentBottom="true"
+        android:layout_width="320dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        yesupad:yesup_banner_zone_id="72586"
+        android:id="@+id/yesupBannerAdBottom" />
 </RelativeLayout>
