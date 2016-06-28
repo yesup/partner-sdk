@@ -1,7 +1,7 @@
 package com.yesup.partner;
 
+import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 
 import com.yesup.ad.framework.AdZone;
 import com.yesup.ad.framework.DataCenter;
@@ -13,14 +13,14 @@ import java.util.ArrayList;
  * Created by derek on 4/20/16.
  */
 public class YesupAd {
-    protected FragmentActivity parentActivity;
+    protected Activity parentActivity;
     protected Context context;
 
     public YesupAd(Context context) {
         this.context = context;
     }
 
-    public YesupAd(FragmentActivity parentActivity) {
+    public YesupAd(Activity parentActivity) {
         this.parentActivity = parentActivity;
         this.context = parentActivity;
         DataCenter center = DataCenter.getInstance();

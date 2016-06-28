@@ -1,6 +1,6 @@
 package com.yesup.partner;
 
-import android.support.v4.app.FragmentActivity;
+import android.app.Activity;
 
 import com.yesup.ad.framework.Define;
 import com.yesup.ad.interstitial.Interstitial;
@@ -13,7 +13,7 @@ import com.yesup.ad.interstitial.PartnerSampleView;
 public class YesupInterstitial extends YesupAd {
     private Interstitial interstitial = Interstitial.getInstance();
 
-    public YesupInterstitial(FragmentActivity parentActivity) {
+    public YesupInterstitial(Activity parentActivity) {
         super(parentActivity);
     }
 

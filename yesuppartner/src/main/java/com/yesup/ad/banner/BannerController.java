@@ -2,6 +2,7 @@ package com.yesup.ad.banner;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.yesup.ad.framework.AdConfig;
 import com.yesup.ad.framework.AdController;
@@ -17,12 +18,11 @@ import java.util.HashMap;
  * Created by derek on 6/20/16.
  */
 public class BannerController extends AdController {
+    private String TAG = "BannerController";
     private BannerRequest bannerRequest = new BannerRequest();
     private int mBannerSize = 0;
     private int mCurBannerIndex = 0;
     private HashMap<Integer, BannerModel.Banner> bannerMap = new HashMap<>();
-    // in the view
-    BannerView.BannerSlidePagerAdapter mPagerAdapter;
 
     @Override
     protected void onInit(Context context, AdConfig config, AdZone zone, String subId,
@@ -37,7 +37,9 @@ public class BannerController extends AdController {
         DownloadManagerLite downloader = DataCenter.getInstance().getDownloadManager();
         if (bannerRequest.isReady()) {
             messageView(Define.MSG_AD_REQUEST_SUCCESSED, 0, 0, bannerRequest);
+            setDataReady(true);
         } else {
+            setDataReady(false);
             if (!bannerRequest.isBusy()) {
                 bannerRequest.initRequestData();
                 bannerRequest.sendRequest(downloader);
@@ -56,8 +58,11 @@ public class BannerController extends AdController {
 
     @Override
     protected void onRequestSuccess(YesupAdRequest adRequest, int result) {
+        initBannerMap();
         if (bannerRequest.isReady()) {
-            initBannerMap();
+            Log.d(TAG, "onRequestSuccess set data ready");
+            setDataReady(true);
+            Log.d(TAG, "onRequestSuccess and send message");
             messageView(Define.MSG_AD_REQUEST_SUCCESSED, 0, 0, adRequest);
         } else {
             setDataReady(false);
@@ -68,11 +73,8 @@ public class BannerController extends AdController {
     @Override
     protected void onRequestFailed(YesupAdRequest adRequest, int result) {
         setDataReady(false);
+        initBannerMap();
         messageView(Define.MSG_AD_REQUEST_FAILED, result, 0, adRequest);
-    }
-
-    public void setBannerSlidePagerAdapter(BannerView.BannerSlidePagerAdapter pagerAdapter) {
-        mPagerAdapter = pagerAdapter;
     }
 
     private void initBannerMap() {
@@ -84,8 +86,6 @@ public class BannerController extends AdController {
                 bannerMap.put(i, bannerModel.bannerList.get(i));
             }
         }
-        setDataReady(true);
-        mPagerAdapter.notifyDataSetChanged();
     }
 
     private void offsetBannerMap() {

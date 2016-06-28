@@ -15,7 +15,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import com.yesup.ad.banner.BannerModel;
 import com.yesup.partner.R;
 
 /**
@@ -24,6 +23,7 @@ import com.yesup.partner.R;
 public class HtmlPageView extends FrameLayout {
     private final String TAG = "HtmlPageView";
     private WebView mWebView;
+    private OnTouchListener onTouchListener;
     private MyWebViewClient viewClient = new MyWebViewClient();
 
     private int mId;
@@ -45,6 +45,10 @@ public class HtmlPageView extends FrameLayout {
         initPageView(context);
     }
 
+    public void setOnTouchListener(OnTouchListener l) {
+        onTouchListener = l;
+    }
+
     private void initPageView(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.yesup_fragment_htmlpage1, this);
@@ -58,27 +62,19 @@ public class HtmlPageView extends FrameLayout {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setAllowUniversalAccessFromFileURLs(true);
         }
-        mWebView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "webview on click");
-            }
-        });
         mWebView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        Log.d(TAG, "webview on touch down");
-                        // onClick
-                        //onWebviewClick();
-                        break;
-                    default:
-                        break;
+                if (null != onTouchListener) {
+                    onTouchListener.onTouch(getThisView(), event);
                 }
                 return false;
             }
         });
+    }
+
+    private View getThisView() {
+        return this;
     }
 
     public void onResume() {

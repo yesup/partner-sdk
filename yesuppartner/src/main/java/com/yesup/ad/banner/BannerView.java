@@ -1,7 +1,9 @@
 package com.yesup.ad.banner;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
@@ -9,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -116,10 +119,65 @@ public class BannerView extends FrameLayout {
 
         mViewPager = (ViewPager)view.findViewById(R.id.view_pager);
         mPagerAdapter = new BannerSlidePagerAdapter();
-        mViewPager.setAdapter(mPagerAdapter);
+        //mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new OnBannerPageChangeListener());
-        bannerController.setBannerSlidePagerAdapter(mPagerAdapter);
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.i(TAG, "OnTouch");
+                return false;
+            }
+        });
     }
+
+    private void onBannerClick(int id) {
+        BannerModel.Banner banner = bannerController.getBanner(id);
+        if (null != banner && !banner.clickUrl.isEmpty()) {
+            Log.d(TAG, "onBannerClick:" + banner.clickUrl);
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(banner.clickUrl));
+            getContext().startActivity(browserIntent);
+        }
+    }
+
+    private static final float MOVE_MAX_DISTANCE = (float) 10.1;
+    private float touchDownX, touchDownY;
+    private View.OnTouchListener onBannerTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            HtmlPageView pageView = (HtmlPageView)v;
+            int id = pageView.getId();
+            Log.i(TAG, "View ID: "+id);
+            float x,y;
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    touchDownX = event.getX();
+                    touchDownY = event.getY();
+                    Log.d(TAG, "ACTION_DOWN:"+touchDownX+"-"+touchDownY);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    x = event.getX();
+                    y = event.getY();
+                    Log.d(TAG, "ACTION_UP:"+x+"-"+y);
+                    float xx = Math.abs(x - touchDownX);
+                    float yy = Math.abs(y - touchDownY);
+                    Log.d(TAG, "MOVE DISTANCE:"+xx+"-"+yy);
+                    if (xx < MOVE_MAX_DISTANCE && yy < MOVE_MAX_DISTANCE) {
+                        // on click event
+                        onBannerClick(id);
+                    }
+                    break;
+                //case MotionEvent.ACTION_MOVE:
+                //    x = event.getX();
+                //    y = event.getY();
+                //    Log.d(TAG, "ACTION_MOVE:"+x+"-"+y);
+                //    break;
+                default:
+                    //Log.d(TAG, "ACTION_ "+event.getActionMasked());
+                    break;
+            }
+            return false;
+        }
+    };
 
     /**
      * message handler
@@ -130,11 +188,15 @@ public class BannerView extends FrameLayout {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case Define.MSG_AD_REQUEST_SUCCESSED:
+                    Log.d(TAG, "Request success and notify data set changed");
+                    mViewPager.setAdapter(mPagerAdapter);
+                    mPagerAdapter.notifyDataSetChanged();
                     if (null != bannerController && bannerController.isDataReady()) {
                         startSwitchTimer();
                     }
                     break;
                 case Define.MSG_AD_REQUEST_FAILED:
+                    //mPagerAdapter.notifyDataSetChanged();
                     Log.d(TAG, "Request failed");
                     break;
                 case Define.MSG_AD_REQUEST_IMPRESSED:
@@ -170,6 +232,7 @@ public class BannerView extends FrameLayout {
             Log.i(TAG, "instantiateItem: "+position);
             HtmlPageView view = new HtmlPageView(getContext());
             view.setId(position);
+            view.setOnTouchListener(onBannerTouchListener);
             if (null != bannerController && bannerController.isDataReady()) {
                 BannerModel.Banner banner = bannerController.getBanner(position);
                 view.setUrl(banner.imageUrl, banner.clickUrl);
@@ -204,7 +267,7 @@ public class BannerView extends FrameLayout {
     private void startSwitchTimer() {
         if (null != bannerController && bannerController.getBannerSize() > 0) {
             mSwitchTimer = new Timer();
-            mSwitchTimer.schedule(new SwitchTask(), 60000, 60000);
+            mSwitchTimer.schedule(new SwitchTask(), 6000, 6000);
         }
     }
     private void stopSwitchTimer() {

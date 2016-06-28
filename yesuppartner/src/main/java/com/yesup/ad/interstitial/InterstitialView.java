@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,15 +17,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -47,12 +41,11 @@ import com.yesup.ad.framework.Define;
 
 import java.io.File;
 
-
 /**
  * Created by derek on 4/12/16.
  */
-public class InterstitialView extends DialogFragment {
-    private static final String TAG = "InterstitialFragment";
+public class InterstitialView extends Dialog {
+    private static final String TAG = "InterstitialView";
     private DataCenter dataCenter = DataCenter.getInstance();
 
     private RelativeLayout layoutContainer;
@@ -66,63 +59,42 @@ public class InterstitialView extends DialogFragment {
     private IInterstitialListener iListener;
     private MyWebViewClient viewClient = new MyWebViewClient();
     private Animation operatingAnim;
-    private int curOrientation;
     private boolean isShowed = false;
+
+    public InterstitialView(Context context) {
+        super(context);
+    }
+
+    public InterstitialView(Context context, int themeResId) {
+        super(context, themeResId);
+    }
+
+    protected InterstitialView(Context context, boolean cancelable, OnCancelListener cancelListener) {
+        super(context, cancelable, cancelListener);
+    }
 
     public boolean isShowed() {
         return isShowed;
     }
 
-    /**
-     * dialog config parameters
-     */
-    public static final int VIEW_STATE_INIT = 0;
-    public static final int VIEW_STATE_GOT_AD = 1;
-    public static final int VIEW_STATE_LOADED_AD = 2;
-    public static final int VIEW_STATE_IMPRESSED = 3;
-    public static final int VIEW_STATE_NO_AD = 4;
+    private Interstitial.DialogConfig dialogConfig;
 
-    public static class DialogConfig {
-        public Activity parentActivity;
-        public int oldOrientation;
-        public PartnerBaseView partnerView = null;
-        public boolean closeAfterImpressed = false;
-        public boolean allowUserCloseAfterImpressed = true;
-        public boolean showFullScreen = false;
-
-        public InterstitialController interstitialController;
-        public int adZoneId;
-        public boolean adClicked = false;
-        public int viewState = VIEW_STATE_INIT;
-
-        public boolean isImpressed() {
-            if (viewState >= VIEW_STATE_IMPRESSED) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    private DialogConfig dialogConfig;
-
-    public DialogConfig getDialogConfig() {
+    private Interstitial.DialogConfig getDialogConfig() {
         if (dialogConfig == null) {
             Interstitial interstitial = Interstitial.getInstance();
             dialogConfig = interstitial.getDialogConfig();
             if (dialogConfig == null) {
                 // default config
-                dialogConfig = new DialogConfig();
+                dialogConfig = new Interstitial.DialogConfig();
             }
         }
         return dialogConfig;
     }
 
-    @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (KeyEvent.KEYCODE_BACK == keyCode) {
@@ -132,21 +104,18 @@ public class InterstitialView extends DialogFragment {
                 return false;
             }
         });
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        return dialog;
+        initListener();
+        onCreateView();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
-        DialogConfig config = getDialogConfig();
+    private void onCreateView() {
+        Interstitial.DialogConfig config = getDialogConfig();
 
-        View view = inflater.inflate(R.layout.yesup_fragment_interstitial, container, false);
-        layoutContainer = (RelativeLayout)view.findViewById(R.id.layout_container);
-        layoutAdContainer = (RelativeLayout)view.findViewById(R.id.layout_ad_container);
-        layoutPartner = (FrameLayout)view.findViewById(R.id.layout_partner);
+        layoutContainer = (RelativeLayout)findViewById(R.id.layout_container);
+        layoutAdContainer = (RelativeLayout)findViewById(R.id.layout_ad_container);
+        layoutPartner = (FrameLayout)findViewById(R.id.layout_partner);
         if (config.partnerView != null) {
             View v = config.partnerView.getView(null, layoutPartner);
             config.partnerView.saveView(v);
@@ -154,22 +123,22 @@ public class InterstitialView extends DialogFragment {
             layoutPartner.addView(v);
         }
 
-        btnClose = (Button) view.findViewById(R.id.btn_close);
+        btnClose = (Button)findViewById(R.id.btn_close);
         btnClose.setAlpha(0.5f);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDialog().cancel();
+                dismiss();
             }
         });
         btnClose.setVisibility(View.GONE);
 
-        imageLoading = (ImageView)view.findViewById(R.id.image_loading);
+        imageLoading = (ImageView)findViewById(R.id.image_loading);
         operatingAnim = AnimationUtils.loadAnimation(getContext(), R.anim.yesup_loading);
         LinearInterpolator lin = new LinearInterpolator();
         operatingAnim.setInterpolator(lin);
 
-        imageViewAd = (ImageView)view.findViewById(R.id.image_ad);
+        imageViewAd = (ImageView)findViewById(R.id.image_ad);
         imageViewAd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,12 +148,12 @@ public class InterstitialView extends DialogFragment {
                     stopCloseTimer();
                     getDialogConfig().adClicked = true;
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickUrl));
-                    startActivity(browserIntent);
+                    getContext().startActivity(browserIntent);
                 }
             }
         });
 
-        webViewAd = (WebView)view.findViewById(R.id.web_ad);
+        webViewAd = (WebView)findViewById(R.id.web_ad);
         webViewAd.setWebViewClient(viewClient);
         WebSettings webSettings = webViewAd.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -193,12 +162,10 @@ public class InterstitialView extends DialogFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setAllowUniversalAccessFromFileURLs(true);
         }
-
-        return view;
     }
 
     public boolean disableRotateScreen() {
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         if (config.parentActivity != null) {
             Activity activity = config.parentActivity;
             // get current display orientation
@@ -207,11 +174,9 @@ public class InterstitialView extends DialogFragment {
             display.getSize(point);
             // disable rotate screen
             if (point.x <= point.y) {
-                curOrientation = Configuration.ORIENTATION_PORTRAIT;
                 config.oldOrientation = config.parentActivity.getRequestedOrientation();
                 config.parentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             } else {
-                curOrientation = Configuration.ORIENTATION_LANDSCAPE;
                 config.oldOrientation = config.parentActivity.getRequestedOrientation();
                 config.parentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
@@ -222,7 +187,7 @@ public class InterstitialView extends DialogFragment {
     }
 
     public boolean restoreRotateScreen() {
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         // restore old orientation
         if (config.parentActivity != null) {
             config.parentActivity.setRequestedOrientation(config.oldOrientation);
@@ -232,27 +197,25 @@ public class InterstitialView extends DialogFragment {
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        getDialogConfig().parentActivity = activity;
-
+    private void initListener() {
+        Interstitial.DialogConfig config = getDialogConfig();
         try {
-            iListener = (IInterstitialListener)activity;
+            iListener = (IInterstitialListener)config.parentActivity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(config.parentActivity.toString()
                     +" must implement IInterstitialListener!");
         }
     }
 
     @Override
     public void onStart() {
+        //Log.i(TAG, "OnStart");
         super.onStart();
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         config.interstitialController = (InterstitialController)dataCenter.getAdController(config.adZoneId, msgHandler);
 
         if (config.adClicked) {
-            getDialog().cancel();
+            dismiss();
         } else {
             viewControl();
             iListener.onInterstitialShown();
@@ -262,16 +225,18 @@ public class InterstitialView extends DialogFragment {
 
     @Override
     public void onStop() {
+        //Log.i(TAG, "OnStop");
         super.onStop();
         dialogConfig.interstitialController.onPause();
         isShowed = false;
         stopLoadingAnimation();
         stopCloseTimer();
+
+        onDestroyView();
     }
 
-    @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        //super.onDestroyView();
         iListener.onInterstitialClosed();
         // restore old orientation
         restoreRotateScreen();
@@ -289,19 +254,19 @@ public class InterstitialView extends DialogFragment {
     }
 
     private void viewControl() {
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         InterstitialRequest interstitialRequest = config.interstitialController.getInterstitialRequest();
         isShowed = true;
         resizeView();
         switch (config.viewState) {
-            case VIEW_STATE_INIT:
+            case Interstitial.VIEW_STATE_INIT:
                 imageViewAd.setVisibility(View.GONE);
                 webViewAd.setVisibility(View.GONE);
                 imageLoading.setVisibility(View.VISIBLE);
                 startLoadingAnimation();
                 break;
 
-            case VIEW_STATE_GOT_AD:
+            case Interstitial.VIEW_STATE_GOT_AD:
                 imageViewAd.setVisibility(View.GONE);
                 webViewAd.setVisibility(View.GONE);
                 imageLoading.setVisibility(View.VISIBLE);
@@ -320,7 +285,7 @@ public class InterstitialView extends DialogFragment {
                 }
                 break;
 
-            case VIEW_STATE_LOADED_AD:
+            case Interstitial.VIEW_STATE_LOADED_AD:
                 stopLoadingAnimation();
                 if (interstitialRequest != null) {
                     if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == interstitialRequest.getAdType()) {
@@ -348,7 +313,7 @@ public class InterstitialView extends DialogFragment {
                 }
                 break;
 
-            case VIEW_STATE_IMPRESSED:
+            case Interstitial.VIEW_STATE_IMPRESSED:
                 if (interstitialRequest != null) {
                     if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == interstitialRequest.getAdType()) {
                         imageLoading.setVisibility(View.GONE);
@@ -366,7 +331,7 @@ public class InterstitialView extends DialogFragment {
                 }
                 break;
 
-            case VIEW_STATE_NO_AD:
+            case Interstitial.VIEW_STATE_NO_AD:
             default:
                 imageViewAd.setVisibility(View.GONE);
                 webViewAd.setVisibility(View.GONE);
@@ -380,7 +345,7 @@ public class InterstitialView extends DialogFragment {
 
     public static final int partnerViewHeight = 110;
     private void resizeView() {
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
         Point p = new Point();
         wm.getDefaultDisplay().getSize(p);
@@ -403,7 +368,7 @@ public class InterstitialView extends DialogFragment {
         p.y = screenHeight - 80;
     }
     private void resizePopView(int screenWidth, int screenHeight, Point p) {
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         InterstitialRequest interstitialRequest = config.interstitialController.getInterstitialRequest();
         double targetScale = 300.0 / 250.0;
         double screenScale = (double)screenWidth / (double)screenHeight;
@@ -450,13 +415,13 @@ public class InterstitialView extends DialogFragment {
     }
 
     private void onImpressed(int credit) {
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         if (config.allowUserCloseAfterImpressed) {
             // show close button
             btnClose.setVisibility(View.VISIBLE);
         }
         if (config.closeAfterImpressed) {
-            getDialog().cancel();
+            dismiss();
         }
     }
 
@@ -473,8 +438,8 @@ public class InterstitialView extends DialogFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             Log.v(TAG, "PageFinished: " + url);
-            DialogConfig config = getDialogConfig();
-            config.viewState = VIEW_STATE_LOADED_AD;
+            Interstitial.DialogConfig config = getDialogConfig();
+            config.viewState = Interstitial.VIEW_STATE_LOADED_AD;
             viewControl();
             super.onPageFinished(view, url);
         }
@@ -488,10 +453,10 @@ public class InterstitialView extends DialogFragment {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.v(TAG, "JumpTo: " + url);
-            DialogConfig config = getDialogConfig();
+            Interstitial.DialogConfig config = getDialogConfig();
             config.adClicked = true;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
+            getContext().startActivity(intent);
             return true;
             //return super.shouldOverrideUrlLoading(view, url);
         }
@@ -503,7 +468,7 @@ public class InterstitialView extends DialogFragment {
     private CountDownTimer closeTimer;
 
     public void startCloseTimer() {
-        DialogConfig config = getDialogConfig();
+        Interstitial.DialogConfig config = getDialogConfig();
         if (config.allowUserCloseAfterImpressed) {
             closeTimer = new CountDownTimer(5*1000, 1000) {
                 @Override
@@ -531,21 +496,21 @@ public class InterstitialView extends DialogFragment {
     public class MessageHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            DialogConfig config = getDialogConfig();
+            Interstitial.DialogConfig config = getDialogConfig();
             YesupAdRequest request;
 
             switch (msg.what) {
                 case Define.MSG_AD_REQUEST_SUCCESSED:
                     request = (YesupAdRequest)msg.obj;
                     if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == request.getAdType()) {
-                        config.viewState = VIEW_STATE_GOT_AD;
+                        config.viewState = Interstitial.VIEW_STATE_GOT_AD;
                     } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == request.getAdType()) {
-                        config.viewState = VIEW_STATE_LOADED_AD;
+                        config.viewState = Interstitial.VIEW_STATE_LOADED_AD;
                     }
                     viewControl();
                     break;
                 case Define.MSG_AD_REQUEST_FAILED:
-                    config.viewState = VIEW_STATE_NO_AD;
+                    config.viewState = Interstitial.VIEW_STATE_NO_AD;
                     viewControl();
                     break;
                 case Define.MSG_AD_REQUEST_IMPRESSED:
