@@ -18,6 +18,8 @@ public class YesupAd {
 
     public YesupAd(Context context) {
         this.context = context;
+        DataCenter center = DataCenter.getInstance();
+        center.init(context);
     }
 
     public YesupAd(Activity parentActivity) {

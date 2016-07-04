@@ -104,6 +104,7 @@ public class BannerView extends FrameLayout {
 
     private void initBannerAd() {
         DataCenter dataCenter = DataCenter.getInstance();
+        dataCenter.init(getContext());
         int adZoneId = Integer.parseInt(yesupBannerZoneId);
         bannerController = (BannerController)dataCenter.getAdController(adZoneId, msgHandler);
     }
@@ -267,7 +268,7 @@ public class BannerView extends FrameLayout {
     private void startSwitchTimer() {
         if (null != bannerController && bannerController.getBannerSize() > 0) {
             mSwitchTimer = new Timer();
-            mSwitchTimer.schedule(new SwitchTask(), 6000, 6000);
+            mSwitchTimer.schedule(new SwitchTask(), 60000, 60000);
         }
     }
     private void stopSwitchTimer() {
