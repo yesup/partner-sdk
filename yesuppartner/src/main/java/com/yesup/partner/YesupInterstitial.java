@@ -40,4 +40,12 @@ public class YesupInterstitial extends YesupAd {
         }
     }
 
+    public void closeNow() {
+        interstitial.closeNow();
+    }
+
+    public void safeClose() {
+        interstitial.closeAfterCredited();
+    }
+
 }

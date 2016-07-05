@@ -7,4 +7,5 @@ public interface IInterstitialListener {
     void onInterstitialShown();
     void onInterstitialCredited();
     void onInterstitialClosed();
+    void onInterstitialError();
 }

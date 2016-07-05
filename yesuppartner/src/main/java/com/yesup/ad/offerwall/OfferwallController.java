@@ -63,7 +63,7 @@ public class OfferwallController extends AdController {
                 if (offer != null) {
                     offer.setLocalIconPath(adResourceFile.getLocalPath());
                     adRequest.getDbHelper().updateOfferLocalIconPath(offer);
-                    messageView(Define.MSG_AD_REQUEST_SUCCESSED, YesupAdRequest.REQ_TYPE_OFFER_ICON, 0, adRequest);
+                    messageView(Define.MSG_AD_REQUEST_SUCCESSED, YesupAdRequest.REQ_TYPE_OFFER_ICON, adRequest.getRequestId(), adRequest);
                 }
             }
         } else if (YesupAdRequest.REQ_TYPE_OFFER_JUMPURL == adRequest.getRequestType()) {

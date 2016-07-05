@@ -1,5 +1,7 @@
 package com.yesup.ad.banner;
 
+import android.util.Log;
+
 import com.google.gson.stream.JsonReader;
 import com.yesup.ad.framework.AdData;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * Created by derek on 6/15/16.
  */
 public class BannerModel extends AdData {
+    private static String TAG = "BannerModel";
 
     public class Banner {
         public String imageUrl;
@@ -74,6 +77,7 @@ public class BannerModel extends AdData {
                 reader.endObject();
                 if (null != banner) {
                     bannerList.add(banner);
+                    Log.i(TAG, "ParseBannerAd:"+banner.imageUrl);
                 }
             }
             reader.endArray();

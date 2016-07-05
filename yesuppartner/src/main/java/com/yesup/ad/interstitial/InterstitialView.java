@@ -512,6 +512,7 @@ public class InterstitialView extends Dialog {
                 case Define.MSG_AD_REQUEST_FAILED:
                     config.viewState = Interstitial.VIEW_STATE_NO_AD;
                     viewControl();
+                    iListener.onInterstitialError();
                     break;
                 case Define.MSG_AD_REQUEST_IMPRESSED:
                     int credit = msg.arg1;
