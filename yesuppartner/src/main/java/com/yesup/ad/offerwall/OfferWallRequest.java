@@ -8,6 +8,7 @@ import com.yesup.ad.framework.Define;
 import com.yesup.ad.framework.YesupAdRequest;
 import com.yesup.ad.utils.AppTool;
 import com.yesup.ad.utils.StringTool;
+import com.yesup.ad.utils.Uuid;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,13 +35,14 @@ public class OfferWallRequest extends YesupAdRequest {
         setDownloadUrl(Define.SERVER_HOST + Define.URL_IF_OFFER_WALL);
         setSaveFileName(AppTool.getOfferWallLocalDataPath(context));
         setRequestHeaderParameter("Authorization", "key=" + adConfig.getKey()); // "key=9dc3a4e269bf88b8e7d6983bcd95f2cd"
-        setRequestHeaderParameter("ACCEPT", "application/json");
+        setRequestHeaderParameter("Accept", "application/json");
         setRequestHeaderParameter("User-Agent", AppTool.makeUserAgent());
         setRequestHeaderParameter("Content-Type", "application/x-www-form-urlencoded");
         setRequestDataParameter("nid", adConfig.getNid()); // "1520"
         setRequestDataParameter("pid", adConfig.getPid()); // "42800"
         setRequestDataParameter("sid", adConfig.getSid()); // "45852"
         setRequestDataParameter("zone", String.valueOf(adZone.id));
+        setRequestDataParameter("uuid", new Uuid(context).getUUID());
         setRequestDataParameter("subid", subId);
         setRequestDataParameter("opt1", opt1);
         setRequestDataParameter("opt2", opt2);
@@ -143,7 +145,11 @@ public class OfferWallRequest extends YesupAdRequest {
     }
 
     public OfferModel getOfferAt(int index) {
-        return offerPage.getList().get(index);
+        if (index >= 0 && index < offerPage.getList().size()) {
+            return offerPage.getList().get(index);
+        } else {
+            return null;
+        }
     }
 
     public boolean offerPageHasExpired(int curZoneId) {
@@ -173,7 +179,7 @@ public class OfferWallRequest extends YesupAdRequest {
             offerPage.clean();
         }
         offerPage = dbHelper.readOfferPageByType(OfferPageModel.PAGE_TYPE_OFFER);
-        if (offerPage != null){
+        if (offerPage != null) {
             List<OfferModel> list = dbHelper.readOffersByType(OfferPageModel.PAGE_TYPE_OFFER);
             offerPage.setList(list);
             count = list.size();

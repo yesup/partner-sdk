@@ -6,6 +6,7 @@ import com.yesup.ad.framework.Define;
 import com.yesup.ad.framework.YesupAdRequest;
 import com.yesup.ad.utils.AppTool;
 import com.yesup.ad.utils.StringTool;
+import com.yesup.ad.utils.Uuid;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,9 +49,11 @@ public class OfferJumpUrlAd extends YesupAdRequest {
         setRequestDataParameter("pid", adConfig.getPid()); // "42800"
         setRequestDataParameter("sid", adConfig.getSid()); // "45852"
         setRequestDataParameter("zone", String.valueOf(adZone.id));
+        setRequestDataParameter("uuid", new Uuid(context).getUUID());
         setRequestDataParameter("subid", subId);
         setRequestDataParameter("opt1", opt1);
         setRequestDataParameter("opt2", opt2);
+        setRequestDataParameter("opt3", opt3);
         setRequestDataParameter("adnid", Integer.toString(offer.getNid()));
         setRequestDataParameter("cid", Integer.toString(offer.getCid()));
         setRequestDataParameter("ad", Integer.toString(offer.getCvid()));

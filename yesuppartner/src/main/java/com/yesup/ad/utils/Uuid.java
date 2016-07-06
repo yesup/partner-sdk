@@ -69,7 +69,7 @@ public class Uuid {
                 configuration.load(new FileInputStream(filename));
                 uuid = configuration.getProperty(UUID_KEY, "");
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 
@@ -89,7 +89,7 @@ public class Uuid {
                     configuration.setProperty(UUID_KEY, uuid);
                     configuration.store(new FileOutputStream(filename), null);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }
@@ -114,7 +114,7 @@ public class Uuid {
                 configuration.setProperty(UUID_KEY, uuid);
                 configuration.store(new FileOutputStream(filename), null);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -144,7 +144,7 @@ public class Uuid {
             Method get = c.getMethod("get", String.class);
             uuid = (String) get.invoke(c, "ro.serialno");
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         Log.i("UUID", "Get Device UUID 2:"+uuid);
         return uuid;

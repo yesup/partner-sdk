@@ -36,7 +36,7 @@ public class InterstitialImpressRequest extends YesupAdRequest {
         setDownloadUrl(impressUrl);
         setSaveFileName(AppTool.getInterstitialImpressResponseLocalDataPath(context));
         setRequestHeaderParameter("Authorization", "key=" + adConfig.getKey());
-        setRequestHeaderParameter("ACCEPT", "application/json");
+        setRequestHeaderParameter("Accept", "application/json");
         setRequestHeaderParameter("User-Agent", AppTool.makeUserAgent());
         setRequestHeaderParameter("Content-Type", "application/x-www-form-urlencoded");
     }

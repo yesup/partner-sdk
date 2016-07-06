@@ -39,6 +39,7 @@ public class OfferWallFragment extends Fragment {
     private int zoneId;
     private int listCount = 0;
     private ListView dataListView;
+    private MyAdapter mMyadapter;
     private MessageHandler msgHandler = new MessageHandler();
 
     // container Activity must implement this interface
@@ -66,8 +67,8 @@ public class OfferWallFragment extends Fragment {
         }
 
         dataListView = (ListView) view.findViewById(R.id.dataListView);
-        MyAdapter adapter = new MyAdapter(getActivity());
-        dataListView.setAdapter(adapter);
+        mMyadapter = new MyAdapter(getActivity());
+        dataListView.setAdapter(mMyadapter);
         dataListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -103,6 +104,10 @@ public class OfferWallFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (null != offerwallController) {
+            if (offerwallController.doesOfferPageHasExpired()) {
+                listCount = 0;
+                mMyadapter.notifyDataSetChanged();
+            }
             offerwallController.onResume();
         }
     }
@@ -255,7 +260,8 @@ public class OfferWallFragment extends Fragment {
                     if (YesupAdRequest.REQ_TYPE_OFFER_WALL == msg.arg1) {
                         // update OfferWall success
                         listCount = offerWallAd.getOfferCount();
-                        dataListView.invalidateViews();
+                        //dataListView.invalidateViews();
+                        mMyadapter.notifyDataSetChanged();
                         Log.i(TAG, "Offer Wall Download Completed.");
                     } else if (YesupAdRequest.REQ_TYPE_OFFER_ICON == msg.arg1) {
                         int itemIndex = msg.arg2;

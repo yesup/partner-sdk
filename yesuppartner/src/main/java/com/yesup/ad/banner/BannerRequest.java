@@ -33,20 +33,15 @@ public class BannerRequest extends YesupAdRequest {
         setRequestHeaderParameter("Content-Type", "application/x-www-form-urlencoded");
 
         setRequestDataParameter("nid", adConfig.getNid());
-        //setRequestDataParameter("nid", "1520");
         setRequestDataParameter("pid", adConfig.getPid());
-        //setRequestDataParameter("pid", "42800");
         setRequestDataParameter("sid", adConfig.getSid());
-        //setRequestDataParameter("sid", "54365");
         setRequestDataParameter("zone", String.valueOf(adZone.id));
-        //setRequestDataParameter("zone", "72586");
         setRequestDataParameter("subid", subId);
         setRequestDataParameter("opt1", opt1);
         setRequestDataParameter("opt2", opt2);
         setRequestDataParameter("opt3", opt3);
         setRequestDataParameter("uuid", new Uuid(context).getUUID());
         setRequestDataParameter("adtype", adZone.size);
-        //setRequestDataParameter("adtype", "17");
         setRequestDataParameter("size", "3");
     }
 

@@ -191,7 +191,7 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
     ViewHolder holder;
     @Override
     public void onInterstitialShown() {
-        Log.d(TAG, "On Show");
+        Log.d(TAG, "On Interstitial Show");
         if (holder != null) {
             holder.imageView.startAnimation(operatingAnim);
         }
@@ -234,12 +234,12 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
 
     @Override
     public void onInterstitialCredited() {
-        Log.d(TAG, "On Credited");
+        Log.d(TAG, "On Interstitial Credited");
     }
 
     @Override
     public void onInterstitialClosed() {
-        Log.d(TAG, "On Closed");
+        Log.d(TAG, "On Interstitial Closed");
         if (holder != null && operatingAnim != null && operatingAnim.hasStarted()) {
             holder.imageView.clearAnimation();
         }
@@ -249,6 +249,11 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
 
         Intent intent = new Intent(this, SecondActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onInterstitialError() {
+        Log.d(TAG, "On Interstitial Error");
     }
 
     public class ViewHolder {

@@ -38,7 +38,7 @@ public class PageInterstitialRequest extends InterstitialRequest {
         setDownloadUrl(Define.SERVER_HOST + Define.URL_IF_INTERSTITIAL);
         setSaveFileName(AppTool.getPageInterstitialLocalDataPath(context));
         setRequestHeaderParameter("Authorization", "key=" + adConfig.getKey());
-        setRequestHeaderParameter("ACCEPT", "application/json");
+        setRequestHeaderParameter("Accept", "application/json");
         setRequestHeaderParameter("User-Agent", AppTool.makeUserAgent());
         setRequestHeaderParameter("Content-Type", "application/x-www-form-urlencoded");
         setRequestDataParameter("nid", adConfig.getNid());

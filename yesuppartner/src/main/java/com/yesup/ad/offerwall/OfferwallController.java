@@ -87,6 +87,10 @@ public class OfferwallController extends AdController {
         return offerWallRequest;
     }
 
+    public boolean doesOfferPageHasExpired() {
+        return offerWallRequest.offerPageHasExpired(adZone.id);
+    }
+
     public boolean offerPageHasLoaded() {
         if (offerWallRequest == null || offerWallRequest.getOfferPage() == null) {
             return false;
