@@ -2,6 +2,7 @@ package com.yesup.partner;
 
 import android.app.Activity;
 
+import com.yesup.ad.framework.DataCenter;
 import com.yesup.ad.framework.Define;
 import com.yesup.ad.interstitial.Interstitial;
 import com.yesup.ad.interstitial.PartnerBaseView;
@@ -15,6 +16,17 @@ public class YesupInterstitial extends YesupAd {
 
     public YesupInterstitial(Activity parentActivity) {
         super(parentActivity);
+    }
+
+    public void showDefaultInterstitial(boolean fullScreen,
+                                        boolean allowUserCloseAfterImpressed,
+                                        PartnerBaseView partnerView) {
+        DataCenter center = DataCenter.getInstance();
+        String sZoneId = center.getAdConfig().getDefaultInterstitialZoneId();
+        if (!sZoneId.isEmpty()) {
+            int zoneId = Integer.parseInt(sZoneId);
+            showInterstitial(zoneId, fullScreen, allowUserCloseAfterImpressed, partnerView);
+        }
     }
 
     public void showInterstitial(int zoneId, boolean fullScreen,

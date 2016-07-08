@@ -29,31 +29,31 @@ public class YesupAd {
         center.init(context);
     }
 
-    public String getVersion() {
+    public static String getVersion() {
         return Define.SDK_VERSION;
     }
 
-    public void setDebugMode(boolean debugMode) {
+    public static void setDebugMode(boolean debugMode) {
         DataCenter center = DataCenter.getInstance();
         center.setDebugMode(debugMode);
     }
 
-    public void setSubId(String subId) {
+    public static void setSubId(String subId) {
         DataCenter center = DataCenter.getInstance();
         center.setSubId(subId);
     }
 
-    public void setCuid(String cuid) {
+    public static void setCuid(String cuid) {
         DataCenter center = DataCenter.getInstance();
         center.setCuid(cuid);
     }
 
-    public void setOption(String opt1, String opt2, String opt3) {
+    public static void setOption(String opt1, String opt2, String opt3) {
         DataCenter center = DataCenter.getInstance();
         center.setOption(opt1, opt2, opt3);
     }
 
-    public void onResume() {
+    public static void onResume() {
         DataCenter center = DataCenter.getInstance();
         center.onResume();
     }

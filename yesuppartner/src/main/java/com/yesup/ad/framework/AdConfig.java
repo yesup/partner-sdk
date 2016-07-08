@@ -186,7 +186,26 @@ public final class AdConfig {
     public String getDefaultOfferWallZoneId() {
         int zoneId = 0;
         for (AdZone z : zones) {
-            if (z.formats.equals("4")){
+            if (Define.AD_TYPE_OFFER_WALL == z.getAdType()) {
+                zoneId = z.id;
+                break;
+            }
+        }
+        if (0 == zoneId) {
+            return "";
+        } else {
+            return Integer.toString(zoneId);
+        }
+    }
+
+    public String getDefaultInterstitialZoneId() {
+        int zoneId = 0;
+        for (AdZone z : zones) {
+            if (Define.AD_TYPE_INTERSTITIAL_IMAGE == z.getAdType()) {
+                zoneId = z.id;
+                break;
+            }
+            if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == z.getAdType()){
                 zoneId = z.id;
                 break;
             }
