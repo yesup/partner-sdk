@@ -9,7 +9,7 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 <hr/>
 
 <div id="step1"></div>
-### **1** Install Yesup AD SDK.<br/>
+### **1** Install Yesup AD SDK<br/>
   a. Download yesup partner config file "adconfigure.xml".<br/>
   b. Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.<br/>
      Note: Do not modify this file name!!!<br/>
@@ -32,13 +32,81 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
   Now the classes and methods in the Yesup Partner Library can be used in your app.<br/><br/>
 
 <div id="step2"></div>
-#####**Step 2** Copy **_"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
-**_Note: Do not modify this file name!!!_**<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide7.png "step2")<br/><br/><br/>
+### **2** Set your custom information<br/>
+  a. Import package.<br/>
+```python
+    import com.yesup.partner.YesupAd;
+```
+  b. Set custom information like below:<br/>
+```python
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        String subId = "123123";  // optional, you app user id
+        String optValue1 = "";    // optional, additional event value you want to keep track
+        String optValue2 = "";    // optional, additional event value you want to keep track
+        String optValue3 = "";    // optional, additional event value you want to keep track
+        YesupAd.setSubId(subId);
+        YesupAd.setOption(optValue1, optValue2, optValue3);
+    }
+```
 
 <div id="step3"></div>
-##### **Step 3** In **Android Studio**, open the project's _"build.gradle"_ file in the editor.<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide3.png "step3")<br/><br/><br/>
+### **3** Use OfferWall<br/>
+  a. Add in the following line to your AndroidManifest.xml to declare the Activity:<br/>
+```python
+     <activity android:name="com.yesup.ad.offerwall.OfferWallActivity" android:label="Offer Wall" />
+```
+     You can modify the android:label,this property will display on the title of activity.<br/>
+  b. new and set a OfferWallHelper object, you can control the view of rewards button(rewards and icon).<br/>
+  c. Write code below to use OfferWall:<br/>
+```python
+import com.yesup.partner.YesupOfferWall;
+
+public class MainActivity extends AppCompatActivity {
+    private YesupOfferWall offerwallAd;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        offerwallAd = new YesupOfferWall(this);
+        offerwallAd.setOfferWallPartnerHelper(new OfferWallHelper(this));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (null != offerwallAd) {
+            offerwallAd.onResume();
+        }
+    }
+
+    public class OfferWallHelper extends OfferWallPartnerHelper {
+        public OfferWallHelper(Context context) {
+            super(context);
+        }
+
+        @Override
+        public String calculateReward(int payout, int incentRate) {
+            String result = "0";
+            double reward = (double)payout * (double)incentRate / 100000.0D;
+            if(0.0D == reward) {
+                result = "";
+            } else {
+                result = (new DecimalFormat("#.##")).format(reward);
+            }
+
+            return result;
+        }
+
+        @Override
+        public Drawable getRewardIcon() {
+            Drawable drawable = context.getResources().getDrawable(R.drawable.coins);
+            return drawable;
+        }
+    }
+}
+```
+  c. Use code "offerwallAd.showDefaultOfferWall();" to start an OfferWall activity.
+
 
 <div id="step4"></div>
 ##### **step 4** Make sure that you have used the JCenter, as follows:
