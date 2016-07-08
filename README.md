@@ -53,13 +53,13 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 <div id="step3"></div>
 ### **3** Use OfferWall<br/>
   a. Add in the following line to your AndroidManifest.xml to declare the Activity:<br/>
+     You can modify the android:label,this property will display on the title of activity.<br/>
 ```python
      <activity android:name="com.yesup.ad.offerwall.OfferWallActivity" android:label="Offer Wall" />
 ```
-     You can modify the android:label,this property will display on the title of activity.<br/>
   b. new and set a OfferWallHelper object, you can control the view of rewards button(rewards and icon).<br/>
   c. Write code below to use OfferWall:<br/>
-```python
+```java
 import com.yesup.partner.YesupOfferWall;
 
 public class MainActivity extends AppCompatActivity {
