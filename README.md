@@ -6,6 +6,7 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 #####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3 Use OfferWall](#step3)<br/>
 #####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4 Use Intersitial](#step4)<br/>
 #####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5 Use Banner](#step5)<br/>
+Learn more about the provided sample at https://github.com/yesup/house-reminder<br/>
 <hr/>
 
 <div id="step1"></div>
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity
 
 <div id="step5"></div>
 ### **5** Use Banner<br/>
-  a. Add Banner to your layout file.<br/>
+  a. Add Banner in your layout file.<br/>
 ```java
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
