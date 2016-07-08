@@ -9,7 +9,7 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
 <hr/>
 
 <div id="step1"></div>
-##### **1** Install Yesup AD SDK.<br/><br/>
+### **1** Install Yesup AD SDK.<br/>
   a. Download yesup partner config file "adconfigure.xml".<br/>
   b. Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.<br/>
      Note: Do not modify this file name!!!<br/>
@@ -29,7 +29,7 @@ Yesup Partner SDK for Android is the easiest way to integrate your Android app w
          compile 'com.yesup.partner:yesuppartner:1.2.1'
      }
 ```
-  Now the classes and methods in the Yesup Partner Library can be used in your app.<br/>
+  Now the classes and methods in the Yesup Partner Library can be used in your app.<br/><br/>
 
 <div id="step2"></div>
 #####**Step 2** Copy **_"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
