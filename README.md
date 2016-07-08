@@ -1,19 +1,31 @@
-# partner-sdk
-###### The Lastest SDK Version: 1.1.4
+# Yesup Partner Sdk for Android
+###### The Latest SDK Version: 1.2.1
 Yesup Partner SDK for Android is the easiest way to integrate your Android app with Yesup.
-## Installation
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step1: Download SDK adconfigure.xml](#step1)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step2: Copy adconfigure.xml](#step2)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Step3: Open the project's build.gradle file](#step3)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step4: Make sure that you have used the JCenter" section](#step4)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step5: Add content in dependencies section](#step5)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step6: Add content in AndroidManifest.xml](#step6)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[step7: Startup Yesup OfferWall](#step7)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1 Install Yesup AD SDK](#step1)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2 Set your custom information](#step2)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3 Use OfferWall](#step3)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4 Use Intersitial](#step4)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5 Use Banner](#step5)<br/>
 <hr/>
 
 <div id="step1"></div>
-##### **Step 1** Download yesup partner config file "adconfigure.xml".<br/><br/>
-![alt text](https://github.com/yesup/partner-sdk/raw/master/src/img/sdk-user-guide5.png "step1")<br/><br/><br/>
+##### **1** Install Yesup AD SDK.<br/><br/>
+  a. Download yesup partner config file "adconfigure.xml".
+  b. Copy adconfigure.xml file to your "res/xml/adconfigure.xml" directory.
+     Note: Do not modify this file name!!!
+  c. In Android Studio, open the build.gradle file which is in your project's root directory,
+     make sure that you have used the JCenter like below:
+     allprojects {
+         repositories {
+             jcenter()
+         }
+     }
+  d. In Android Studio, open the app's build.gradle file in the editor.
+     Add a "dependencies" source, as follows:
+     dependencies {
+         compile 'com.yesup.partner:yesuppartner:1.2.1'
+     }
+  Now the classes and methods in the Yesup Partner Library can be used in your app.
 
 <div id="step2"></div>
 #####**Step 2** Copy **_"adconfigure.xml"_** file to your "res/xml/adconfigure.xml" directory.
