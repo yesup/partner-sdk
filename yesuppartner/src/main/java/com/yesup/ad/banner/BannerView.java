@@ -117,6 +117,7 @@ public class BannerView extends FrameLayout {
 
         bannerTextView = (TextView)view.findViewById(R.id.yesupTextView);
         bannerTextView.setText("Yesup banner AD:"+yesupBannerZoneId);
+        bannerTextView.setVisibility(GONE);
 
         mViewPager = (ViewPager)view.findViewById(R.id.view_pager);
         mPagerAdapter = new BannerSlidePagerAdapter();
@@ -125,7 +126,7 @@ public class BannerView extends FrameLayout {
         mViewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.i(TAG, "OnTouch");
+                //Log.i(TAG, "OnTouch");
                 return false;
             }
         });
@@ -134,7 +135,7 @@ public class BannerView extends FrameLayout {
     private void onBannerClick(int id) {
         BannerModel.Banner banner = bannerController.getBanner(id);
         if (null != banner && !banner.clickUrl.isEmpty()) {
-            Log.d(TAG, "onBannerClick:" + banner.clickUrl);
+            //Log.d(TAG, "onBannerClick:" + banner.clickUrl);
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(banner.clickUrl));
             getContext().startActivity(browserIntent);
         }
@@ -147,21 +148,21 @@ public class BannerView extends FrameLayout {
         public boolean onTouch(View v, MotionEvent event) {
             HtmlPageView pageView = (HtmlPageView)v;
             int id = pageView.getId();
-            Log.i(TAG, "View ID: "+id);
+            //Log.i(TAG, "View ID: "+id);
             float x,y;
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     touchDownX = event.getX();
                     touchDownY = event.getY();
-                    Log.d(TAG, "ACTION_DOWN:"+touchDownX+"-"+touchDownY);
+                    //Log.d(TAG, "ACTION_DOWN:"+touchDownX+"-"+touchDownY);
                     break;
                 case MotionEvent.ACTION_UP:
                     x = event.getX();
                     y = event.getY();
-                    Log.d(TAG, "ACTION_UP:"+x+"-"+y);
+                    //Log.d(TAG, "ACTION_UP:"+x+"-"+y);
                     float xx = Math.abs(x - touchDownX);
                     float yy = Math.abs(y - touchDownY);
-                    Log.d(TAG, "MOVE DISTANCE:"+xx+"-"+yy);
+                    //Log.d(TAG, "MOVE DISTANCE:"+xx+"-"+yy);
                     if (xx < MOVE_MAX_DISTANCE && yy < MOVE_MAX_DISTANCE) {
                         // on click event
                         onBannerClick(id);
@@ -189,7 +190,7 @@ public class BannerView extends FrameLayout {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case Define.MSG_AD_REQUEST_SUCCESSED:
-                    Log.d(TAG, "Request success and notify data set changed");
+                    //Log.d(TAG, "Request success and notify data set changed");
                     mViewPager.setAdapter(mPagerAdapter);
                     mPagerAdapter.notifyDataSetChanged();
                     if (null != bannerController && bannerController.isDataReady()) {
@@ -230,7 +231,7 @@ public class BannerView extends FrameLayout {
         }
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            Log.i(TAG, "instantiateItem: "+position);
+            //Log.i(TAG, "instantiateItem: "+position);
             HtmlPageView view = new HtmlPageView(getContext());
             view.setId(position);
             view.setOnTouchListener(onBannerTouchListener);
@@ -280,7 +281,7 @@ public class BannerView extends FrameLayout {
         @Override
         public void run() {
             int nextPos = bannerController.getNextBannerIndex();
-            Log.i(TAG, "SwitchTask Executed, next pos: "+nextPos);
+            //Log.i(TAG, "SwitchTask Executed, next pos: "+nextPos);
             messageToView(Define.MSG_BANNERVIEW_SLIDE_NEXT, nextPos, 0);
         }
     }
