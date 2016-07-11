@@ -5,3 +5,6 @@ How to upload library to JCenter
 
 2. ./gradlew bintrayUpload
 
+3. JCenter
+https://bintray.com/bintray/jcenter
+
