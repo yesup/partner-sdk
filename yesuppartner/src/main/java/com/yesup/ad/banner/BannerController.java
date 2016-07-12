@@ -47,6 +47,19 @@ public class BannerController extends AdController {
         }
     }
 
+    public boolean isRequestingBannerClickUrl() {
+        return mRequestingBannerClickUrl;
+    }
+    private boolean mRequestingBannerClickUrl = false;
+    public void requestBannerClickUrl(BannerModel.Banner banner) {
+        mRequestingBannerClickUrl = true;
+        DownloadManagerLite downloader = DataCenter.getInstance().getDownloadManager();
+        ClickUrlRequest request = new ClickUrlRequest();
+        initRequestConfig(request);
+        request.initRequestData();
+        request.sendRequest(downloader);
+    }
+
     @Override
     protected void onPause() {
         offsetBannerMap();
@@ -58,23 +71,33 @@ public class BannerController extends AdController {
 
     @Override
     protected void onRequestSuccess(YesupAdRequest adRequest, int result) {
-        initBannerMap();
-        if (bannerRequest.isReady()) {
-            Log.d(TAG, "onRequestSuccess set data ready");
-            setDataReady(true);
-            Log.d(TAG, "onRequestSuccess and send message");
-            messageView(Define.MSG_AD_REQUEST_SUCCESSED, 0, 0, adRequest);
-        } else {
-            setDataReady(false);
-            messageView(Define.MSG_AD_REQUEST_FAILED, result, 0, adRequest);
+        if (YesupAdRequest.REQ_TYPE_BANNER_LIST == adRequest.getRequestType()) {
+            initBannerMap();
+            if (bannerRequest.isReady()) {
+                Log.d(TAG, "onRequestSuccess set data ready");
+                setDataReady(true);
+                Log.d(TAG, "onRequestSuccess and send message");
+                messageView(Define.MSG_AD_REQUEST_SUCCESSED, 0, 0, adRequest);
+            } else {
+                setDataReady(false);
+                messageView(Define.MSG_AD_REQUEST_FAILED, result, 0, adRequest);
+            }
+        } else if (YesupAdRequest.REQ_TYPE_BANNER_CLICK_URL == adRequest.getRequestType()) {
+            mRequestingBannerClickUrl = false;
+            messageView(Define.MSG_AD_REQUEST_SUCCESSED, result, 0, adRequest);
         }
     }
 
     @Override
     protected void onRequestFailed(YesupAdRequest adRequest, int result) {
-        setDataReady(false);
-        initBannerMap();
-        messageView(Define.MSG_AD_REQUEST_FAILED, result, 0, adRequest);
+        if (YesupAdRequest.REQ_TYPE_BANNER_LIST == adRequest.getRequestType()) {
+            setDataReady(false);
+            initBannerMap();
+            messageView(Define.MSG_AD_REQUEST_FAILED, result, 0, adRequest);
+        } else if (YesupAdRequest.REQ_TYPE_BANNER_CLICK_URL == adRequest.getRequestType()) {
+            mRequestingBannerClickUrl = false;
+            messageView(Define.MSG_AD_REQUEST_FAILED, result, 0, adRequest);
+        }
     }
 
     private void initBannerMap() {

@@ -1,5 +1,6 @@
 package com.yesup.ad.banner;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.yesup.ad.framework.YesupAdRequest;
+import com.yesup.ad.utils.AppTool;
 import com.yesup.ad.view.HtmlPageView;
 import com.yesup.partner.R;
 import com.yesup.ad.framework.Define;
@@ -132,12 +135,40 @@ public class BannerView extends FrameLayout {
         });
     }
 
+    private int mCurClickBannerId = 0;
     private void onBannerClick(int id) {
         BannerModel.Banner banner = bannerController.getBanner(id);
         if (null != banner && !banner.clickUrl.isEmpty()) {
             //Log.d(TAG, "onBannerClick:" + banner.clickUrl);
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(banner.clickUrl));
-            getContext().startActivity(browserIntent);
+            // check if this app has been installed.
+            boolean thisIsApp,installed;
+            if (null != banner.appStoreId && !banner.appStoreId.isEmpty()) {
+                thisIsApp = true;
+                installed = AppTool.isAppInstalled(getContext(), banner.appStoreId);
+            } else {
+                thisIsApp = false;
+                installed = false;
+            }
+            //
+            if (installed) {
+                String showInfo = "This app has been installed in your device!";
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage(showInfo);
+                builder.setNegativeButton("OK", null);
+                builder.show();
+            } else {
+                if (thisIsApp && (null==banner.clickUrl || banner.clickUrl.isEmpty())) {
+                    // request jump url
+                    if (!bannerController.isRequestingBannerClickUrl()) {
+                        mCurClickBannerId = id;
+                        bannerController.requestBannerClickUrl(banner);
+                    }
+                } else {
+                    // click url
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(banner.clickUrl));
+                    getContext().startActivity(browserIntent);
+                }
+            }
         }
     }
 
@@ -188,13 +219,19 @@ public class BannerView extends FrameLayout {
     public class MessageHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
+            YesupAdRequest adRequest = (YesupAdRequest)msg.obj;
             switch (msg.what) {
                 case Define.MSG_AD_REQUEST_SUCCESSED:
-                    //Log.d(TAG, "Request success and notify data set changed");
-                    mViewPager.setAdapter(mPagerAdapter);
-                    mPagerAdapter.notifyDataSetChanged();
-                    if (null != bannerController && bannerController.isDataReady()) {
-                        startSwitchTimer();
+                    if (YesupAdRequest.REQ_TYPE_BANNER_LIST == adRequest.getRequestType()) {
+                        //Log.d(TAG, "Request success and notify data set changed");
+                        mViewPager.setAdapter(mPagerAdapter);
+                        mPagerAdapter.notifyDataSetChanged();
+                        if (null != bannerController && bannerController.isDataReady()) {
+                            startSwitchTimer();
+                        }
+                    } else if (YesupAdRequest.REQ_TYPE_BANNER_CLICK_URL == adRequest.getRequestType()) {
+                        // on click banner
+                        onBannerClick(mCurClickBannerId);
                     }
                     break;
                 case Define.MSG_AD_REQUEST_FAILED:

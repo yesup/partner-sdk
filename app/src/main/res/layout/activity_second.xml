@@ -7,19 +7,19 @@
     android:layout_height="match_parent"
     tools:context="com.yesup.sdk.demo.SecondActivity">
 
-    <com.yesup.ad.banner.BannerView
+    <!--com.yesup.ad.banner.BannerView
         android:layout_alignParentTop="true"
         android:layout_width="320dp"
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         yesupad:yesup_banner_zone_id="72585"
-        android:id="@+id/yesupBannerAdTop" />
+        android:id="@+id/yesupBannerAdTop" /-->
 
     <com.yesup.ad.banner.BannerView
         android:layout_alignParentBottom="true"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
-        yesupad:yesup_banner_zone_id="72586"
+        yesupad:yesup_banner_zone_id="109074"
         android:id="@+id/yesupBannerAdBottom" />
 </RelativeLayout>

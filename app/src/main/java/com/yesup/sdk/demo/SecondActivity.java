@@ -15,7 +15,7 @@ public class SecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-        bannerAdTop = (BannerView)findViewById(R.id.yesupBannerAdTop);
+        //bannerAdTop = (BannerView)findViewById(R.id.yesupBannerAdTop);
         bannerAdBottom = (BannerView)findViewById(R.id.yesupBannerAdBottom);
     }
 

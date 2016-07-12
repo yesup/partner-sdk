@@ -5,7 +5,7 @@ package com.yesup.ad.framework;
  * Created by derek on 3/2/16.
  */
 public class Define {
-    public static final String SDK_VERSION = "1.2.1";
+    public static final String SDK_VERSION = "1.2.3";
 
     /**
      * Message Parameters Define

@@ -18,6 +18,8 @@ public final class AdZone {
             return Define.AD_TYPE_INTERSTITIAL_IMAGE;
         } else if (formats.equals("1")) {
             return Define.AD_TYPE_BANNER_IMAGE;
+        } else if (display.equals("2") && formats.equals("2")) {
+            return Define.AD_TYPE_BANNER_IMAGE;
         } else {
             return Define.AD_TYPE_UNKNOWN;
         }

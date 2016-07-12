@@ -1,4 +1,4 @@
-package com.yesup.ad.offerwall;
+package com.yesup.ad.banner;
 
 import android.util.Log;
 
@@ -14,33 +14,33 @@ import java.io.IOException;
 /**
  * Created by derek on 4/21/16.
  */
-public class OfferJumpUrlAd extends YesupAdRequest {
-    private static final String TAG = "OfferJumpUrlAd";
+public class ClickUrlRequest extends YesupAdRequest {
+    private static final String TAG = "ClickUrlRequest";
 
-    private OfferModel offer;
-    private String cuid = "";
+    private BannerModel.Banner mBanner;
+    //private String cuid = "";
 
-    public void setOffer(OfferModel offer) {
-        this.offer = offer;
+    public void setOffer(BannerModel.Banner banner) {
+        this.mBanner = banner;
     }
 
-    public void setCuid(String cuid) {
+    /*public void setCuid(String cuid) {
         if (cuid != null && !cuid.isEmpty()) {
             this.cuid = cuid;
         } else {
             this.cuid = "";
         }
-    }
+    }*/
 
     @Override
     public void initRequestData() {
-        setAdType(Define.AD_TYPE_OFFER_WALL);
+        setAdType(Define.AD_TYPE_BANNER_IMAGE);
 
-        setRequestType(YesupAdRequest.REQ_TYPE_OFFER_JUMPURL);
+        setRequestType(YesupAdRequest.REQ_TYPE_BANNER_CLICK_URL);
         setRequestMethod("POST");
-        setRequestId(offer.getLocalReference());
+        //setRequestId(0);
         setDownloadUrl(Define.SERVER_HOST + Define.URL_IF_INCENTIVE_API);
-        setSaveFileName(AppTool.getIncentiveLocalDataPath(context, offer));
+        setSaveFileName(AppTool.getBannerClickLocalDataPath(context, adZone.id));
         setRequestHeaderParameter("Authorization", "key=" + adConfig.getKey());
         setRequestHeaderParameter("Accept", "application/json");
         setRequestHeaderParameter("User-Agent", AppTool.makeUserAgent());
@@ -54,21 +54,21 @@ public class OfferJumpUrlAd extends YesupAdRequest {
         setRequestDataParameter("opt1", opt1);
         setRequestDataParameter("opt2", opt2);
         setRequestDataParameter("opt3", opt3);
-        setRequestDataParameter("adnid", Integer.toString(offer.getNid()));
-        setRequestDataParameter("cid", Integer.toString(offer.getCid()));
-        setRequestDataParameter("ad", Integer.toString(offer.getCvid()));
+        setRequestDataParameter("adnid", mBanner.adnid);
+        setRequestDataParameter("cid", mBanner.cid);
+        setRequestDataParameter("ad", mBanner.adsid);
         setRequestDataParameter("fmt", "4");
-        setRequestDataParameter("cuid", cuid);
+        setRequestDataParameter("cuid", mBanner.cuid);
     }
 
     @Override
     public boolean parseResponseDataWithJson() {
         boolean success;
-        if (offer == null) {
+        if (mBanner == null) {
             return false;
         }
         // read data from file
-        String jumpUrlPath = AppTool.getIncentiveLocalDataPath(context, offer);
+        String jumpUrlPath = AppTool.getBannerClickLocalDataPath(context, adZone.id);
         String jsonData;
         try {
             jsonData = StringTool.readStringFromFile(jumpUrlPath);
@@ -80,14 +80,9 @@ public class OfferJumpUrlAd extends YesupAdRequest {
             Log.v("Meshbean", "Read detail data: " + jsonData);
         }
         // parse json
-        success = OfferModel.parseOfferJumpUrlFromJson(jsonData, offer);
+        success = BannerModel.parseBannerClickUrlFromJson(jsonData, mBanner);
         // save detail data to local database
-        String jumpResult = offer.getJumpResult();
-        if (success && jumpResult != null && jumpResult.length() > 0) {
-            success = dbHelper.updateOfferJumpUrl(offer);
-        } else {
-            success = false;
-        }
+        // ...
         // delete temp file for jumpurl api
         File file = new File(jumpUrlPath);
         file.delete();

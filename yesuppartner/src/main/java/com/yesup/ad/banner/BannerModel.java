@@ -18,6 +18,16 @@ public class BannerModel extends AdData {
     public class Banner {
         public String imageUrl;
         public String clickUrl;
+        public String appType;
+        public String appStoreId;
+        public String appScheme;
+        public String adnid;
+        public String cid;
+        public String adsid;
+        public String cuid;
+
+        public String clickResult;
+        public String clickUid;
     }
     public String result;
     public int refresh;
@@ -70,12 +80,29 @@ public class BannerModel extends AdData {
                         banner.imageUrl = reader.nextString();
                     } else if (name.equals("click")) {
                         banner.clickUrl = reader.nextString();
+                    } else if (name.equals("adnid")) {
+                        banner.adnid = reader.nextString();
+                    } else if (name.equals("cid")) {
+                        banner.cid = reader.nextString();
+                    } else if (name.equals("ad")) {
+                        banner.adsid = reader.nextString();
+                    } else if (name.equals("cuid")) {
+                        banner.cuid = reader.nextString();
+                    } else if (name.equals("app_type")) {
+                        banner.appType = reader.nextString();
+                    } else if (name.equals("app_store_id")) {
+                        banner.appStoreId = reader.nextString();
+                    } else if (name.equals("app_scheme")) {
+                        banner.appScheme = reader.nextString();
                     } else {
                         reader.skipValue();
                     }
                 }
                 reader.endObject();
                 if (null != banner) {
+                    if (banner.appStoreId != null && !banner.appStoreId.isEmpty()) {
+                        banner.clickUrl = "";
+                    }
                     bannerList.add(banner);
                     Log.i(TAG, "ParseBannerAd:"+banner.imageUrl);
                 }
@@ -84,6 +111,41 @@ public class BannerModel extends AdData {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean parseBannerClickUrlFromJson(String jsonData, Banner banner) {
+        boolean success;
+        JsonReader reader = new JsonReader(new StringReader(jsonData));
+        try {
+            reader.beginObject();
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+                if (name.equals("result")) {
+                    String sv = reader.nextString();
+                    banner.clickResult = sv;
+                } else if (name.equals("curl")) {
+                    String sv = reader.nextString();
+                    banner.clickUrl = sv;
+                } else if (name.equals("uid")) {
+                    String sv = reader.nextString();
+                    banner.clickUid = sv;
+                } else {
+                    reader.skipValue();
+                }
+            }
+            reader.endObject();
+            success = true;
+        } catch (Exception e) {
+            success = false;
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (Exception e){
+                //
+            }
+        }
+        return success;
     }
 
 }

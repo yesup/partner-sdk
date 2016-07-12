@@ -58,10 +58,11 @@ public class DemoActivity extends AppCompatActivity implements IInterstitialList
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        YesupAd.setDebugMode(true);
+
         // new YesupOfferWall
         yesupOfferWall = new YesupOfferWall(this);
         Log.v(TAG, "YesupAD Version:"+yesupOfferWall.getVersion());
-        yesupOfferWall.setDebugMode(true);
         yesupOfferWall.setOfferWallPartnerHelper(offerWallHelper);
 
         // new YesupInterstitial

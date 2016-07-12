@@ -1,9 +1,9 @@
 <cpxcenter>
     <site>
-        <nid>1520</nid>
-        <pid>42800</pid>
-        <sid>54365</sid>
-        <key>29b60e4773aad0f408876fdb7e74ea93</key>
+        <nid>1536</nid>
+        <pid>68438</pid>
+        <sid>69763</sid>
+        <key>a28f891a6f465c7b3c24051c2407d21f</key>
         <serving>ads1536.cpxserving.com</serving>
     </site>
     <zones>
@@ -32,16 +32,10 @@
             <size>0</size>
         </zone>
         <zone>
-            <id>72586</id>
-            <formats>1</formats>
-            <display>4</display>
-            <size>17</size>
-        </zone>
-        <zone>
-            <id>72585</id>
-            <formats>1</formats>
-            <display>4</display>
-            <size>7</size>
+            <id>109074</id>
+            <formats>2</formats>
+            <display>2</display>
+            <size>14</size>
         </zone>
     </zones>
 </cpxcenter>
