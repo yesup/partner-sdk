@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yesup.ad.framework.YesupAdRequest;
@@ -36,8 +37,11 @@ public class BannerView extends FrameLayout {
     private String yesupBannerZoneId;
     private BannerController bannerController;
 
+    public static final int BANNER_MAX_SIZE = 3;
+
     private TextView bannerTextView;
     private ViewPager mViewPager;
+    private ImageView mIndicator[] = new ImageView[BANNER_MAX_SIZE];
     private BannerSlidePagerAdapter mPagerAdapter;
 
     /**
@@ -133,6 +137,28 @@ public class BannerView extends FrameLayout {
                 return false;
             }
         });
+
+        mIndicator[0] = (ImageView)view.findViewById(R.id.image_indicator1);
+        mIndicator[1] = (ImageView)view.findViewById(R.id.image_indicator2);
+        mIndicator[2] = (ImageView)view.findViewById(R.id.image_indicator3);
+    }
+
+    private void setIndicator(int total, int pos) {
+        for (int i=0; i<BANNER_MAX_SIZE; i++) {
+            if (i < total) {
+                mIndicator[i].setVisibility(VISIBLE);
+                if (pos == i) {
+                    mIndicator[i].setImageResource(R.drawable.indicator_selected);
+                } else {
+                    mIndicator[i].setImageResource(R.drawable.indicator_normal);
+                }
+            } else {
+                mIndicator[i].setVisibility(GONE);
+            }
+        }
+        if (1 == total) {
+            mIndicator[0].setVisibility(GONE);
+        }
     }
 
     private int mCurClickBannerId = 0;
@@ -224,6 +250,7 @@ public class BannerView extends FrameLayout {
                 case Define.MSG_AD_REQUEST_SUCCESSED:
                     if (YesupAdRequest.REQ_TYPE_BANNER_LIST == adRequest.getRequestType()) {
                         //Log.d(TAG, "Request success and notify data set changed");
+                        setIndicator(bannerController.getBannerSize(), 0);
                         mViewPager.setAdapter(mPagerAdapter);
                         mPagerAdapter.notifyDataSetChanged();
                         if (null != bannerController && bannerController.isDataReady()) {
@@ -243,6 +270,7 @@ public class BannerView extends FrameLayout {
                     break;
                 case Define.MSG_BANNERVIEW_SLIDE_NEXT:
                     mViewPager.setCurrentItem(msg.arg1);
+                    setIndicator(bannerController.getBannerSize(), msg.arg1);
                 default:
                     break;
             }
@@ -295,6 +323,7 @@ public class BannerView extends FrameLayout {
             //Log.i(TAG, "onPageSelected: "+position);
             if (null != bannerController) {
                 bannerController.setCurBannerIndex(position);
+                setIndicator(bannerController.getBannerSize(), position);
             }
         }
         @Override

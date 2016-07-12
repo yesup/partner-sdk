@@ -14,4 +14,38 @@
         android:layout_height="match_parent"
         android:id="@+id/view_pager"></android.support.v4.view.ViewPager>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal">
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
+            android:src="@drawable/indicator_selected"
+            android:visibility="gone"
+            android:id="@+id/image_indicator1" />
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
+            android:layout_toRightOf="@+id/image_indicator1"
+            android:layout_marginLeft="3dp"
+            android:src="@drawable/indicator_selected"
+            android:visibility="gone"
+            android:id="@+id/image_indicator2" />
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
+            android:layout_toRightOf="@+id/image_indicator2"
+            android:layout_marginLeft="3dp"
+            android:src="@drawable/indicator_selected"
+            android:visibility="gone"
+            android:id="@+id/image_indicator3" />
+    </RelativeLayout>
+
 </FrameLayout>
