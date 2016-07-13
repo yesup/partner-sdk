@@ -1,5 +1,5 @@
 # Yesup Partner Sdk for Android
-###### The Latest SDK Version: 1.2.3
+###### The Latest SDK Version: 1.2.5
 Yesup Partner SDK for Android is the easiest way to integrate your Android app with Yesup.<br/>
 #####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1 Install Yesup AD SDK](#step1)<br/>
 #####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2 Set your custom information](#step2)<br/>
@@ -27,7 +27,7 @@ Learn more about the provided sample at https://github.com/yesup/house-reminder<
      Add a "dependencies" source, as follows:<br/>
 ```python
      dependencies {
-         compile 'com.yesup.partner:yesuppartner:1.2.3'
+         compile 'com.yesup.partner:yesuppartner:1.2.5'
      }
 ```
   Now the classes and methods in the Yesup Partner Library can be used in your app.<br/><br/>
