@@ -10,6 +10,7 @@ import com.yesup.ad.utils.AppTool;
 import com.yesup.ad.utils.StringTool;
 import com.yesup.ad.utils.Uuid;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -73,7 +74,7 @@ public class ImageInterstitialRequest extends InterstitialRequest {
             Log.w(TAG, "Read resource data: " + jsonData);
         }
         // parse json
-        success = imageInterstitialModel.parsePageInterstitialFromJson(jsonData);
+        success = imageInterstitialModel.parseImageInterstitialFromJson(jsonData);
         if (success) {
             if (!imageInterstitialModel.result.equals("ready")) {
                 success = false;
@@ -82,8 +83,8 @@ public class ImageInterstitialRequest extends InterstitialRequest {
         // save detail data to local database
         // ...
         // delete temp file for api
-        //File file = new File(AppTool.getPageInterstitialLocalDataPath(context));
-        //file.delete();
+        File file = new File(AppTool.getImageInterstitialLocalDataPath(context));
+        file.delete();
         return success;
     }
 

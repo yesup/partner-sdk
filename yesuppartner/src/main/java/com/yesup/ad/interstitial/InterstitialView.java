@@ -143,7 +143,12 @@ public class InterstitialView extends Dialog {
             @Override
             public void onClick(View v) {
                 ImageInterstitialRequest interstitialRequest = (ImageInterstitialRequest)dialogConfig.interstitialController.getInterstitialRequest();
-                String clickUrl = interstitialRequest.getImageInterstitialModel().adList.get(0).clickUrl;
+                ImageInterstitialModel.PageAd ad = interstitialRequest.getImageInterstitialModel().adList.get(0);
+                if (null != ad.appStoreId && !ad.appStoreId.isEmpty()) {
+                    // save to AdClickedTable
+                    dialogConfig.interstitialController.saveBannerHasBeenClicked();
+                }
+                String clickUrl = ad.clickUrl;
                 if (clickUrl != null && !clickUrl.isEmpty()) {
                     stopCloseTimer();
                     getDialogConfig().adClicked = true;
@@ -281,6 +286,13 @@ public class InterstitialView extends Dialog {
                         if (!pageUrl.isEmpty()) {
                             webViewAd.loadUrl(pageUrl);
                         }
+                    } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == interstitialRequest.getAdType()) {
+                        // Image Interstitial -> Html type
+                        ImageInterstitialRequest pageAd = (ImageInterstitialRequest)interstitialRequest;
+                        ImageInterstitialModel.PageAd imageAd = pageAd.getPageAd();
+                        if (imageAd.mime.equals(ImageInterstitialModel.IMAGE_INTERSTITIAL_TYPE_HTML)) {
+                            webViewAd.loadData(imageAd.adUrl, "text/html; charset=UTF-8", null);
+                        }
                     }
                 }
                 break;
@@ -296,19 +308,31 @@ public class InterstitialView extends Dialog {
                         PageInterstitialRequest pageAd = (PageInterstitialRequest)interstitialRequest;
                         pageAd.impressInterstitialAfterWait();
                     } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == interstitialRequest.getAdType()) {
-                        imageLoading.setVisibility(View.GONE);
-                        webViewAd.setVisibility(View.GONE);
-                        imageViewAd.setVisibility(View.VISIBLE);
-                        // display image
                         ImageInterstitialRequest pageAd = (ImageInterstitialRequest)interstitialRequest;
-                        String filename = pageAd.getImageInterstitialModel().localImageFilename;
-                        File imageFile = new File(filename);
-                        if (imageFile.exists()){
-                            Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                            imageViewAd.setImageBitmap(bmp);
+                        ImageInterstitialModel.PageAd imageAd = pageAd.getPageAd();
+                        if (imageAd.mime.equals(ImageInterstitialModel.IMAGE_INTERSTITIAL_TYPE_HTML)) {
+                            // Image Interstitial -> Html type
+                            imageLoading.setVisibility(View.GONE);
+                            imageViewAd.setVisibility(View.GONE);
+                            webViewAd.setVisibility(View.VISIBLE);
+                            // begin timer to impression
+                            interstitialRequest.impressInterstitialAfterWait();
+                        } else {
+                            // Image Interstitial -> Image type
+                            imageLoading.setVisibility(View.GONE);
+                            webViewAd.setVisibility(View.GONE);
+                            imageViewAd.setVisibility(View.VISIBLE);
+                            // display image
+                            ImageInterstitialRequest imageRequest = (ImageInterstitialRequest) interstitialRequest;
+                            String filename = imageRequest.getImageInterstitialModel().localImageFilename;
+                            File imageFile = new File(filename);
+                            if (imageFile.exists()) {
+                                Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                                imageViewAd.setImageBitmap(bmp);
+                            }
+                            // begin timer to impression
+                            pageAd.impressInterstitialAfterWait();
                         }
-                        // begin timer to impression
-                        pageAd.impressInterstitialAfterWait();
                     }
                 }
                 break;
@@ -320,9 +344,17 @@ public class InterstitialView extends Dialog {
                         imageViewAd.setVisibility(View.GONE);
                         webViewAd.setVisibility(View.VISIBLE);
                     } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == interstitialRequest.getAdType()) {
-                        imageLoading.setVisibility(View.GONE);
-                        webViewAd.setVisibility(View.GONE);
-                        imageViewAd.setVisibility(View.VISIBLE);
+                        ImageInterstitialRequest pageAd = (ImageInterstitialRequest)interstitialRequest;
+                        ImageInterstitialModel.PageAd imageAd = pageAd.getPageAd();
+                        if (imageAd.mime.equals(ImageInterstitialModel.IMAGE_INTERSTITIAL_TYPE_HTML)) {
+                            imageLoading.setVisibility(View.GONE);
+                            imageViewAd.setVisibility(View.GONE);
+                            webViewAd.setVisibility(View.VISIBLE);
+                        } else {
+                            imageLoading.setVisibility(View.GONE);
+                            webViewAd.setVisibility(View.GONE);
+                            imageViewAd.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
                 if (config.allowUserCloseAfterImpressed) {
@@ -502,9 +534,19 @@ public class InterstitialView extends Dialog {
             switch (msg.what) {
                 case Define.MSG_AD_REQUEST_SUCCESSED:
                     request = (YesupAdRequest)msg.obj;
-                    if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == request.getAdType()) {
+                    if (YesupAdRequest.REQ_TYPE_INTERSTITIAL_PAGE == request.getRequestType()) {
                         config.viewState = Interstitial.VIEW_STATE_GOT_AD;
-                    } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == request.getAdType()) {
+                    } else if (YesupAdRequest.REQ_TYPE_INTERSTITIAL_IMAGE == request.getRequestType()) {
+                        ImageInterstitialRequest pageAd = (ImageInterstitialRequest)request;
+                        ImageInterstitialModel.PageAd imageAd = pageAd.getPageAd();
+                        if (imageAd.mime.equals(ImageInterstitialModel.IMAGE_INTERSTITIAL_TYPE_HTML)) {
+                            // Image Interstitial -> Html type
+                            config.viewState = Interstitial.VIEW_STATE_GOT_AD;
+                        } else {
+                            // Image Interstitial -> Image type
+                            config.viewState = Interstitial.VIEW_STATE_LOADED_AD;
+                        }
+                    } else if (YesupAdRequest.REQ_TYPE_INTERSTITIAL_RES_IMG == request.getRequestType()) {
                         config.viewState = Interstitial.VIEW_STATE_LOADED_AD;
                     }
                     viewControl();

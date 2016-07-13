@@ -1,4 +1,4 @@
-package com.yesup.ad.banner;
+package com.yesup.ad.interstitial;
 
 import android.util.Log;
 
@@ -12,35 +12,26 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by derek on 4/21/16.
+ * Created by derek on 2016.7.13.
  */
-public class ClickUrlRequest extends YesupAdRequest {
-    private static final String TAG = "ClickUrlRequest";
+public class ImageClickUrlRequest extends YesupAdRequest {
+    private static final String TAG = "ImageClickUrlRequest";
 
-    private BannerModel.Banner mBanner;
-    //private String cuid = "";
+    private ImageInterstitialModel.PageAd mImageAd;
 
-    public void setBanner(BannerModel.Banner banner) {
-        this.mBanner = banner;
+    public void setImageAd(ImageInterstitialModel.PageAd imageAd) {
+        this.mImageAd = imageAd;
     }
-
-    /*public void setCuid(String cuid) {
-        if (cuid != null && !cuid.isEmpty()) {
-            this.cuid = cuid;
-        } else {
-            this.cuid = "";
-        }
-    }*/
 
     @Override
     public void initRequestData() {
-        setAdType(Define.AD_TYPE_BANNER_IMAGE);
+        setAdType(Define.AD_TYPE_INTERSTITIAL_IMAGE);
 
-        setRequestType(YesupAdRequest.REQ_TYPE_BANNER_CLICK_URL);
+        setRequestType(YesupAdRequest.REQ_TYPE_IMAGE_CLICK_URL);
         setRequestMethod("POST");
         //setRequestId(0);
         setDownloadUrl(Define.SERVER_HOST + Define.URL_IF_INCENTIVE_API);
-        setSaveFileName(AppTool.getBannerClickLocalDataPath(context, adZone.id));
+        setSaveFileName(AppTool.getImageClickLocalDataPath(context, adZone.id));
         setRequestHeaderParameter("Authorization", "key=" + adConfig.getKey());
         setRequestHeaderParameter("Accept", "application/json");
         setRequestHeaderParameter("User-Agent", AppTool.makeUserAgent());
@@ -54,21 +45,21 @@ public class ClickUrlRequest extends YesupAdRequest {
         setRequestDataParameter("opt1", opt1);
         setRequestDataParameter("opt2", opt2);
         setRequestDataParameter("opt3", opt3);
-        setRequestDataParameter("adnid", mBanner.adnid);
-        setRequestDataParameter("cid", mBanner.cid);
-        setRequestDataParameter("ad", mBanner.adsid);
+        setRequestDataParameter("adnid", mImageAd.adNid);
+        setRequestDataParameter("cid", mImageAd.cid);
+        setRequestDataParameter("ad", mImageAd.adSid);
         setRequestDataParameter("fmt", "4");
-        setRequestDataParameter("cuid", mBanner.cuid);
+        setRequestDataParameter("cuid", mImageAd.clickUid);
     }
 
     @Override
     public boolean parseResponseDataWithJson() {
-        boolean success;
-        if (mBanner == null) {
+        boolean success = false;
+        if (mImageAd == null) {
             return false;
         }
         // read data from file
-        String jumpUrlPath = AppTool.getBannerClickLocalDataPath(context, adZone.id);
+        String jumpUrlPath = AppTool.getImageClickLocalDataPath(context, adZone.id);
         String jsonData;
         try {
             jsonData = StringTool.readStringFromFile(jumpUrlPath);
@@ -80,7 +71,7 @@ public class ClickUrlRequest extends YesupAdRequest {
             Log.v("Meshbean", "Read detail data: " + jsonData);
         }
         // parse json
-        success = BannerModel.parseBannerClickUrlFromJson(jsonData, mBanner);
+        //success = BannerModel.parseBannerClickUrlFromJson(jsonData, mImageAd);
         // save detail data to local database
         // ...
         // delete temp file for jumpurl api

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.yesup.ad.framework.AdClickModel;
 import com.yesup.ad.framework.AdConfig;
 import com.yesup.ad.framework.AdController;
 import com.yesup.ad.framework.AdZone;
@@ -58,6 +59,20 @@ public class InterstitialController extends AdController {
     protected void onPause() {
     }
 
+    public boolean isRequestingInterstitialClickUrl() {
+        return mRequestingInterstitialClickUrl;
+    }
+    private boolean mRequestingInterstitialClickUrl = false;
+    public void requestInterstitialClickUrl(ImageInterstitialModel.PageAd ad) {
+        mRequestingInterstitialClickUrl = true;
+        DownloadManagerLite downloader = DataCenter.getInstance().getDownloadManager();
+        ImageClickUrlRequest request = new ImageClickUrlRequest();
+        request.setImageAd(ad);
+        initRequestConfig(request);
+        request.initRequestData();
+        request.sendRequest(downloader);
+    }
+
     @Override
     protected void onRequestProgressed(YesupAdRequest adRequest, int percent) {
     }
@@ -69,8 +84,13 @@ public class InterstitialController extends AdController {
                 messageView(Define.MSG_AD_REQUEST_SUCCESSED, 0, 0, adRequest);
                 break;
             case YesupAdRequest.REQ_TYPE_INTERSTITIAL_IMAGE:
-                ImageInterstitialRequest req = (ImageInterstitialRequest)adRequest;
-                req.requestImageFile();
+                ImageInterstitialRequest req = (ImageInterstitialRequest)interstitialRequest;
+                ImageInterstitialModel.PageAd imageAd = req.getPageAd();
+                if (imageAd.mime.equals(ImageInterstitialModel.IMAGE_INTERSTITIAL_TYPE_HTML)) {
+                    messageView(Define.MSG_AD_REQUEST_SUCCESSED, 0, 0, adRequest);
+                } else {
+                    req.requestImageFile();
+                }
                 break;
             case YesupAdRequest.REQ_TYPE_IMPRESS:
                 InterstitialImpressRequest impress = (InterstitialImpressRequest)adRequest;
@@ -108,6 +128,29 @@ public class InterstitialController extends AdController {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void saveBannerHasBeenClicked() {
+        if (Define.AD_TYPE_INTERSTITIAL_IMAGE == adZone.getAdType()) {
+            ImageInterstitialRequest request = (ImageInterstitialRequest)interstitialRequest;
+            ImageInterstitialModel interstitialModel = request.getImageInterstitialModel();
+            ImageInterstitialModel.PageAd imageAd = interstitialModel.getPageAd();
+            if (null != imageAd.appStoreId && !imageAd.appStoreId.isEmpty()) {
+                AdClickModel click = new AdClickModel();
+                click.adType = AdClickModel.AD_TYPE_INTERSTITIAL;
+                click.adNid = String.valueOf(imageAd.adNid);
+                click.adSid = String.valueOf(imageAd.adSid);
+                click.cid = String.valueOf(imageAd.cid);
+                click.appStoreName = "";
+                click.appType = imageAd.appType;
+                click.appStoreId = imageAd.appStoreId;
+                click.jumpUid = imageAd.clickUid;
+
+                if (!request.getDbHelper().adClickedIsExist(click)) {
+                    request.getDbHelper().addAdClicked(click);
+                }
+            }
         }
     }
 }

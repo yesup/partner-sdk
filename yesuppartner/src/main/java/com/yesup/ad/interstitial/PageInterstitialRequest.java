@@ -9,6 +9,7 @@ import com.yesup.ad.utils.AppTool;
 import com.yesup.ad.utils.StringTool;
 import com.yesup.ad.utils.Uuid;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -76,8 +77,8 @@ public class PageInterstitialRequest extends InterstitialRequest {
         // save detail data to local database
         // ...
         // delete temp file for api
-        //File file = new File(AppTool.getPageInterstitialLocalDataPath(context));
-        //file.delete();
+        File file = new File(AppTool.getPageInterstitialLocalDataPath(context));
+        file.delete();
         return success;
     }
 

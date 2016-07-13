@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.yesup.ad.framework.AdClickModel;
 import com.yesup.ad.framework.AdConfig;
 import com.yesup.ad.framework.AdController;
 import com.yesup.ad.framework.AdZone;
@@ -55,6 +56,7 @@ public class BannerController extends AdController {
         mRequestingBannerClickUrl = true;
         DownloadManagerLite downloader = DataCenter.getInstance().getDownloadManager();
         ClickUrlRequest request = new ClickUrlRequest();
+        request.setBanner(banner);
         initRequestConfig(request);
         request.initRequestData();
         request.sendRequest(downloader);
@@ -83,6 +85,7 @@ public class BannerController extends AdController {
                 messageView(Define.MSG_AD_REQUEST_FAILED, result, 0, adRequest);
             }
         } else if (YesupAdRequest.REQ_TYPE_BANNER_CLICK_URL == adRequest.getRequestType()) {
+            saveBannerHasBeenClicked();
             mRequestingBannerClickUrl = false;
             messageView(Define.MSG_AD_REQUEST_SUCCESSED, result, 0, adRequest);
         }
@@ -150,5 +153,24 @@ public class BannerController extends AdController {
 
     public int getBannerSize() {
         return mBannerSize;
+    }
+
+    public void saveBannerHasBeenClicked() {
+        BannerModel.Banner banner = bannerMap.get(mCurBannerIndex);
+        if (null != banner.appStoreId && !banner.appStoreId.isEmpty()) {
+            AdClickModel click = new AdClickModel();
+            click.adType = AdClickModel.AD_TYPE_BANNER;
+            click.adNid = String.valueOf(banner.adnid);
+            click.adSid = String.valueOf(banner.adsid);
+            click.cid = String.valueOf(banner.cid);
+            click.appStoreName = "";
+            click.appType = banner.appType;
+            click.appStoreId = banner.appStoreId;
+            click.jumpUid = banner.clickUid;
+
+            if (!bannerRequest.getDbHelper().adClickedIsExist(click)) {
+                bannerRequest.getDbHelper().addAdClicked(click);
+            }
+        }
     }
 }

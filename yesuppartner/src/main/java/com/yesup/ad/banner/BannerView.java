@@ -164,36 +164,34 @@ public class BannerView extends FrameLayout {
     private int mCurClickBannerId = 0;
     private void onBannerClick(int id) {
         BannerModel.Banner banner = bannerController.getBanner(id);
-        if (null != banner && !banner.clickUrl.isEmpty()) {
-            //Log.d(TAG, "onBannerClick:" + banner.clickUrl);
-            // check if this app has been installed.
-            boolean thisIsApp,installed;
-            if (null != banner.appStoreId && !banner.appStoreId.isEmpty()) {
-                thisIsApp = true;
-                installed = AppTool.isAppInstalled(getContext(), banner.appStoreId);
-            } else {
-                thisIsApp = false;
-                installed = false;
-            }
-            //
-            if (installed) {
-                String showInfo = "This app has been installed in your device!";
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage(showInfo);
-                builder.setNegativeButton("OK", null);
-                builder.show();
-            } else {
-                if (thisIsApp && (null==banner.clickUrl || banner.clickUrl.isEmpty())) {
-                    // request jump url
-                    if (!bannerController.isRequestingBannerClickUrl()) {
-                        mCurClickBannerId = id;
-                        bannerController.requestBannerClickUrl(banner);
-                    }
-                } else {
-                    // click url
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(banner.clickUrl));
-                    getContext().startActivity(browserIntent);
+        // check if this app has been installed.
+        boolean thisIsApp,installed;
+        if (null != banner.appStoreId && !banner.appStoreId.isEmpty()) {
+            thisIsApp = true;
+            installed = AppTool.isAppInstalled(getContext(), banner.appStoreId);
+        } else {
+            thisIsApp = false;
+            installed = false;
+        }
+        //
+        if (installed) {
+            String showInfo = "This app has been installed in your device!";
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(showInfo);
+            builder.setNegativeButton("OK", null);
+            builder.show();
+        } else {
+            if (thisIsApp && (null==banner.clickUrl || banner.clickUrl.isEmpty())) {
+                // request jump url
+                if (!bannerController.isRequestingBannerClickUrl()) {
+                    mCurClickBannerId = id;
+                    bannerController.requestBannerClickUrl(banner);
                 }
+            } else {
+                // click url
+                Log.d(TAG, "onBannerClick:" + banner.clickUrl);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(banner.clickUrl));
+                getContext().startActivity(browserIntent);
             }
         }
     }

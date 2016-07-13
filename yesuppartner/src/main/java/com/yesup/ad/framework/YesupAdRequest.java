@@ -19,6 +19,7 @@ public abstract class YesupAdRequest extends YesupHttpRequest {
     public static final int REQ_TYPE_INTERSTITIAL_RES_IMG = 7;
     public static final int REQ_TYPE_BANNER_LIST = 8;
     public static final int REQ_TYPE_BANNER_CLICK_URL = 9;
+    public static final int REQ_TYPE_IMAGE_CLICK_URL = 10;
 
     protected DBHelper dbHelper;
     protected Context context;

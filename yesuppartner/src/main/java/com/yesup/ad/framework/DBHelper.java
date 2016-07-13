@@ -16,7 +16,7 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 11;
+    public static final int DATABASE_VERSION = 12;
     public static final String DATABASE_NAME = "meshbean.db";
 
     private static final String SQL_CREATE_TABLE_OFFERPAGES =
@@ -77,6 +77,18 @@ public class DBHelper extends SQLiteOpenHelper {
                     + OffersClicked.COLUMN_NAME_JUMP_RESULT + " TEXT,"
                     + OffersClicked.COLUMN_NAME_JUMP_UID + " TEXT,"
                     + OffersClicked.COLUMN_NAME_JUMP_URL + " TEXT)";
+    private static final String SQL_CREATE_TABLE_ADS_CLICKED =
+            "CREATE TABLE "+AdClicked.TABLE_NAME+" ("+AdClicked._ID+" INTEGER PRIMARY KEY,"
+                    + AdClicked.COLUMN_NAME_AD_TYPE + " TEXT,"
+                    + AdClicked.COLUMN_NAME_ADNID + " INTEGER,"
+                    + AdClicked.COLUMN_NAME_ADSID + " INTEGER,"
+                    + AdClicked.COLUMN_NAME_CID + " INTEGER,"
+                    + AdClicked.COLUMN_NAME_APP_STORE_NAME + " TEXT,"
+                    + AdClicked.COLUMN_NAME_APP_TYPE + " TEXT,"
+                    + AdClicked.COLUMN_NAME_APP_STORE_ID + " TEXT,"
+                    + AdClicked.COLUMN_NAME_JUMP_UID + " TEXT,"
+                    + AdClicked.COLUMN_NAME_INSTALLED + " INTEGER,"
+                    + AdClicked.COLUMN_NAME_REPORT + " INTEGER)";
 
     private static final String SQL_DELETE_TABLE_OFFERPAGES =
             "DROP TABLE IF EXISTS " + OfferPages.TABLE_NAME;
@@ -84,6 +96,8 @@ public class DBHelper extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + Offers.TABLE_NAME;
     private static final String SQL_DELETE_TABLE_OFFERS_CLICKED =
             "DROP TABLE IF EXISTS " + OffersClicked.TABLE_NAME;
+    private static final String SQL_DELETE_TABLE_ADS_CLICKED =
+            "DROP TABLE IF EXISTS " + AdClicked.TABLE_NAME;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -94,6 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_OFFERPAGES);
         db.execSQL(SQL_CREATE_TABLE_OFFERS);
         db.execSQL(SQL_CREATE_TABLE_OFFERS_CLICKED);
+        db.execSQL(SQL_CREATE_TABLE_ADS_CLICKED);
     }
 
     @Override
@@ -101,6 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_TABLE_OFFERS_CLICKED);
         db.execSQL(SQL_DELETE_TABLE_OFFERS);
         db.execSQL(SQL_DELETE_TABLE_OFFERPAGES);
+        db.execSQL(SQL_DELETE_TABLE_ADS_CLICKED);
         onCreate(db);
     }
 
@@ -220,18 +236,18 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean offerClickedIsExist(OfferModel offer) {
+    public boolean adClickedIsExist(AdClickModel click) {
         boolean exist = false;
         SQLiteDatabase db = getWritableDatabase();
         String[] projection = {"COUNT(*)"};
-        String selection = OffersClicked.COLUMN_NAME_NID+"=? AND "
-                +OffersClicked.COLUMN_NAME_CID+"=? AND "
-                +OffersClicked.COLUMN_NAME_CVID+"=?";
-        String[] selectionArgs = {String.valueOf(offer.getNid()),
-                                String.valueOf(offer.getCid()),
-                                String.valueOf(offer.getCvid())};
+        String selection = AdClicked.COLUMN_NAME_ADNID+"=? AND "
+                +AdClicked.COLUMN_NAME_CID+"=? AND "
+                +AdClicked.COLUMN_NAME_ADSID+"=?";
+        String[] selectionArgs = {String.valueOf(click.adNid),
+                                String.valueOf(click.cid),
+                                String.valueOf(click.adSid)};
 
-        Cursor cursor = db.query(OffersClicked.TABLE_NAME, projection,
+        Cursor cursor = db.query(AdClicked.TABLE_NAME, projection,
                 selection, selectionArgs, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -244,36 +260,50 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return exist;
     }
+    public boolean offerClickedIsExist(OfferModel offer) {
+        AdClickModel click = new AdClickModel();
+        click.adType = AdClickModel.AD_TYPE_OFFERWALL;
+        click.adNid = String.valueOf(offer.getNid());
+        click.adSid = String.valueOf(offer.getAdsid());
+        click.cid = String.valueOf(offer.getCid());
 
-    public boolean addOfferClicked(OfferModel offer) {
+        return adClickedIsExist(click);
+    }
+
+    public boolean addAdClicked(AdClickModel click) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(OffersClicked.COLUMN_NAME_BELONG_PAGETYPE, OfferPageModel.PAGE_TYPE_OFFER);
-        values.put(OffersClicked.COLUMN_NAME_NID, offer.getNid());
-        values.put(OffersClicked.COLUMN_NAME_ADSID, offer.getAdsid());
-        values.put(OffersClicked.COLUMN_NAME_CID, offer.getCid());
-        values.put(OffersClicked.COLUMN_NAME_CVID, offer.getCvid());
-        values.put(OffersClicked.COLUMN_NAME_APP_STORE_NAME, offer.getAppStoreName());
-        values.put(OffersClicked.COLUMN_NAME_APP_TYPE, offer.getAppType());
-        values.put(OffersClicked.COLUMN_NAME_APP_STORE_ID, offer.getAppStoreId());
-        values.put(OffersClicked.COLUMN_NAME_APP_STORE_PRICE, offer.getAppStorePrice());
-        values.put(OffersClicked.COLUMN_NAME_CHARGE_PERIOD, offer.getChargePeriod());
-        values.put(OffersClicked.COLUMN_NAME_TITLE, offer.getTitle());
-        values.put(OffersClicked.COLUMN_NAME_CONVERT_COND, offer.getConvertCondition());
-        values.put(OffersClicked.COLUMN_NAME_CREATEAT, offer.getCreatedAt());
-        values.put(OffersClicked.COLUMN_NAME_INSTALLED, false);
-        values.put(OffersClicked.COLUMN_NAME_REPORT, false);
-        values.put(OffersClicked.COLUMN_NAME_JUMP_RESULT, offer.getJumpResult());
-        values.put(OffersClicked.COLUMN_NAME_JUMP_UID, offer.getJumpUid());
-        values.put(OffersClicked.COLUMN_NAME_JUMP_URL, offer.getJumpUrl());
+        values.put(AdClicked.COLUMN_NAME_AD_TYPE, click.adType);
+        values.put(AdClicked.COLUMN_NAME_ADNID, click.adNid);
+        values.put(AdClicked.COLUMN_NAME_ADSID, click.adSid);
+        values.put(AdClicked.COLUMN_NAME_CID, click.cid);
+        values.put(AdClicked.COLUMN_NAME_APP_STORE_NAME, click.appStoreName);
+        values.put(AdClicked.COLUMN_NAME_APP_TYPE, click.appType);
+        values.put(AdClicked.COLUMN_NAME_APP_STORE_ID, click.appStoreId);
+        values.put(AdClicked.COLUMN_NAME_JUMP_UID, click.jumpUid);
+        values.put(AdClicked.COLUMN_NAME_INSTALLED, false);
+        values.put(AdClicked.COLUMN_NAME_REPORT, false);
 
         long newRowId;
-        newRowId = db.insert(OffersClicked.TABLE_NAME, null, values);
+        newRowId = db.insert(AdClicked.TABLE_NAME, null, values);
         if (newRowId < 0){
             return false;
         }else {
             return true;
         }
+    }
+    public boolean addOfferClicked(OfferModel offer) {
+        AdClickModel click = new AdClickModel();
+        click.adType = AdClickModel.AD_TYPE_OFFERWALL;
+        click.adNid = String.valueOf(offer.getNid());
+        click.adSid = String.valueOf(offer.getAdsid());
+        click.cid = String.valueOf(offer.getCid());
+        click.appStoreName = offer.getAppStoreName();
+        click.appType = offer.getAppType();
+        click.appStoreId = offer.getAppStoreId();
+        click.jumpUid = offer.getJumpUid();
+
+        return addAdClicked(click);
     }
 
     public List<OfferModel> readOffersByType(int pageType) {
@@ -340,105 +370,83 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public List<OfferModel> readOffersClickedWhichNeedToCheckByType(int pageType) {
-        List<OfferModel> list = new ArrayList<>();
+    public List<AdClickModel> readAdsClickedWhichNeedToCheck() {
+        List<AdClickModel> list = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
         String[] projection = null;
-        String selection = OffersClicked.COLUMN_NAME_BELONG_PAGETYPE + "=? AND "
-                + OffersClicked.COLUMN_NAME_INSTALLED + "=0";
-        String[] selectionArgs = {String.valueOf(pageType)};
-        String sortOrder = OffersClicked._ID;
+        String selection = AdClicked.COLUMN_NAME_INSTALLED + "=0";
+        String[] selectionArgs = {};
+        String sortOrder = AdClicked._ID;
 
-        Cursor cursor = db.query(OffersClicked.TABLE_NAME, projection,
+        Cursor cursor = db.query(AdClicked.TABLE_NAME, projection,
                 selection, selectionArgs, null, null, sortOrder);
         cursor.moveToFirst();
         int count = 0;
         while (!cursor.isAfterLast()) {
-            OfferModel offer = new OfferModel();
-            offer.setLocalReference(count);
-            offer.setDbId(cursor.getInt(cursor.getColumnIndex(OffersClicked._ID)));
-            //offer.set( cursor.getString( cursor.getColumnIndex(OffersClicked.COLUMN_NAME_BELONG_PAGETYPE) ) );
-            offer.setNid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_NID)));
-            offer.setAdsid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_ADSID)));
-            offer.setCid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CID)));
-            offer.setCvid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CVID)));
-            offer.setAppStoreName(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_STORE_NAME)));
-            offer.setAppType(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_TYPE)));
-            offer.setAppStoreId(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_STORE_ID)));
-            offer.setAppStorePrice(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_STORE_PRICE)));
-            offer.setChargePeriod(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CHARGE_PERIOD)));
-            offer.setTitle(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_TITLE)));
-            offer.setConvertCondition(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CONVERT_COND)));
-            offer.setCreatedAt(cursor.getLong(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CREATEAT)));
-            if (cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_INSTALLED)) == 0) {
-                offer.setHasInstalled(false);
+            AdClickModel click = new AdClickModel();
+            click.setDbId(cursor.getInt(cursor.getColumnIndex(AdClicked._ID)));
+            click.adNid = String.valueOf(cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_ADNID)));
+            click.adSid = String.valueOf(cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_ADSID)));
+            click.cid = String.valueOf(cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_CID)));
+            click.appStoreName = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_APP_STORE_NAME));
+            click.appType = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_APP_TYPE));
+            click.appStoreId = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_APP_STORE_ID));
+            click.jumpUid = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_JUMP_UID));
+            if (cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_INSTALLED)) == 0) {
+                click.installed = false;
             }else{
-                offer.setHasInstalled(true);
+                click.installed = true;
             }
-            if (cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_REPORT)) == 0) {
-                offer.setHasReport(false);
+            if (cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_REPORT)) == 0) {
+                click.reported = false;
             }else{
-                offer.setHasReport(true);
+                click.reported = true;
             }
-            offer.setJumpResult(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_JUMP_RESULT)));
-            offer.setJumpUid(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_JUMP_UID)));
-            offer.setJumpUrl(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_JUMP_URL)));
 
             cursor.moveToNext();
-            list.add(count, offer);
+            list.add(count, click);
             count++;
         }
 
         return list;
     }
 
-    public List<OfferModel> readOffersClickedWhichNeedToReportByType(int pageType) {
-        List<OfferModel> list = new ArrayList<>();
+    public List<AdClickModel> readAdsClickedWhichNeedToReport() {
+        List<AdClickModel> list = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
         String[] projection = null;
-        String selection = OffersClicked.COLUMN_NAME_BELONG_PAGETYPE + "=? AND "
-                + OffersClicked.COLUMN_NAME_INSTALLED + "=1 AND "
-                + OffersClicked.COLUMN_NAME_REPORT + "=0";
-        String[] selectionArgs = {String.valueOf(pageType)};
-        String sortOrder = OffersClicked._ID;
+        String selection = AdClicked.COLUMN_NAME_INSTALLED + "=1 AND "
+                + AdClicked.COLUMN_NAME_REPORT + "=0";
+        String[] selectionArgs = {};
+        String sortOrder = AdClicked._ID;
 
-        Cursor cursor = db.query(OffersClicked.TABLE_NAME, projection,
+        Cursor cursor = db.query(AdClicked.TABLE_NAME, projection,
                 selection, selectionArgs, null, null, sortOrder);
         cursor.moveToFirst();
         int count = 0;
         while (!cursor.isAfterLast()) {
-            OfferModel offer = new OfferModel();
-            offer.setLocalReference(count);
-            offer.setDbId(cursor.getInt(cursor.getColumnIndex(OffersClicked._ID)));
-            //offer.set( cursor.getString( cursor.getColumnIndex(OffersClicked.COLUMN_NAME_BELONG_PAGETYPE) ) );
-            offer.setNid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_NID)));
-            offer.setAdsid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_ADSID)));
-            offer.setCid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CID)));
-            offer.setCvid(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CVID)));
-            offer.setAppStoreName(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_STORE_NAME)));
-            offer.setAppType(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_TYPE)));
-            offer.setAppStoreId(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_STORE_ID)));
-            offer.setAppStorePrice(cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_APP_STORE_PRICE)));
-            offer.setChargePeriod(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CHARGE_PERIOD)));
-            offer.setTitle(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_TITLE)));
-            offer.setConvertCondition(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CONVERT_COND)));
-            offer.setCreatedAt(cursor.getLong(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_CREATEAT)));
-            if (cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_INSTALLED)) == 0) {
-                offer.setHasInstalled(false);
+            AdClickModel click = new AdClickModel();
+            click.setDbId(cursor.getInt(cursor.getColumnIndex(AdClicked._ID)));
+            click.adNid = String.valueOf(cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_ADNID)));
+            click.adSid = String.valueOf(cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_ADSID)));
+            click.cid = String.valueOf(cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_CID)));
+            click.appStoreName = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_APP_STORE_NAME));
+            click.appType = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_APP_TYPE));
+            click.appStoreId = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_APP_STORE_ID));
+            click.jumpUid = cursor.getString(cursor.getColumnIndex(AdClicked.COLUMN_NAME_JUMP_UID));
+            if (cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_INSTALLED)) == 0) {
+                click.installed = false;
             }else{
-                offer.setHasInstalled(true);
+                click.installed = true;
             }
-            if (cursor.getInt(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_REPORT)) == 0) {
-                offer.setHasReport(false);
+            if (cursor.getInt(cursor.getColumnIndex(AdClicked.COLUMN_NAME_REPORT)) == 0) {
+                click.reported = false;
             }else{
-                offer.setHasReport(true);
+                click.reported = true;
             }
-            offer.setJumpResult(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_JUMP_RESULT)));
-            offer.setJumpUid(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_JUMP_UID)));
-            offer.setJumpUrl(cursor.getString(cursor.getColumnIndex(OffersClicked.COLUMN_NAME_JUMP_URL)));
 
             cursor.moveToNext();
-            list.add(count, offer);
+            list.add(count, click);
             count++;
         }
 
@@ -477,14 +485,14 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean updateOfferInstalled(OfferModel offer) {
+    public boolean updateAdInstalled(AdClickModel click) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(OffersClicked.COLUMN_NAME_INSTALLED, offer.isHasInstalled());
+        values.put(AdClicked.COLUMN_NAME_INSTALLED, click.installed);
 
         String where = Offers._ID + " = ?";
-        String[] whereArgs = {String.valueOf(offer.getDbId())};
-        int rows = db.update(OffersClicked.TABLE_NAME, values, where, whereArgs);
+        String[] whereArgs = {String.valueOf(click.getDbId())};
+        int rows = db.update(AdClicked.TABLE_NAME, values, where, whereArgs);
         if (rows > 0){
             return true;
         }else {
@@ -492,14 +500,14 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean updateOfferReported(OfferModel offer) {
+    public boolean updateAdReported(AdClickModel click) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(OffersClicked.COLUMN_NAME_REPORT, offer.isHasReport());
+        values.put(AdClicked.COLUMN_NAME_REPORT, click.reported);
 
         String where = Offers._ID + " = ?";
-        String[] whereArgs = {String.valueOf(offer.getDbId())};
-        int rows = db.update(OffersClicked.TABLE_NAME, values, where, whereArgs);
+        String[] whereArgs = {String.valueOf(click.getDbId())};
+        int rows = db.update(AdClicked.TABLE_NAME, values, where, whereArgs);
         if (rows > 0){
             return true;
         }else {
@@ -556,6 +564,10 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_PAYOUT = "payout";
         public static final String COLUMN_NAME_RATE = "rate";
     }
+
+    /*
+    *  Deprecated, be instead of AdClicked
+    */
     public static abstract class OffersClicked implements BaseColumns {
         public static final String TABLE_NAME = "offers_clicked";
         public static final String COLUMN_NAME_BELONG_PAGETYPE = "page_type";
@@ -576,5 +588,19 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_JUMP_RESULT = "jump_result";
         public static final String COLUMN_NAME_JUMP_UID = "jump_uid";
         public static final String COLUMN_NAME_JUMP_URL = "jump_url";
+    }
+
+    public static abstract class AdClicked implements BaseColumns {
+        public static final String TABLE_NAME = "ads_clicked";
+        public static final String COLUMN_NAME_AD_TYPE = "ad_type";
+        public static final String COLUMN_NAME_ADNID = "adnid";
+        public static final String COLUMN_NAME_ADSID = "adsid";
+        public static final String COLUMN_NAME_CID = "cid";
+        public static final String COLUMN_NAME_APP_STORE_NAME = "app_store_name";
+        public static final String COLUMN_NAME_APP_TYPE = "app_type";
+        public static final String COLUMN_NAME_APP_STORE_ID = "app_store_id";
+        public static final String COLUMN_NAME_JUMP_UID = "jump_uid";
+        public static final String COLUMN_NAME_INSTALLED = "installed";
+        public static final String COLUMN_NAME_REPORT = "report";
     }
 }

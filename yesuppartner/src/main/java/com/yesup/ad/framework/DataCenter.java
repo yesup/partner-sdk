@@ -175,41 +175,41 @@ public class DataCenter {
         @Override
         public void run() {
             installCheckerIsRunning = true;
-            List<OfferModel> list = dbHelper.readOffersClickedWhichNeedToCheckByType(OfferPageModel.PAGE_TYPE_OFFER);
-            Iterator<OfferModel> iter = list.iterator();
+            List<AdClickModel> list = dbHelper.readAdsClickedWhichNeedToCheck();
+            Iterator<AdClickModel> iter = list.iterator();
             while (iter.hasNext()) {
-                OfferModel offer = iter.next();
+                AdClickModel click = iter.next();
                 // check if the app has been installed
-                if (AppTool.isAppInstalled(context, offer.getAppStoreId())) {
-                    offer.setHasInstalled(true);
-                    dbHelper.updateOfferInstalled(offer);
-                    Log.v("Meshbean", offer.getAppStoreId() + " has installed.");
+                if (AppTool.isAppInstalled(context, click.appStoreId)) {
+                    click.installed = true;
+                    dbHelper.updateAdInstalled(click);
+                    Log.v("Meshbean", click.appStoreId + " has installed.");
                 }else {
-                    Log.v("Meshbean", offer.getAppStoreId() + " has not installed.");
+                    Log.v("Meshbean", click.appStoreId + " has not installed.");
                 }
             }
-            list = dbHelper.readOffersClickedWhichNeedToReportByType(OfferPageModel.PAGE_TYPE_OFFER);
+            list = dbHelper.readAdsClickedWhichNeedToReport();
             iter = list.iterator();
             while (iter.hasNext()) {
-                OfferModel offer = iter.next();
-                if (report(offer)){
-                    offer.setHasReport(true);
-                    dbHelper.updateOfferReported(offer);
+                AdClickModel click = iter.next();
+                if (report(click)){
+                    click.reported = true;
+                    dbHelper.updateAdReported(click);
                 }
             }
             installCheckerIsRunning = false;
         }
 
-        private boolean report(OfferModel offer) {
+        private boolean report(AdClickModel click) {
             boolean success = false;
             HttpURLConnection connection = null;
             InputStream input = null;
             String reportUrl = Define.SERVER_HOST + Define.URL_IF_AD_REPORT
-                    + "?nid=" + offer.getNid()
-                    + "&ad=" + offer.getAdsid()
-                    + "&cid=" + offer.getCid()
+                    + "?nid=" + click.adNid
+                    + "&ad=" + click.adSid
+                    + "&cid=" + click.cid
                     + "&tz=" + config.getNid() + "-" + config.getSid()
-                    + "&cluid=" + offer.getJumpUid();
+                    + "&cluid=" + click.jumpUid;
             Log.i(TAG, "Report Url:"+reportUrl);
             try {
                 URL url = new URL(reportUrl);

@@ -87,4 +87,8 @@ public class AppTool {
         return context.getFilesDir() + "/bannerclick"+zoneId+".json";
     }
 
+    public static final String getImageClickLocalDataPath(Context context, int zoneId) {
+        return context.getFilesDir() + "/imageclick"+zoneId+".json";
+    }
+
 }
