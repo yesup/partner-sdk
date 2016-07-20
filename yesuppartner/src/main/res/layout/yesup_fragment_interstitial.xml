@@ -18,6 +18,7 @@
                 android:id="@+id/image_loading"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:visibility="gone"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
                 android:src="@drawable/yesup_loading"/>

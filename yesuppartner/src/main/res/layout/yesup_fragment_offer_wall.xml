@@ -8,7 +8,16 @@
     android:paddingLeft="6dp"
     android:paddingRight="6dp"
     android:background="#FFDCDCDC"
-    tools:context="com.yesup.partner.OfferWallActivity">
+    tools:context="com.yesup.ad.offerwall.OfferWallActivity">
+
+    <TextView
+        android:id="@+id/textview_nooffer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:textSize="16sp"
+        android:text="Offers not available" />
 
     <ListView
         android:id="@+id/dataListView"

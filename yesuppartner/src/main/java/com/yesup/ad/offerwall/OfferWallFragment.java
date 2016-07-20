@@ -26,6 +26,8 @@ import com.yesup.ad.framework.DataCenter;
 import com.yesup.ad.framework.Define;
 import com.yesup.ad.framework.YesupAdRequest;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 
 /**
@@ -38,6 +40,7 @@ public class OfferWallFragment extends Fragment {
     private OfferwallController offerwallController;
     private int zoneId;
     private int listCount = 0;
+    private TextView mTextView;
     private ListView dataListView;
     private MyAdapter mMyadapter;
     private MessageHandler msgHandler = new MessageHandler();
@@ -64,6 +67,13 @@ public class OfferWallFragment extends Fragment {
             } else {
                 listCount = offerWallAd.loadOfferListFromLocalDatabase();
             }
+        }
+
+        mTextView = (TextView)view.findViewById(R.id.textview_nooffer);
+        if (listCount <= 0) {
+            mTextView.setVisibility(View.VISIBLE);
+        } else {
+            mTextView.setVisibility(View.GONE);
         }
 
         dataListView = (ListView) view.findViewById(R.id.dataListView);
@@ -260,6 +270,11 @@ public class OfferWallFragment extends Fragment {
                     if (YesupAdRequest.REQ_TYPE_OFFER_WALL == msg.arg1) {
                         // update OfferWall success
                         listCount = offerWallAd.getOfferCount();
+                        if (listCount <= 0) {
+                            mTextView.setVisibility(View.VISIBLE);
+                        } else {
+                            mTextView.setVisibility(View.GONE);
+                        }
                         //dataListView.invalidateViews();
                         mMyadapter.notifyDataSetChanged();
                         Log.i(TAG, "Offer Wall Download Completed.");

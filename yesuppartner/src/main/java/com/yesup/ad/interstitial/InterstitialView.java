@@ -133,10 +133,11 @@ public class InterstitialView extends Dialog {
         });
         btnClose.setVisibility(View.GONE);
 
-        imageLoading = (ImageView)findViewById(R.id.image_loading);
-        operatingAnim = AnimationUtils.loadAnimation(getContext(), R.anim.yesup_loading);
-        LinearInterpolator lin = new LinearInterpolator();
-        operatingAnim.setInterpolator(lin);
+        //imageLoading = (ImageView)findViewById(R.id.image_loading);
+        //imageLoading.setVisibility(View.GONE);
+        //operatingAnim = AnimationUtils.loadAnimation(getContext(), R.anim.yesup_loading);
+        //LinearInterpolator lin = new LinearInterpolator();
+        //operatingAnim.setInterpolator(lin);
 
         imageViewAd = (ImageView)findViewById(R.id.image_ad);
         imageViewAd.setOnClickListener(new View.OnClickListener() {
@@ -234,7 +235,7 @@ public class InterstitialView extends Dialog {
         super.onStop();
         dialogConfig.interstitialController.onPause();
         isShowed = false;
-        stopLoadingAnimation();
+        //stopLoadingAnimation();
         stopCloseTimer();
 
         onDestroyView();
@@ -267,15 +268,15 @@ public class InterstitialView extends Dialog {
             case Interstitial.VIEW_STATE_INIT:
                 imageViewAd.setVisibility(View.GONE);
                 webViewAd.setVisibility(View.GONE);
-                imageLoading.setVisibility(View.VISIBLE);
-                startLoadingAnimation();
+                //imageLoading.setVisibility(View.VISIBLE);
+                //startLoadingAnimation();
                 break;
 
             case Interstitial.VIEW_STATE_GOT_AD:
                 imageViewAd.setVisibility(View.GONE);
                 webViewAd.setVisibility(View.GONE);
-                imageLoading.setVisibility(View.VISIBLE);
-                startLoadingAnimation();
+                //imageLoading.setVisibility(View.VISIBLE);
+                //startLoadingAnimation();
                 if (interstitialRequest != null) {
                     if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == interstitialRequest.getAdType()) {
                         PageInterstitialRequest pageAd = (PageInterstitialRequest)interstitialRequest;
@@ -298,10 +299,10 @@ public class InterstitialView extends Dialog {
                 break;
 
             case Interstitial.VIEW_STATE_LOADED_AD:
-                stopLoadingAnimation();
+                //stopLoadingAnimation();
                 if (interstitialRequest != null) {
                     if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == interstitialRequest.getAdType()) {
-                        imageLoading.setVisibility(View.GONE);
+                        //imageLoading.setVisibility(View.GONE);
                         imageViewAd.setVisibility(View.GONE);
                         webViewAd.setVisibility(View.VISIBLE);
                         // begin timer to impression
@@ -312,14 +313,14 @@ public class InterstitialView extends Dialog {
                         ImageInterstitialModel.PageAd imageAd = pageAd.getPageAd();
                         if (imageAd.mime.equals(ImageInterstitialModel.IMAGE_INTERSTITIAL_TYPE_HTML)) {
                             // Image Interstitial -> Html type
-                            imageLoading.setVisibility(View.GONE);
+                            //imageLoading.setVisibility(View.GONE);
                             imageViewAd.setVisibility(View.GONE);
                             webViewAd.setVisibility(View.VISIBLE);
                             // begin timer to impression
                             interstitialRequest.impressInterstitialAfterWait();
                         } else {
                             // Image Interstitial -> Image type
-                            imageLoading.setVisibility(View.GONE);
+                            //imageLoading.setVisibility(View.GONE);
                             webViewAd.setVisibility(View.GONE);
                             imageViewAd.setVisibility(View.VISIBLE);
                             // display image
@@ -340,18 +341,18 @@ public class InterstitialView extends Dialog {
             case Interstitial.VIEW_STATE_IMPRESSED:
                 if (interstitialRequest != null) {
                     if (Define.AD_TYPE_INTERSTITIAL_WEBPAGE == interstitialRequest.getAdType()) {
-                        imageLoading.setVisibility(View.GONE);
+                        //imageLoading.setVisibility(View.GONE);
                         imageViewAd.setVisibility(View.GONE);
                         webViewAd.setVisibility(View.VISIBLE);
                     } else if (Define.AD_TYPE_INTERSTITIAL_IMAGE == interstitialRequest.getAdType()) {
                         ImageInterstitialRequest pageAd = (ImageInterstitialRequest)interstitialRequest;
                         ImageInterstitialModel.PageAd imageAd = pageAd.getPageAd();
                         if (imageAd.mime.equals(ImageInterstitialModel.IMAGE_INTERSTITIAL_TYPE_HTML)) {
-                            imageLoading.setVisibility(View.GONE);
+                            //imageLoading.setVisibility(View.GONE);
                             imageViewAd.setVisibility(View.GONE);
                             webViewAd.setVisibility(View.VISIBLE);
                         } else {
-                            imageLoading.setVisibility(View.GONE);
+                            //imageLoading.setVisibility(View.GONE);
                             webViewAd.setVisibility(View.GONE);
                             imageViewAd.setVisibility(View.VISIBLE);
                         }
@@ -367,8 +368,8 @@ public class InterstitialView extends Dialog {
             default:
                 imageViewAd.setVisibility(View.GONE);
                 webViewAd.setVisibility(View.GONE);
-                imageLoading.setVisibility(View.VISIBLE);
-                stopLoadingAnimation();
+                //imageLoading.setVisibility(View.VISIBLE);
+                //stopLoadingAnimation();
                 // show close button
                 btnClose.setVisibility(View.VISIBLE);
                 break;
